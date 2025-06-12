@@ -1,5 +1,184 @@
 ---
-description:
-globs:
+description: 
+globs: 
 alwaysApply: false
 ---
+# Fituno - Regras de Desenvolvimento
+
+## 📋 Stack Tecnológico
+
+### Web App (trainer-app)
+- **Framework:** Next.js 15 com App Router e React Server Components
+- **Linguagem:** TypeScript
+- **UI:** shadcn/ui + Tailwind CSS
+- **Testes:** Vitest + React Testing Library
+- **Estrutura:** [apps/trainer-app/](mdc:apps/trainer-app) conforme [monorepo.md](mdc:docs/monorepo.md)
+
+### Mobile App (client-app)
+- **Framework:** Expo SDK (latest) + React Native
+- **UI:** React Native Paper
+- **Testes:** Jest + React Testing Library
+- **Estrutura:** [apps/client-app/](mdc:apps/client-app) conforme [monorepo.md](mdc:docs/monorepo.md)
+
+### Pacotes Compartilhados
+- **Gerenciamento:** Yarn Workspaces conforme [package.json](mdc:package.json)
+- **Tipos:** `@fituno/types` em [packages/types/](mdc:packages/types)
+- **Utilitários:** `@fituno/utils` em [packages/utils/](mdc:packages/utils)
+- **Serviços:** `@fituno/services` (Supabase & Stripe) em [packages/services/](mdc:packages/services)
+- **Constantes:** `@fituno/constants` em [packages/constants/](mdc:packages/constants)
+
+## 🔄 Fluxo de Trabalho
+
+### 1. Seleção de Tarefas
+```bash
+# Usar comando de tarefas para selecionar próxima do backlog
+/tasks
+```
+
+### 2. Desenvolvimento
+- Gere código **E** testes unitários completos
+- Execute `pnpm test` até todos os testes passarem
+- Siga as diretrizes de código abaixo
+
+### 3. Commit & Push
+```bash
+# Após implementar cada tarefa
+git add -A
+# Gerar commit usando Conventional Commits (ver template abaixo)
+# Incluir ID da task no scope se existir
+git push
+```
+
+### 4. Frequência
+- Push após cada task OU a cada 2-3 commits
+
+## 📝 Diretrizes de Código
+
+### Estrutura & Imports
+- **SEMPRE** respeite aliases `@fituno/...` conforme [monorepo.md](mdc:docs/monorepo.md)
+- **SEMPRE** siga estrutura de pastas documentada em [monorepo.md](mdc:docs/monorepo.md)
+- Imports de pacotes compartilhados:
+  ```typescript
+  import { WorkoutPlan } from "@fituno/types";
+  import { formatCurrency } from "@fituno/utils";
+  import { supabase } from "@fituno/services";
+  ```
+
+### Validação & API
+- **OBRIGATÓRIO:** Validação de entrada com Zod
+- **API Routes:** Sempre em `app/api/**/route.ts` (Next.js App Router)
+- **Tipos:** Usar tipagens de `@fituno/types` como fonte da verdade
+
+### Componentes UI
+#### Web (trainer-app)
+- **UI Library:** shadcn/ui + Tailwind CSS
+- **Localização:** [apps/trainer-app/components/](mdc:apps/trainer-app/components)
+- **SEMPRE** incluir story de teste
+
+#### Mobile (client-app)  
+- **UI Library:** React Native Paper
+- **Localização:** [apps/client-app/components/](mdc:apps/client-app/components)
+- **SEMPRE** incluir story de teste
+
+### Testes
+- **Cobertura mínima:** 80% branch coverage
+- **Ferramentas:** Vitest/RTL (web) ou Jest/RTL (mobile)
+- **OBRIGATÓRIO:** Testar edge cases
+- **Localização:** Pasta `tests/` por domínio
+
+## 🚀 Templates de Prompts Rápidos
+
+### Componente Next.js 15
+```
+Gere um componente Next.js 15 responsivo usando Tailwind + shadcn/ui que [FUNCIONALIDADE]. 
+Inclua testes Vitest/RTL e siga estrutura de [apps/trainer-app/](mdc:apps/trainer-app).
+```
+
+### API Route Segura
+```
+Escreva um route.ts para /api/[ENDPOINT] com:
+- Validação Zod
+- Autenticação JWT 
+- Rate limiting (5 req/min)
+- Tipos de @fituno/types
+- Estrutura Next.js 15 App Router
+```
+
+### Tela Expo
+```
+Crie uma screen Expo/React Native chamada [NOME] com:
+- React Native Paper components
+- Navegação stack
+- Formulário controlado com validação Zod
+- Teste Jest inicial
+- Estrutura de [apps/client-app/](mdc:apps/client-app)
+```
+
+### Debug Hidratação
+```
+Estou recebendo 'hydration mismatch' nesta página Next.js. 
+Explique causas comuns e corrija passo a passo usando Next.js 15 + RSC.
+```
+
+### Testes Unitários
+```
+Escreva testes [Vitest/Jest]/RTL para este componente:
+- Cubra edge-cases
+- Alcance 80% branch coverage
+- Use mocks apropriados para @fituno/services
+- Siga padrões do projeto
+```
+
+### Mensagem de Commit
+```
+Com base no diff a seguir, gere um commit convencional:
+- Formato: tipo(scope): descrição
+- Incluir ID da task no scope se existir
+- Body detalhado se necessário
+- Seguir Conventional Commits
+```
+
+## ✅ Definition of Done
+
+### Critérios Obrigatórios
+- [ ] Critérios de aceite da task atendidos
+- [ ] Lint sem erros (`yarn lint`)
+- [ ] Testes passando (`pnpm test`)
+- [ ] Cobertura de testes ≥ 80%
+- [ ] Validação Zod implementada (quando aplicável)
+- [ ] Componentes UI seguem padrões (shadcn/ui ou RN Paper)
+- [ ] Commit criado com Conventional Commits
+- [ ] Push executado
+
+### Estrutura de Arquivos
+- Respeitar organização por domínio em `features/`
+- Componentes UI específicos por app
+- Hooks compartilháveis em `packages/utils/hooks`
+- Tipos globais em `packages/types`
+
+## 🔧 Comandos Úteis
+
+```bash
+# Desenvolvimento
+yarn dev:trainer    # Iniciar trainer-app (web)
+yarn dev:client     # Iniciar client-app (mobile)
+
+# Build
+yarn build:trainer  # Build trainer-app
+yarn build:client   # Build client-app  
+
+# Qualidade
+yarn lint          # Lint todos os workspaces
+yarn test          # Executar testes em todos os workspaces
+```
+
+## 📁 Referências Importantes
+
+- **Estrutura completa:** [docs/monorepo.md](mdc:docs/monorepo.md)
+- **Configuração workspaces:** [package.json](mdc:package.json)
+- **Trainer app:** [apps/trainer-app/](mdc:apps/trainer-app)
+- **Client app:** [apps/client-app/](mdc:apps/client-app)
+- **Tipos compartilhados:** [packages/types/](mdc:packages/types)
+- **Utilitários:** [packages/utils/](mdc:packages/utils)
+- **Serviços:** [packages/services/](mdc:packages/services)
+- **Constantes:** [packages/constants/](mdc:packages/constants)

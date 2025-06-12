@@ -1,4 +1,4 @@
-# Fituno
+cd ..# Fituno
 
 Monorepo for the Fituno fitness training platform, containing both the trainer web app and client mobile app.
 
@@ -32,7 +32,6 @@ yarn dev:client
 
 - `apps/trainer-app`: Web application for trainers (Next.js)
 - `apps/client-app`: Mobile application for clients (Expo/React Native)
-- `packages/ui`: Shared UI components and design system
 - `packages/types`: Shared TypeScript types
 - `packages/utils`: Shared utilities and helpers
 - `packages/services`: Shared service integrations (Supabase, Stripe, etc.)
@@ -41,7 +40,6 @@ yarn dev:client
 ## 🛠️ Development
 
 - All shared code should be placed in the appropriate package under `packages/`
-- Use the shared UI components from `@fituno/ui` when possible
 - Follow the TypeScript types defined in `@fituno/types`
 - Reuse utilities from `@fituno/utils`
 - Configure services using `@fituno/services`
