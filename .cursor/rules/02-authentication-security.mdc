@@ -1,0 +1,75 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Authentication and Security Best Practices
+
+## Authentication Rules
+
+1. **Supabase Auth Integration**
+   - All authentication MUST be handled through Supabase Auth
+   - Support both email/password and social login (Google, Facebook)
+   - Email verification MUST be enforced before access
+
+2. **Token Management**
+   - Web (Trainer App):
+     - JWT tokens MUST be stored in httpOnly cookies
+     - Session management through Supabase Auth
+   - Mobile (Client App):
+     - Tokens MUST be stored in Expo SecureStore
+     - No token storage in AsyncStorage or plain storage
+
+3. **Session Handling**
+   - Implement automatic session refresh
+   - Clear all sensitive data on logout
+   - Implement session timeout with auto-logout
+   - Redirect to login on session expiration
+
+## Security Rules
+
+1. **Data Access**
+   - Use Row Level Security (RLS) in Supabase
+   - Trainers can ONLY access their own clients' data
+   - Clients can ONLY access their own data
+   - Implement proper role-based access control (RBAC)
+
+2. **API Security**
+   - All API routes MUST be protected with authentication
+   - Implement rate limiting for API endpoints
+   - Validate all input data with Zod schemas
+   - Sanitize all user inputs
+
+3. **Environment Variables**
+   - Never commit sensitive data to version control
+   - Use `.env` files for environment variables
+   - Different env files for development and production
+   - Document all required environment variables
+
+## Privacy Rules
+
+1. **User Data**
+   - Encrypt sensitive user data
+   - Implement proper data deletion procedures
+   - Follow GDPR/LGPD compliance guidelines
+   - Clear cache and local storage on logout
+
+2. **Terms and Privacy**
+   - Force Terms of Use acceptance on first login
+   - Track acceptance with `terms_accepted_at` timestamp
+   - Re-prompt for acceptance on terms update
+   - Provide easy access to privacy policy and terms
+
+## Error Handling
+
+1. **Authentication Errors**
+   - Provide clear error messages for auth failures
+   - Implement proper error boundaries
+   - Log authentication errors securely
+   - Handle offline authentication gracefully
+
+2. **Security Incidents**
+   - Implement audit logging for security events
+   - Monitor for suspicious activities
+   - Have clear incident response procedures
+   - Log security events with proper sanitization

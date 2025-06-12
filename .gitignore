@@ -1,0 +1,92 @@
+# Trainer app
+
+# dependencies
+trainer-app/node_modules
+trainer-app/.pnp
+trainer-app/.pnp.*
+trainer-app/.yarn/*
+trainer-app/.yarn/patches
+trainer-app/.yarn/plugins
+trainer-app/.yarn/releases
+trainer-app/.yarn/versions
+
+# testing
+trainer-app/coverage
+
+# next.js
+trainer-app/.next/
+trainer-app/out/
+
+# production
+trainer-app/build
+
+# misc
+trainer-app/.DS_Store
+trainer-app/*.pem
+
+# debug
+trainer-app/npm-debug.log*
+trainer-app/yarn-debug.log*
+trainer-app/yarn-error.log*
+trainer-app/.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+trainer-app/.env*
+
+# vercel
+trainer-app/.vercel
+
+# typescript
+trainer-app/*.tsbuildinfo
+trainer-app/next-env.d.ts
+
+
+
+#Client app
+
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+
+# dependencies
+client-app/node_modules/
+
+# Expo
+client-app/.expo/
+client-app/dist/
+client-app/web-build/
+client-app/expo-env.d.ts
+
+# Native
+client-app/.kotlin/
+client-app/*.orig.*
+client-app/*.jks
+client-app/*.p8
+client-app/*.p12
+client-app/*.key
+client-app/*.mobileprovision
+
+# Metro
+client-app/.metro-health-check*
+
+# debug
+client-app/npm-debug.*
+client-app/yarn-debug.*
+client-app/yarn-error.*
+
+# macOS
+client-app/.DS_Store
+client-app/*.pem
+
+# local env files
+client-app/.env*.local
+
+# typescript
+client-app/*.tsbuildinfo
+
+client-app/app-example
+
+
+
+
+
+#Shared
+node_modules

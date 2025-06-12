@@ -1,0 +1,104 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Subscription and Payment Handling Rules
+
+## Plan Types
+
+1. **Free Plan**
+   - Maximum 2 active clients
+   - Basic features only
+   - No deletion of clients
+   - Clear upgrade prompts
+
+2. **PRO Plan**
+   - Unlimited active clients
+   - All features enabled
+   - Priority support
+   - Advanced analytics
+
+## Stripe Integration
+
+1. **Payment Setup**
+   - Secure Stripe checkout
+   - Handle webhook events
+   - Process recurring payments
+   - Manage subscription lifecycle
+
+2. **Error Handling**
+   - Handle failed payments
+   - Manage card declines
+   - Process refunds
+   - Handle subscription cancellation
+
+## Plan Management
+
+1. **Status Tracking**
+   - Monitor subscription status
+   - Track payment history
+   - Handle plan changes
+   - Manage trial periods
+
+2. **Access Control**
+   - Restrict features by plan
+   - Handle grace periods
+   - Manage plan expiration
+   - Control feature access
+
+## UI/UX Requirements
+
+1. **Upgrade Flow**
+   - Clear pricing display
+   - Simple upgrade process
+   - Show feature comparison
+   - Handle currency conversion
+
+2. **Status Display**
+   - Show current plan status
+   - Display payment history
+   - Show next billing date
+   - Alert on payment issues
+
+## Security
+
+1. **Payment Security**
+   - PCI compliance
+   - Secure token handling
+   - Encrypt sensitive data
+   - Audit payment events
+
+2. **Access Security**
+   - Validate subscription status
+   - Check feature access
+   - Log access attempts
+   - Handle unauthorized access
+
+## Edge Cases
+
+1. **Plan Transitions**
+   - Handle downgrades
+   - Manage upgrades
+   - Process refunds
+   - Handle plan changes
+
+2. **Error Recovery**
+   - Handle failed webhooks
+   - Retry failed payments
+   - Recover from errors
+   - Maintain data consistency
+
+## Notifications
+
+1. **Payment Notifications**
+   - Payment success/failure
+   - Subscription renewal
+   - Plan expiration
+   - Payment method expiry
+
+2. **Status Updates**
+   - Plan change confirmation
+   - Feature access updates
+   - Billing cycle reminders
+   - Account status changes
