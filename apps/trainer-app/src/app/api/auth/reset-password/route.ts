@@ -31,10 +31,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email format' }, { status: 400 });
     }
 
+    // Construct fallback redirect URL with proper validation
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    if (!baseUrl) {
+      console.error('NEXT_PUBLIC_APP_URL environment variable is not set');
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
+    }
+
+    const fallbackRedirectTo = `${baseUrl}/auth/reset-password`;
+
     // Attempt to send password reset email
     const { data, error } = await AuthService.resetPassword({
       email,
-      redirectTo: redirectTo || `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`,
+      redirectTo: redirectTo || fallbackRedirectTo,
     });
 
     if (error) {
