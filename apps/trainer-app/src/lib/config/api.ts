@@ -14,7 +14,16 @@ export const API_CONFIG = {
     max: 100, // limit each IP to 100 requests per windowMs
   },
   auth: {
-    jwtSecret: process.env.JWT_SECRET || 'fallback-secret-for-development',
+    jwtSecret: (() => {
+      if (!process.env.JWT_SECRET) {
+        if (process.env.NODE_ENV === 'production') {
+          throw new Error('JWT_SECRET environment variable is required in production');
+        }
+        console.warn('⚠️  JWT_SECRET not set - using insecure fallback for development only');
+        return 'insecure-development-secret-change-in-production';
+      }
+      return process.env.JWT_SECRET;
+    })(),
     jwtExpiresIn: '24h',
     refreshTokenExpiresIn: '7d',
   },
