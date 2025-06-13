@@ -82,21 +82,34 @@ export class SessionManager {
    */
   static async getSessionData(): Promise<SessionData | null> {
     try {
-      const { data, error } = await AuthService.getCurrentSession();
+      // Get session and user data separately
+      const [sessionResponse, userResponse] = await Promise.all([
+        AuthService.getCurrentSession(),
+        AuthService.getCurrentUser(),
+      ]);
 
-      if (error || !data.session || !data.user) {
+      // Check session data
+      if (sessionResponse.error || !sessionResponse.data.session) {
         return null;
       }
 
+      // Check user data
+      if (userResponse.error || !userResponse.data.user) {
+        return null;
+      }
+
+      const session = sessionResponse.data.session;
+      const user = userResponse.data.user;
+
       return {
-        accessToken: data.session.access_token,
-        refreshToken: data.session.refresh_token,
-        expiresAt: data.session.expires_at,
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token,
+        expiresAt: session.expires_at || 0,
         user: {
-          id: data.user.id,
-          email: data.user.email || '',
-          emailVerified: AuthService.isEmailVerified(data.user),
-          metadata: data.user.user_metadata || {},
+          id: user.id,
+          email: user.email || '',
+          emailVerified: AuthService.isEmailVerified(user),
+          metadata: user.user_metadata || {},
         },
       };
     } catch (error) {
@@ -133,6 +146,9 @@ export class SessionManager {
    * Set up automatic session refresh
    */
   static setupAutoRefresh(): () => void {
+    // Use 5 minutes as the refresh interval (same as REFRESH_THRESHOLD)
+    const refreshInterval = AUTH_CONFIG.REFRESH_THRESHOLD;
+
     const interval = setInterval(async () => {
       const isValid = await this.isSessionValid();
 
@@ -144,7 +160,7 @@ export class SessionManager {
           // Optional: redirect to login or show notification
         }
       }
-    }, AUTH_CONFIG.SESSION_REFRESH_INTERVAL);
+    }, refreshInterval);
 
     // Return cleanup function
     return () => clearInterval(interval);
