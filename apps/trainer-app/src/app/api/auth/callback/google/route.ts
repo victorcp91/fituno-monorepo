@@ -7,7 +7,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const code = searchParams.get('code');
     const error = searchParams.get('error');
-    const state = searchParams.get('state');
 
     // Handle OAuth errors
     if (error) {
@@ -21,15 +20,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(new URL('/auth/login?error=missing_code', request.url));
     }
 
-    // Exchange code for session (handled by Supabase)
-    // The actual OAuth exchange is handled automatically by Supabase
-    // when the user is redirected back from Google
-
-    // Get the current session to verify the OAuth flow completed
-    const { data, error: sessionError } = await AuthService.getCurrentSession();
+    // Exchange authorization code for session using Supabase directly
+    const { supabase } = await import('@fituno/services');
+    const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
 
     if (sessionError || !data.session) {
-      console.error('Session error after OAuth:', sessionError);
+      console.error('Session error after OAuth code exchange:', sessionError);
       return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
     }
 
