@@ -1,13 +1,15 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Subscription and Payment Handling Rules
 
 ## Plan Types
 
 1. **Free Plan**
+
    - Maximum 2 active clients
    - Basic features only
    - No deletion of clients
@@ -22,6 +24,7 @@ alwaysApply: false
 ## Stripe Integration
 
 1. **Payment Setup**
+
    - Secure Stripe checkout
    - Handle webhook events
    - Process recurring payments
@@ -36,6 +39,7 @@ alwaysApply: false
 ## Plan Management
 
 1. **Status Tracking**
+
    - Monitor subscription status
    - Track payment history
    - Handle plan changes
@@ -50,6 +54,7 @@ alwaysApply: false
 ## UI/UX Requirements
 
 1. **Upgrade Flow**
+
    - Clear pricing display
    - Simple upgrade process
    - Show feature comparison
@@ -64,6 +69,7 @@ alwaysApply: false
 ## Security
 
 1. **Payment Security**
+
    - PCI compliance
    - Secure token handling
    - Encrypt sensitive data
@@ -78,6 +84,7 @@ alwaysApply: false
 ## Edge Cases
 
 1. **Plan Transitions**
+
    - Handle downgrades
    - Manage upgrades
    - Process refunds
@@ -92,6 +99,7 @@ alwaysApply: false
 ## Notifications
 
 1. **Payment Notifications**
+
    - Payment success/failure
    - Subscription renewal
    - Plan expiration

@@ -2,41 +2,54 @@ PRD - Fituno (MVP)
 
 1. Visão Geral
 
-Fituno é uma plataforma de treino físico com duas interfaces principais: um web app para treinadores e um aplicativo mobile para alunos. O MVP é focado exclusivamente na criação, execução e acompanhamento de treinos.
+Fituno é uma plataforma de treino físico com duas interfaces principais: um web
+app para treinadores e um aplicativo mobile para alunos. O MVP é focado
+exclusivamente na criação, execução e acompanhamento de treinos.
 
 - Treinador: acessa via Web (Next.js + Supabase)
 - Aluno: acessa via app mobile (Expo/React Native)
-- Monetização: treinador paga para usar (plano gratuito até 2 clientes ativos; plano PRO com Stripe)
+- Monetização: treinador paga para usar (plano gratuito até 2 clientes ativos;
+  plano PRO com Stripe)
 
 2. Funcionalidades Web - Treinador
 
 A. Dashboard:
 
-- Exibe alertas de clientes sem série, séries vencidas, treinos do dia, atalhos rápidos (Cadastrar Cliente / Criar Série).
+- Exibe alertas de clientes sem série, séries vencidas, treinos do dia, atalhos
+  rápidos (Cadastrar Cliente / Criar Série).
 
 B. Gestão de Clientes:
 
-- Lista de clientes (filtros ativos/inativos), vínculo via convite por e-mail, inativação de cliente.
+- Lista de clientes (filtros ativos/inativos), vínculo via convite por e-mail,
+  inativação de cliente.
 
 C. Builder de Treinos:
 
-- **Criação diária visual (drag-and-drop):** cada coluna = dia da semana.<br>- **Drawer de Seleção de Exercícios:** filtros (grupo/sub-grupo muscular, equipamento, tipo, favoritos) e _search_.
+- **Criação diária visual (drag-and-drop):** cada coluna = dia da semana.<br>-
+  **Drawer de Seleção de Exercícios:** filtros (grupo/sub-grupo muscular,
+  equipamento, tipo, favoritos) e _search_.
 - **Tipos de exercício suportados:**
 
-1.  Strength / Resistido 2. Isométrico  3. Pliométrico/HIIT (reps)  4. Cardio Steady  5. Cardio Intervalo  6. Mobilidade/Flexibilidade  7. Circuito Composto (wrapper).
+1.  Strength / Resistido 2. Isométrico  3. Pliométrico/HIIT (reps)  4. Cardio
+    Steady  5. Cardio Intervalo  6. Mobilidade/Flexibilidade  7. Circuito
+    Composto (wrapper).
 
-- **Modal de Parâmetros dinâmico**
-  Campos básicos variam conforme o tipo (Sets, Reps, Carga, Tempo, Duração, Rest, Rounds…).<br> - Aba “Avançado” para Tempo de execução (3-0-2-0), RPE/RIR, notas.
-- **Validações em tempo real:**
-  intervalo aceitável de reps/carga, alerta de volume > 20 sets por músculo/semana, aviso de equipamento indisponível para o cliente.
-- **Superset / Circuito:**
-  criação por _drag over_ ou menu → gera `group_id`, badges “Superset A”, “Circuito 1”, campos Rounds/Inter-rest.
-- **Cache local** das alterações até o botão **Salvar Série** (commita na tabela `workouts`).
-- **Bloqueios de plano:** treinadores Free (> 2 clientes) impedidos de publicar a série; banner de upgrade.
-- **Observações gerais da série** e **checklist automático de equipamentos** mantidos.
+- **Modal de Parâmetros dinâmico** Campos básicos variam conforme o tipo (Sets,
+  Reps, Carga, Tempo, Duração, Rest, Rounds…).<br> - Aba “Avançado” para Tempo
+  de execução (3-0-2-0), RPE/RIR, notas.
+- **Validações em tempo real:** intervalo aceitável de reps/carga, alerta de
+  volume > 20 sets por músculo/semana, aviso de equipamento indisponível para o
+  cliente.
+- **Superset / Circuito:** criação por _drag over_ ou menu → gera `group_id`,
+  badges “Superset A”, “Circuito 1”, campos Rounds/Inter-rest.
+- **Cache local** das alterações até o botão **Salvar Série** (commita na tabela
+  `workouts`).
+- **Bloqueios de plano:** treinadores Free (> 2 clientes) impedidos de publicar
+  a série; banner de upgrade.
+- **Observações gerais da série** e **checklist automático de equipamentos**
+  mantidos.
 
-D. Chat com Cliente:
-Chat com Cliente:
+D. Chat com Cliente: Chat com Cliente:
 
 - Comunicação 1:1
 - Histórico por cliente (scroll para carregar)
@@ -45,21 +58,19 @@ Chat com Cliente:
 
 3. Funcionalidades Mobile - Aluno
 
-A. Acesso via convite (e-mail), login com Supabase
-B. Anamnese obrigatória antes de receber treinos
-C. Tela inicial dinâmica:
+A. Acesso via convite (e-mail), login com Supabase B. Anamnese obrigatória antes
+de receber treinos C. Tela inicial dinâmica:
 
 - Se não tem treino: mostra aviso
 - Se treino do dia disponível: exibe lista de sessões
-- Se treino já foi feito: mostra progresso e opções (refazer, adiantar, recuperar)
-  D. Execução do treino:
-- Interface por sessão (categorias: alongamento, força, cardio, HIIT, mobilidade)
+- Se treino já foi feito: mostra progresso e opções (refazer, adiantar,
+  recuperar) D. Execução do treino:
+- Interface por sessão (categorias: alongamento, força, cardio, HIIT,
+  mobilidade)
 - Marcar sets como concluídos, editar carga, iniciar cronômetro de descanso
-- Registro automático de tempo total (exceto cardio)
-  E. Histórico e Progresso:
+- Registro automático de tempo total (exceto cardio) E. Histórico e Progresso:
 - Por dia, por exercício (evolução de carga, repetições)
-- Gráficos e melhores marcas
-  F. Chat com treinador:
+- Gráficos e melhores marcas F. Chat com treinador:
 - Push notifications (FCM)
 - Badge e banner via trigger local
 - Envio de mensagens com menção a exercício
@@ -73,9 +84,11 @@ C. Tela inicial dinâmica:
 
 5. Cadastro, Autenticação e Plano
 
-- Cadastro e login via e-mail/senha ou login social (Google, Facebook etc. via Supabase), tanto para treinador quanto para cliente
+- Cadastro e login via e-mail/senha ou login social (Google, Facebook etc. via
+  Supabase), tanto para treinador quanto para cliente
 - Verificação de e-mail e recuperação de senha automática
-- Painel do treinador: editar dados, foto de perfil, ver plano, upgrade com Stripe
+- Painel do treinador: editar dados, foto de perfil, ver plano, upgrade com
+  Stripe
 - Plano gratuito: até 2 clientes ativos
 - Plano PRO: acesso ilimitado, pagamentos via Stripe
 - Quando o plano expira:
@@ -133,7 +146,8 @@ Inclui:
 
 11. Integração Treino + Chat
 
-- Durante execução, aluno pode enviar mensagem com referência direta ao exercício atual
+- Durante execução, aluno pode enviar mensagem com referência direta ao
+  exercício atual
 - Treinador recebe visual com ícone/nome do exercício no chat
 
 12. Internacionalização
@@ -190,11 +204,14 @@ A. Ícones:
 
 B. Componentes:
 
-- Deve-se **priorizar o uso de componentes prontos das bibliotecas de UI escolhidas**:
+- Deve-se **priorizar o uso de componentes prontos das bibliotecas de UI
+  escolhidas**:
 - Web: shadcn/ui
 - Mobile: React Native Paper
-- Evitar a criação de componentes personalizados do zero quando houver alternativas equivalentes nas bibliotecas existentes
-- Criar componentes customizados apenas quando não houver uma alternativa visual ou funcional adequada
+- Evitar a criação de componentes personalizados do zero quando houver
+  alternativas equivalentes nas bibliotecas existentes
+- Criar componentes customizados apenas quando não houver uma alternativa visual
+  ou funcional adequada
 
 Objetivo:
 
@@ -205,27 +222,34 @@ Objetivo:
 
 1. Conclusão manual do treino:
 
-- Cliente pode marcar treino como concluído mesmo sem executar todos os sets, para lidar com casos de esquecimento ou execução fora do app.
+- Cliente pode marcar treino como concluído mesmo sem executar todos os sets,
+  para lidar com casos de esquecimento ou execução fora do app.
 
 2. Filtros por status no dashboard do treinador:
 
-- Dashboard exibirá filtros rápidos por status: sem anamnese, sem série ativa, treino vencido, clientes inativos.
+- Dashboard exibirá filtros rápidos por status: sem anamnese, sem série ativa,
+  treino vencido, clientes inativos.
 
 3. Bloqueio de edição de série em andamento:
 
-- Séries com data de início já passada não poderão ser editadas. Treinador poderá duplicar uma série existente para gerar uma nova versão.
+- Séries com data de início já passada não poderão ser editadas. Treinador
+  poderá duplicar uma série existente para gerar uma nova versão.
 
 4. Feedback do cliente pós-treino:
 
-- Após concluir o treino, o cliente poderá avaliar (leve, ideal, pesado) e adicionar comentário textual opcional.
+- Após concluir o treino, o cliente poderá avaliar (leve, ideal, pesado) e
+  adicionar comentário textual opcional.
 
 5. Dias de treino configuráveis livremente:
 
-- Série pode conter treinos em qualquer combinação de dias (ex: Seg, Qua, Sex), sem necessidade de preencher todos os dias.
+- Série pode conter treinos em qualquer combinação de dias (ex: Seg, Qua, Sex),
+  sem necessidade de preencher todos os dias.
 
 6. Substituição de exercício com sugestão automatizada:
 
-- Ao substituir um exercício, o sistema mostrará apenas sugestões de exercícios com mesmo grupo/subgrupo muscular, equipamento e categoria compatível. Isso evita erro por parte do cliente.
+- Ao substituir um exercício, o sistema mostrará apenas sugestões de exercícios
+  com mesmo grupo/subgrupo muscular, equipamento e categoria compatível. Isso
+  evita erro por parte do cliente.
 
 7. Regras de integridade e proteção de dados:
 
@@ -234,10 +258,16 @@ Objetivo:
 
 16. Reutilização de Componentes Customizados
 
-- Todo componente da biblioteca de UI (shadcn/ui ou React Native Paper) que for customizado visualmente ou funcionalmente deve ser abstraído em um componente reutilizável.
-- Esses componentes devem ser armazenados em uma pasta de **componentes globais** no projeto, tanto para o Web App quanto para o App Mobile.
-- Exemplo: se um botão do chat for estilizado com cores específicas, ícones ou comportamentos adicionais, ele deve ser salvo como `CustomChatButton` (ou similar) e reutilizado onde for necessário.
-- Isso garante consistência visual, redução de retrabalho e facilita a manutenção.
+- Todo componente da biblioteca de UI (shadcn/ui ou React Native Paper) que for
+  customizado visualmente ou funcionalmente deve ser abstraído em um componente
+  reutilizável.
+- Esses componentes devem ser armazenados em uma pasta de **componentes
+  globais** no projeto, tanto para o Web App quanto para o App Mobile.
+- Exemplo: se um botão do chat for estilizado com cores específicas, ícones ou
+  comportamentos adicionais, ele deve ser salvo como `CustomChatButton` (ou
+  similar) e reutilizado onde for necessário.
+- Isso garante consistência visual, redução de retrabalho e facilita a
+  manutenção.
 
 17. Dados de Cadastro e Personalização
 
@@ -246,7 +276,8 @@ A. Dados do treinador no cadastro:
 - Nome completo (obrigatório)
 - E-mail (obrigatório)
 - Senha ou login social (Google, Facebook etc. via Supabase)
-- Avatar (opcional): pode ser carregado do login social, se disponível, ou atualizado manualmente a qualquer momento
+- Avatar (opcional): pode ser carregado do login social, se disponível, ou
+  atualizado manualmente a qualquer momento
 - Foto e nome aparecem na interface do cliente e nas mensagens
 
 B. Dados do cliente no cadastro (pelo treinador):
@@ -255,20 +286,25 @@ B. Dados do cliente no cadastro (pelo treinador):
 - E-mail (obrigatório)
 - Idade (opcional, mas recomendado)
 - Localização (cidade e país - opcional)
-- Timezone (detecção automática via sistema operacional, usada para exibir datas e horários de treino corretamente tanto para treinador quanto cliente)
+- Timezone (detecção automática via sistema operacional, usada para exibir datas
+  e horários de treino corretamente tanto para treinador quanto cliente)
 
 C. Personalização e edição:
 
-- Treinador e cliente podem editar nome, avatar e outras informações no painel de gerenciamento de conta
-- O sistema deve armazenar e utilizar corretamente o timezone de cada usuário para coordenar exibição de datas e treinos conforme sua região
+- Treinador e cliente podem editar nome, avatar e outras informações no painel
+  de gerenciamento de conta
+- O sistema deve armazenar e utilizar corretamente o timezone de cada usuário
+  para coordenar exibição de datas e treinos conforme sua região
 
 18. Modelos de Anamnese
 
 A. Modelo Padrão:
 
-- O sistema oferece um modelo padrão de anamnese com perguntas baseadas nas mais usadas em academias e apps de treino.
+- O sistema oferece um modelo padrão de anamnese com perguntas baseadas nas mais
+  usadas em academias e apps de treino.
 - Exemplo de perguntas incluídas:
-- Qual seu objetivo principal? (emagrecimento, hipertrofia, condicionamento, etc.)
+- Qual seu objetivo principal? (emagrecimento, hipertrofia, condicionamento,
+  etc.)
 - Já teve lesões ou cirurgias? (sim/não + descrição)
 - Qual sua experiência com musculação? (iniciante, intermediário, avançado)
 - Possui alguma limitação física?
@@ -283,13 +319,16 @@ B. Modelos Customizados:
 
 C. Seleção de Modelo por Cliente:
 
-- Ao cadastrar ou editar um cliente, o treinador pode escolher qual modelo de anamnese aplicar (padrão ou customizado).
+- Ao cadastrar ou editar um cliente, o treinador pode escolher qual modelo de
+  anamnese aplicar (padrão ou customizado).
 - O treinador também pode atualizar o modelo vinculado a um cliente.
 
 D. Reenvio de Anamnese:
 
-- O treinador pode solicitar que o cliente responda novamente a anamnese a qualquer momento.
-- Essa ação reinicia o fluxo da anamnese para o cliente, que verá a nova versão ao acessar o app.
+- O treinador pode solicitar que o cliente responda novamente a anamnese a
+  qualquer momento.
+- Essa ação reinicia o fluxo da anamnese para o cliente, que verá a nova versão
+  ao acessar o app.
 
 ## 📎 Anexo I – Perguntas sugeridas para Anamnese (com opções selecionáveis)
 
@@ -321,7 +360,8 @@ D. Reenvio de Anamnese:
 - ( ) 4x
 - ( ) 5x ou mais
 
-5. Qual(is) grupo(s) muscular(es) você gostaria de dar mais ênfase? (Escolha até 3)
+5. Qual(is) grupo(s) muscular(es) você gostaria de dar mais ênfase? (Escolha
+   até 3)
 
 - ( ) Peitoral
 - ( ) Costas
@@ -332,7 +372,8 @@ D. Reenvio de Anamnese:
 - ( ) Ombros
 - ( ) Abdômen
 
-6. Você já sofreu alguma lesão ou possui alguma limitação física? Se sim, indique a área afetada.
+6. Você já sofreu alguma lesão ou possui alguma limitação física? Se sim,
+   indique a área afetada.
 
 - ( ) Coluna
 - ( ) Ombro
@@ -342,7 +383,8 @@ D. Reenvio de Anamnese:
 - ( ) Quadril
 - ( ) Não possuo lesões ou limitações
 
-7. Você possui alguma condição médica diagnosticada que o treinador precisa saber?
+7. Você possui alguma condição médica diagnosticada que o treinador precisa
+   saber?
 
 - ( ) Hipertensão
 - ( ) Diabetes
@@ -364,7 +406,8 @@ D. Reenvio de Anamnese:
 - ( ) Espaço com halteres e acessórios
 - ( ) Apenas peso corporal (em casa/parques)
 
-10. Está disposto(a) a seguir treinos com foco em mobilidade e/ou reabilitação complementar?
+10. Está disposto(a) a seguir treinos com foco em mobilidade e/ou reabilitação
+    complementar?
 
 - ( ) Sim
 - ( ) Não

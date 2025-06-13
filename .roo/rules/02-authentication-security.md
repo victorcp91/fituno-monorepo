@@ -1,18 +1,21 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Authentication and Security Best Practices
 
 ## Authentication Rules
 
 1. **Supabase Auth Integration**
+
    - All authentication MUST be handled through Supabase Auth
    - Support both email/password and social login (Google, Facebook)
    - Email verification MUST be enforced before access
 
 2. **Token Management**
+
    - Web (Trainer App):
      - JWT tokens MUST be stored in httpOnly cookies
      - Session management through Supabase Auth
@@ -29,12 +32,14 @@ alwaysApply: false
 ## Security Rules
 
 1. **Data Access**
+
    - Use Row Level Security (RLS) in Supabase
    - Trainers can ONLY access their own clients' data
    - Clients can ONLY access their own data
    - Implement proper role-based access control (RBAC)
 
 2. **API Security**
+
    - All API routes MUST be protected with authentication
    - Implement rate limiting for API endpoints
    - Validate all input data with Zod schemas
@@ -49,6 +54,7 @@ alwaysApply: false
 ## Privacy Rules
 
 1. **User Data**
+
    - Encrypt sensitive user data
    - Implement proper data deletion procedures
    - Follow GDPR/LGPD compliance guidelines
@@ -63,6 +69,7 @@ alwaysApply: false
 ## Error Handling
 
 1. **Authentication Errors**
+
    - Provide clear error messages for auth failures
    - Implement proper error boundaries
    - Log authentication errors securely

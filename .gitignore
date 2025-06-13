@@ -115,4 +115,7 @@ node_modules/
 .DS_Store
 # Task files
 tasks.json
-tasks/ 
+tasks/
+
+# TypeScript build cache files (project-wide)
+*.tsbuildinfo 

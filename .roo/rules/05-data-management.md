@@ -1,13 +1,15 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Data Management and State Handling
 
 ## Supabase Integration
 
 1. **Database Structure**
+
    - Follow proper schema design
    - Implement RLS policies
    - Use appropriate indexes
@@ -22,6 +24,7 @@ alwaysApply: false
 ## React Query Usage
 
 1. **Cache Configuration**
+
    - Configure proper staleTime:
      - Exercises: 24h
      - Workouts: 5min
@@ -39,6 +42,7 @@ alwaysApply: false
 ## State Management
 
 1. **Global State**
+
    - Use Zustand for global state
    - Keep state minimal
    - Document state structure
@@ -53,6 +57,7 @@ alwaysApply: false
 ## Data Validation
 
 1. **Schema Validation**
+
    - Use Zod for all data validation
    - Validate at boundaries
    - Handle validation errors
@@ -67,6 +72,7 @@ alwaysApply: false
 ## Error Handling
 
 1. **API Errors**
+
    - Handle network errors
    - Show appropriate messages
    - Implement retry logic
@@ -81,6 +87,7 @@ alwaysApply: false
 ## Performance
 
 1. **Data Loading**
+
    - Implement proper loading states
    - Use pagination/infinite scroll
    - Handle large datasets
@@ -95,6 +102,7 @@ alwaysApply: false
 ## Data Types
 
 1. **Type Definitions**
+
    - Use proper TypeScript types
    - Share types across apps
    - Document type usage

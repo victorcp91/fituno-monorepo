@@ -1,14 +1,19 @@
 {
-  "name": "fituno",
+  "name": "@fituno/client-app",
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
+    "dev": "expo start",
+    "build": "expo export",
+    "clean": "rm -rf .expo && rm -rf dist && rm -rf node_modules/.cache",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "type-check": "tsc --noEmit",
+    "test": "jest"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

@@ -1,21 +1,23 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Chat and Communication Features Rules
 
 ## Message Types
 
 1. **Core Message Types**
+
    ```typescript
    type MessageType =
-     | "text"           // Mensagem de texto
-     | "image"          // Imagem
-     | "workout_share"  // Compartilhamento de treino
-     | "progress_share" // Compartilhamento de progresso
-     | "system"         // Mensagem do sistema
-     | "quick_reply"    // Resposta rápida
+     | 'text' // Mensagem de texto
+     | 'image' // Imagem
+     | 'workout_share' // Compartilhamento de treino
+     | 'progress_share' // Compartilhamento de progresso
+     | 'system' // Mensagem do sistema
+     | 'quick_reply'; // Resposta rápida
    ```
 
 2. **Message Properties**
@@ -28,6 +30,7 @@ alwaysApply: false
 ## Real-time Implementation
 
 1. **Supabase Realtime**
+
    - Channel management
    - Presence features
    - Typing indicators
@@ -42,6 +45,7 @@ alwaysApply: false
 ## UI/UX Guidelines
 
 1. **Chat Interface**
+
    - Message grouping
    - Time indicators
    - Status indicators
@@ -56,6 +60,7 @@ alwaysApply: false
 ## Notifications
 
 1. **Push Notifications**
+
    - New message alerts
    - Mention notifications
    - Silent notifications
@@ -70,6 +75,7 @@ alwaysApply: false
 ## Security
 
 1. **Message Security**
+
    - End-to-end encryption
    - Media encryption
    - Access control
@@ -84,6 +90,7 @@ alwaysApply: false
 ## Performance
 
 1. **Message Loading**
+
    - Pagination
    - Lazy loading
    - Cache strategy
@@ -98,6 +105,7 @@ alwaysApply: false
 ## Business Rules
 
 1. **Chat Access**
+
    - Free plan limits
    - Pro plan features
    - Group chat rules
@@ -112,6 +120,7 @@ alwaysApply: false
 ## Integration
 
 1. **Workout Integration**
+
    - Share workouts
    - Progress updates
    - Exercise demos

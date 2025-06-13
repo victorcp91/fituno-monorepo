@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -19,9 +20,23 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@fituno/types": ["../../packages/types/src"],
+      "@fituno/types/*": ["../../packages/types/src/*"],
+      "@fituno/utils": ["../../packages/utils/src"],
+      "@fituno/utils/*": ["../../packages/utils/src/*"],
+      "@fituno/services": ["../../packages/services/src"],
+      "@fituno/services/*": ["../../packages/services/src/*"],
+      "@fituno/constants": ["../../packages/constants/src"],
+      "@fituno/constants/*": ["../../packages/constants/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "references": [
+    { "path": "../../packages/types" },
+    { "path": "../../packages/utils" },
+    { "path": "../../packages/services" },
+    { "path": "../../packages/constants" }
+  ]
 }

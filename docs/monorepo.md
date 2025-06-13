@@ -1,6 +1,8 @@
 # 📁 Estrutura de Pastas do Monorepo - Fituno
 
-Este documento descreve a estrutura de diretórios do monorepo `fituno`, que abriga o aplicativo de treino físico composto por dois apps (cliente e treinador), além de pacotes compartilháveis.
+Este documento descreve a estrutura de diretórios do monorepo `fituno`, que
+abriga o aplicativo de treino físico composto por dois apps (cliente e
+treinador), além de pacotes compartilháveis.
 
 ---
 
@@ -70,8 +72,10 @@ apps/trainer/
 
 ## Pacotes Compartilhados - Detalhes
 
-- `packages/types`: será a principal fonte de verdade para as tipagens globais compartilhadas.
-- `packages/utils`: funções puras, como formatadores, normalizadores, validadores.
+- `packages/types`: será a principal fonte de verdade para as tipagens globais
+  compartilhadas.
+- `packages/utils`: funções puras, como formatadores, normalizadores,
+  validadores.
 - `packages/services`: conexão e clientes configurados para serviços externos.
 - `packages/constants`: constantes globais e configurações compartilhadas.
 
@@ -91,7 +95,8 @@ apps/trainer/
 
 ### 3. Constantes (packages/constants)
 
-- Exemplo: grupos musculares disponíveis, tempos padrão de descanso, lista de idiomas suportados, nomes de planos etc.
+- Exemplo: grupos musculares disponíveis, tempos padrão de descanso, lista de
+  idiomas suportados, nomes de planos etc.
 
 ### 4. Serviços (packages/services)
 
@@ -105,13 +110,14 @@ apps/trainer/
 
 ## 🔄 Compartilhamento entre Apps
 
-Utilize `Yarn Workspaces` e `TypeScript path aliases` para importar pacotes compartilhados entre os apps.
+Utilize `Yarn Workspaces` e `TypeScript path aliases` para importar pacotes
+compartilhados entre os apps.
 
 Exemplo de importação:
 
 ```ts
-import { WorkoutPlan } from "@fituno/types";
-import { formatCurrency } from "@fituno/utils";
+import { WorkoutPlan } from '@fituno/types';
+import { formatCurrency } from '@fituno/utils';
 ```
 
 ---
@@ -126,7 +132,8 @@ import { formatCurrency } from "@fituno/utils";
 
 ### `client-app/` (Mobile - Expo)
 
-- Interface para execução de treinos, registro de progresso, comunicação com treinador
+- Interface para execução de treinos, registro de progresso, comunicação com
+  treinador
 - Suporte a modo offline + cache de treinos
 - UI Components específicos para mobile usando React Native Paper
 - Utiliza: React Native Paper, Expo FileSystem, Notifications
@@ -153,7 +160,8 @@ import { formatCurrency } from "@fituno/utils";
 
 - Evite duplicar código entre os apps
 - Mantenha componentes UI específicos em cada app
-- Utilize hooks globais compartilháveis (`useAuth`, `useTheme`) em `packages/utils/hooks`
+- Utilize hooks globais compartilháveis (`useAuth`, `useTheme`) em
+  `packages/utils/hooks`
 
 ---
 
@@ -172,9 +180,11 @@ import { formatCurrency } from "@fituno/utils";
 
 - **Organização por domínio:**
 
-  - Dentro de `features/`, adotar estrutura por domínio funcional (ex: `chat/`, `workout/`, `client-management/`).
+  - Dentro de `features/`, adotar estrutura por domínio funcional (ex: `chat/`,
+    `workout/`, `client-management/`).
 
 - **Versionamento:**
-  - Cada pacote no `packages/` deve ter sua própria `package.json` com controle de versão independente (opcional).
+  - Cada pacote no `packages/` deve ter sua própria `package.json` com controle
+    de versão independente (opcional).
 
 ---

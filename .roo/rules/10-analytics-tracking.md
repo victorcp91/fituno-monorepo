@@ -1,21 +1,23 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Analytics and Tracking Implementation Rules
 
 ## Event Tracking Structure
 
 1. **Core Events**
+
    ```typescript
    type CoreEventCategory =
-     | "workout"      // Eventos relacionados a treinos
-     | "exercise"     // Eventos de exercícios específicos
-     | "subscription" // Eventos de assinatura
-     | "user"         // Eventos de usuário
-     | "trainer"      // Eventos de personal
-     | "chat"         // Eventos de comunicação
+     | 'workout' // Eventos relacionados a treinos
+     | 'exercise' // Eventos de exercícios específicos
+     | 'subscription' // Eventos de assinatura
+     | 'user' // Eventos de usuário
+     | 'trainer' // Eventos de personal
+     | 'chat'; // Eventos de comunicação
    ```
 
 2. **Event Properties**
@@ -28,6 +30,7 @@ alwaysApply: false
 ## Implementation Guidelines
 
 1. **Web Analytics**
+
    - Google Analytics 4
    - PostHog para product analytics
    - Hotjar para heatmaps
@@ -42,6 +45,7 @@ alwaysApply: false
 ## User Journey Tracking
 
 1. **Onboarding Flow**
+
    - Sign up steps
    - Profile completion
    - Initial assessment
@@ -56,6 +60,7 @@ alwaysApply: false
 ## Performance Metrics
 
 1. **App Performance**
+
    - Load times
    - API response times
    - Animation performance
@@ -70,6 +75,7 @@ alwaysApply: false
 ## Privacy Compliance
 
 1. **Data Collection**
+
    - LGPD compliance
    - GDPR compliance
    - Data anonymization
@@ -84,6 +90,7 @@ alwaysApply: false
 ## Business Analytics
 
 1. **KPI Tracking**
+
    - Customer acquisition
    - Retention rates
    - Revenue metrics
@@ -98,6 +105,7 @@ alwaysApply: false
 ## Implementation Rules
 
 1. **Event Naming**
+
    - Use snake_case
    - Clear descriptive names
    - Consistent categorization
