@@ -7,13 +7,14 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
     "test": "jest"
   },
   "dependencies": {
     "@fituno/types": "^0.1.0",
-    "@supabase/supabase-js": "^2.0.0",
-    "@stripe/stripe-js": "^2.0.0",
-    "firebase": "^10.0.0"
+    "@fituno/constants": "^0.1.0",
+    "@supabase/supabase-js": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

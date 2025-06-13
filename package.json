@@ -6,15 +6,41 @@
     "packages/*"
   ],
   "scripts": {
+    "dev": "concurrently \"yarn dev:packages\" \"yarn dev:trainer\"",
     "dev:trainer": "yarn workspace @fituno/trainer-app dev",
     "dev:client": "yarn workspace @fituno/client-app start",
+    "dev:packages": "concurrently \"yarn workspace @fituno/utils dev\" \"yarn workspace @fituno/constants dev\" \"yarn workspace @fituno/services dev\" \"yarn workspace @fituno/types dev\"",
+    "build": "yarn build:packages && yarn build:apps",
+    "build:packages": "yarn workspace @fituno/types build && yarn workspace @fituno/constants build && yarn workspace @fituno/utils build && yarn workspace @fituno/services build",
+    "build:apps": "yarn build:trainer && yarn build:client",
     "build:trainer": "yarn workspace @fituno/trainer-app build",
     "build:client": "yarn workspace @fituno/client-app build",
-    "lint": "yarn workspaces run lint",
-    "test": "yarn workspaces run test"
+    "clean": "yarn workspaces run clean && rm -rf node_modules",
+    "clean:packages": "yarn workspace @fituno/types clean && yarn workspace @fituno/constants clean && yarn workspace @fituno/utils clean && yarn workspace @fituno/services clean",
+    "clean:apps": "yarn workspace @fituno/trainer-app clean && yarn workspace @fituno/client-app clean",
+    "reinstall": "yarn clean && yarn install",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint:check": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "yarn build:packages && yarn workspaces run type-check",
+    "type-check:packages": "yarn workspace @fituno/types type-check && yarn workspace @fituno/constants type-check && yarn workspace @fituno/utils type-check && yarn workspace @fituno/services type-check",
+    "type-check:apps": "yarn workspace @fituno/trainer-app type-check && yarn workspace @fituno/client-app type-check",
+    "test": "yarn workspaces run test",
+    "test:packages": "yarn workspace @fituno/types test && yarn workspace @fituno/constants test && yarn workspace @fituno/utils test && yarn workspace @fituno/services test",
+    "test:apps": "yarn workspace @fituno/trainer-app test && yarn workspace @fituno/client-app test"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "eslint": "^9.0.0",
+    "@eslint/eslintrc": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-native": "^4.1.0",
+    "prettier": "^3.0.0",
+    "concurrently": "^8.0.0"
   }
 }

@@ -1,13 +1,15 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Offline Support and Data Synchronization
 
 ## Offline Data Storage
 
 1. **Required Offline Data**
+
    - Current week's workouts
    - Exercise animations for current workouts
    - User profile and settings
@@ -22,6 +24,7 @@ alwaysApply: false
 ## Synchronization Rules
 
 1. **Data Sync Strategy**
+
    - Mark offline changes with `synced: false` flag
    - Include local timestamp with offline changes
    - Implement exponential backoff for sync retries
@@ -36,6 +39,7 @@ alwaysApply: false
 ## Offline Features
 
 1. **Workout Execution**
+
    - Allow complete workout execution offline
    - Store progress locally until sync possible
    - Show clear offline mode indicators
@@ -50,6 +54,7 @@ alwaysApply: false
 ## Error Handling
 
 1. **Sync Errors**
+
    - Show clear error messages
    - Implement automatic retry logic
    - Allow manual retry of failed syncs
@@ -64,6 +69,7 @@ alwaysApply: false
 ## Cache Management
 
 1. **Cache Rules**
+
    - Clear obsolete data after 7 days
    - Clear cache on trainer change
    - Clear cache on logout
@@ -78,6 +84,7 @@ alwaysApply: false
 ## Performance
 
 1. **Optimization Rules**
+
    - Minimize data storage size
    - Implement efficient queries
    - Use appropriate indexes

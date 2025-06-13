@@ -2,7 +2,10 @@
 
 ## 1. Visão Geral
 
-Este documento detalha a modelagem de dados do Fituno, identificando todas as entidades necessárias para o funcionamento do sistema e seus relacionamentos. A estrutura foi projetada para suportar tanto o app mobile (cliente) quanto o web app (treinador).
+Este documento detalha a modelagem de dados do Fituno, identificando todas as
+entidades necessárias para o funcionamento do sistema e seus relacionamentos. A
+estrutura foi projetada para suportar tanto o app mobile (cliente) quanto o web
+app (treinador).
 
 ## 2. Entidades Principais
 

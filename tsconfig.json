@@ -1,25 +1,53 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "commonjs",
-    "lib": ["dom", "es2017"],
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@fituno/*": ["packages/*/src"]
+      "@fituno/types": ["packages/types/src"],
+      "@fituno/types/*": ["packages/types/src/*"],
+      "@fituno/utils": ["packages/utils/src"],
+      "@fituno/utils/*": ["packages/utils/src/*"],
+      "@fituno/services": ["packages/services/src"],
+      "@fituno/services/*": ["packages/services/src/*"],
+      "@fituno/constants": ["packages/constants/src"],
+      "@fituno/constants/*": ["packages/constants/src/*"]
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "packages/*/src/**/*",
+    "apps/*/src/**/*",
+    "apps/*/**/*.ts",
+    "apps/*/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "build",
+    ".next",
+    "coverage",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

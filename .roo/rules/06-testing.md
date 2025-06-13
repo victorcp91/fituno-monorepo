@@ -1,13 +1,15 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Testing Standards and Practices
 
 ## Test Coverage Requirements
 
 1. **Coverage Targets**
+
    - Minimum 70% code coverage
    - Critical paths require 90% coverage
    - Full E2E coverage for auth flows
@@ -22,12 +24,14 @@ alwaysApply: false
 ## Test Types
 
 1. **Unit Tests**
+
    - Test individual components
    - Test utility functions
    - Test hooks in isolation
    - Mock external dependencies
 
 2. **Integration Tests**
+
    - Test feature workflows
    - Test API integration
    - Test state management
@@ -42,12 +46,14 @@ alwaysApply: false
 ## Testing Rules
 
 1. **Component Testing**
+
    - Test all props combinations
    - Test error states
    - Test loading states
    - Test user interactions
 
 2. **API Testing**
+
    - Mock Supabase responses
    - Test error handling
    - Test offline behavior
@@ -62,6 +68,7 @@ alwaysApply: false
 ## Test Utilities
 
 1. **Mock Data**
+
    - Use factories for test data
    - Maintain mock consistency
    - Document mock usage
@@ -76,6 +83,7 @@ alwaysApply: false
 ## CI Integration
 
 1. **Continuous Testing**
+
    - Run tests on every PR
    - Block merge on test failure
    - Report coverage changes

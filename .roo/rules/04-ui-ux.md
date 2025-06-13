@@ -1,13 +1,15 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # UI/UX Standards and Best Practices
 
 ## Component Libraries
 
 1. **Web (Trainer App)**
+
    - Use shadcn/ui as primary component library
    - Follow Tailwind CSS conventions
    - Maintain consistent spacing and sizing
@@ -22,6 +24,7 @@ alwaysApply: false
 ## Design System
 
 1. **Colors**
+
    - Primary Blue: #2b85ff
    - Success Green: #11b683
    - Warning Yellow: #dfb725
@@ -37,6 +40,7 @@ alwaysApply: false
 ## Loading States
 
 1. **Skeleton Loading**
+
    - Use skeleton loaders for content
    - Implement loading boundaries
    - Show loading states for async actions
@@ -51,6 +55,7 @@ alwaysApply: false
 ## Error States
 
 1. **Error Handling**
+
    - Show clear error messages
    - Provide recovery actions
    - Implement error boundaries
@@ -65,6 +70,7 @@ alwaysApply: false
 ## Responsive Design
 
 1. **Web Responsiveness**
+
    - Support all screen sizes
    - Use fluid typography
    - Implement proper breakpoints
@@ -79,6 +85,7 @@ alwaysApply: false
 ## Accessibility
 
 1. **General Guidelines**
+
    - Proper ARIA labels
    - Keyboard navigation support
    - Screen reader compatibility
@@ -93,6 +100,7 @@ alwaysApply: false
 ## Internationalization
 
 1. **Text Handling**
+
    - Use i18n for all text
    - Support RTL languages
    - Handle dynamic text length
@@ -107,6 +115,7 @@ alwaysApply: false
 ## Performance
 
 1. **Optimization**
+
    - Implement virtualized lists
    - Lazy load components
    - Optimize images and animations

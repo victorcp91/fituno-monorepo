@@ -6,7 +6,10 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "test": "echo \"No tests specified for @fituno/constants\""
   },
   "dependencies": {
     "@fituno/types": "^0.1.0"

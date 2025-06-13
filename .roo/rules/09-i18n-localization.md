@@ -1,18 +1,20 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Internationalization and Localization Rules
 
 ## Language Support
 
 1. **Supported Languages**
+
    ```typescript
    type SupportedLanguage =
-     | "pt-BR" // Default
-     | "en-US"
-     | "es-ES"
+     | 'pt-BR' // Default
+     | 'en-US'
+     | 'es-ES';
    ```
 
 2. **Translation Structure**
@@ -24,6 +26,7 @@ alwaysApply: false
 ## Implementation
 
 1. **Web App (Next.js)**
+
    - Use `next-i18next`
    - Server-side translation
    - Language detection
@@ -38,6 +41,7 @@ alwaysApply: false
 ## Content Types
 
 1. **Text Content**
+
    - UI elements
    - Error messages
    - Notifications
@@ -52,6 +56,7 @@ alwaysApply: false
 ## Date and Number Formatting
 
 1. **Date Formats**
+
    - Use proper locale formats
    - Handle timezones
    - Format relative times
@@ -66,6 +71,7 @@ alwaysApply: false
 ## UI Considerations
 
 1. **Layout Adaptation**
+
    - Handle text expansion
    - Support RTL languages
    - Maintain UI consistency
@@ -80,6 +86,7 @@ alwaysApply: false
 ## Testing
 
 1. **Translation Testing**
+
    - Verify all strings
    - Check missing keys
    - Validate formatting
@@ -94,6 +101,7 @@ alwaysApply: false
 ## Performance
 
 1. **Loading Strategy**
+
    - Lazy load translations
    - Cache language data
    - Optimize bundle size

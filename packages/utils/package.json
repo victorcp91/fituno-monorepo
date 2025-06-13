@@ -7,11 +7,15 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
     "test": "jest"
   },
   "dependencies": {
     "@fituno/types": "^0.1.0",
-    "date-fns": "^2.30.0"
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0",
+    "tailwind-merge": "^2.0.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

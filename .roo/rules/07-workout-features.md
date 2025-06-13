@@ -1,22 +1,24 @@
 ---
-description: 
-globs: 
+description:
+globs:
 alwaysApply: false
 ---
+
 # Workout Feature Implementation Rules
 
 ## Exercise Types Implementation
 
 1. **Exercise Categories**
+
    ```typescript
    type ExerciseType =
-     | "strength"      // Resistido
-     | "isometric"     // Isométrico
-     | "plyometric"    // Pliométrico/HIIT
-     | "cardio_steady" // Cardio contínuo
-     | "cardio_hiit"   // Cardio intervalado
-     | "mobility"      // Mobilidade
-     | "circuit"       // Circuito composto
+     | 'strength' // Resistido
+     | 'isometric' // Isométrico
+     | 'plyometric' // Pliométrico/HIIT
+     | 'cardio_steady' // Cardio contínuo
+     | 'cardio_hiit' // Cardio intervalado
+     | 'mobility' // Mobilidade
+     | 'circuit'; // Circuito composto
    ```
 
 2. **Required Parameters**
@@ -31,6 +33,7 @@ alwaysApply: false
 ## Workout Builder
 
 1. **UI Components**
+
    - Use drag-and-drop interface
    - Implement exercise drawer
    - Show parameter modal
@@ -45,6 +48,7 @@ alwaysApply: false
 ## Exercise Execution
 
 1. **Progress Tracking**
+
    - Record sets completed
    - Track weights used
    - Monitor rest periods
@@ -59,6 +63,7 @@ alwaysApply: false
 ## Animation Integration
 
 1. **Lottie Files**
+
    - Load from Supabase Storage
    - Cache for offline use
    - Show loading states
@@ -73,6 +78,7 @@ alwaysApply: false
 ## Workout Templates
 
 1. **Template Structure**
+
    - Support weekly templates
    - Allow day customization
    - Handle equipment substitution
@@ -87,6 +93,7 @@ alwaysApply: false
 ## Progress Analytics
 
 1. **Data Collection**
+
    - Track all workout metrics
    - Record substitutions
    - Log completion times
