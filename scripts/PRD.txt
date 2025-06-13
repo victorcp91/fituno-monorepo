@@ -1,0 +1,114 @@
+# Visão Geral
+
+Fituno é uma plataforma de treino físico em formato monorepo, composta por:
+- **Backend:** API Next.js integrada ao Supabase (Auth, DB, Storage e Realtime).
+- **App Treinador (Web):** Interface para criação, gerenciamento e acompanhamento de treinos por treinadores.
+- **App Cliente (Mobile):** Aplicativo Expo/React Native para execução de treinos e interação do aluno.
+
+O MVP foca inicialmente na implementação do backend e do app de treinador, garantindo o fluxo principal de criação de treinos, gestão de clientes e cobrança via Stripe; em seguida, contempla funcionalidades básicas do app cliente.
+
+# Funcionalidades Principais
+
+## 1. Backend
+- Rotas API Next.js (pasta `pages/api`) para todas as operações.
+- Integração com Supabase:
+  - Auth: registro, login, recuperação de senha, verificação de e-mail.
+  - Banco: tabelas de usuários, perfis, treinos, logs, mensagens, anamnese, planos.
+  - Storage: hospedagem de animações Lottie e mídias de progresso.
+  - Realtime e RLS: políticas de acesso por perfil e triggers (limite de clientes, atualização de anamnese).
+
+## 2. App Treinador (Web)
+- **Dashboard:** alertas de clientes sem treinos, séries expiradas, treinos do dia.
+- **Gestão de Clientes:** convite por e-mail, lista (ativos/inativos), inativação.
+- **Builder de Treinos:** board semanal drag-and-drop, seleção filtrada de exercícios, parâmetros dinâmicos, supersets/circuitos.
+- **Validações em Tempo Real:** volume semanal, disponibilidade de equipamento.
+- **Chat 1:1:** histórico, pooling + push notifications, menção a exercícios.
+- **Planos e Cobrança:** integração Stripe, limite de 2 clientes no plano free, bloqueio de ações com banner de upgrade.
+
+## 3. App Cliente (Mobile)
+- **Onboarding & Anamnese:** resposta de questionário antes do primeiro treino.
+- **Execução de Treino:** marcação de sets, edição de carga, cronômetro de descanso.
+- **Histórico & Progresso:** gráficos de evolução, melhores marcas.
+- **Chat com Treinador:** FCM, retry offline.
+- **Suporte Offline:** cache de dados essenciais, campo `synced` para logs, sync com retry.
+
+# Experiência do Usuário
+
+- **Persona Treinador:** fluxo de cadastro/login → dashboard → gestão de clientes → criação de séries → monitoramento.
+- **Persona Cliente:** fluxo de convite/login → anamnese → screen de treino do dia → execução de exercícios → histórico.
+- **Principais Caminhos:** autenticação segura, navegação intuitiva no builder, feedback em tempo real, comunicação direta via chat.
+
+# Arquitetura Técnica
+
+## Monorepo
+- Yarn Workspaces: `apps/` e `packages/`.
+- Compartilhamento de tipos e utilitários em `@fituno/types`, `@fituno/utils`.
+
+## Backend (Next.js + Supabase)
+- **Next.js API Routes:** handlers RESTful e server-side.
+- **Supabase Auth:** middleware Next.js para sessão e proteção de rotas.
+- **Banco Supabase:** modelagem em SQL (ver `data_modeling.md`), triggers PL/pgSQL, RLS.
+- **Storage:** animações Lottie e uploads de fotos via Supabase Storage.
+- **Realtime:** notificações de chat e status de treino em tempo real.
+
+## Front-end Treinador
+- **Next.js + Shadcn/UI + Tailwind CSS.**
+- **React Query:** cache, revalidação e mutations.
+- **Formulários Dinâmicos:** Zod para validações.
+
+## Front-end Cliente
+- **Expo + React Native Paper.**
+- **React Query & Virtualização (FlatList).**
+- **FCM + Push Notifications.**
+- **Cache e Sincronização Offline:** SQLite ou AsyncStorage.
+
+# Roteiro de Desenvolvimento
+
+1. **Fase 1 – Infraestrutura e Autenticação**
+   - Configurar monorepo e CI.
+   - Provisionar Supabase (Auth, DB, Storage).
+   - Implementar rotas de cadastro, login, recuperação de senha.
+
+2. **Fase 2 – Core Backend & RLS**
+   - Criar migrações das tabelas principais.
+   - Definir políticas RLS e triggers (anamnese, limite de clientes).
+   - Endpoints de perfis, clientes, anamnese.
+
+3. **Fase 3 – App Treinador (Web)**
+   - Dashboard e gestão de clientes.
+   - Builder de treinos e validações.
+   - Chat 1:1 e integrações de notificações.
+   - Integração Stripe para planos.
+
+4. **Fase 4 – App Cliente (Mobile)**
+   - Onboarding e anamnese.
+   - Execução de treinos e logs.
+   - Histórico, progresso e chat.
+   - Suporte offline e sincronização.
+
+5. **Fase 5 – Testes e Qualidade**
+   - Cobertura mínima de 70% e2e.
+   - Otimizações de performance.
+   - Revisão de UX/UI e ajustes finais.
+
+# Cadeia de Dependências Lógica
+
+1. Autenticação e sessão (Supabase Auth).
+2. Modelagem de dados e migrações.
+3. Políticas RLS e triggers.
+4. Endpoints básicos (perfils, clientes, anamnese).
+5. Funcionalidades de treinador.
+6. Integração Stripe.
+7. Funcionalidades do cliente.
+
+# Riscos e Mitigações
+
+- **Integração Supabase RLS:** pode bloquear operações; criar ambiente de staging e testes automatizados.
+- **Sincronização Offline:** conflitos de dados; usar campo `synced`, exponential backoff.
+- **Performance em frontend:** listas longas; aplicar virtualização e React Query.
+- **Limites de plano:** falhas no trigger; cobrir com testes unitários.
+
+# Apêndice
+
+- Documentação técnica completa em `docs/arquitetura.md`, `docs/data_modeling.md`, `docs/monorepo.md`.
+- User Stories em `docs/User_Stories_e_Acceptance_Criteria.md`. 

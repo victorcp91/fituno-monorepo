@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "task-master-ai": {
+      "command": "npx",
+      "args": ["-y", "task-master-ai"],
+      "env": {
+        "ANTHROPIC_API_KEY": "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",
+        "MODEL": "claude-3-7-sonnet-20250219",
+        "MAX_TOKENS": 64000,
+        "TEMPERATURE": 0.2,
+        "DEFAULT_SUBTASKS": 5,
+        "DEFAULT_PRIORITY": "medium"
+      }
+    }
+  }
+}

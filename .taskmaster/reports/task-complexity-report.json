@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "generatedAt": "2025-06-13T20:16:48.967Z",
+    "tasksAnalyzed": 15,
+    "totalTasks": 15,
+    "analysisCount": 15,
+    "thresholdScore": 5,
+    "projectName": "Taskmaster",
+    "usedResearch": true
+  },
+  "complexityAnalysis": [
+    {
+      "taskId": 1,
+      "taskTitle": "Setup Monorepo Structure",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Break down the monorepo setup into individual steps for each workspace and configuration task",
+      "reasoning": "Moderate complexity due to multiple workspaces and configurations required"
+    },
+    {
+      "taskId": 2,
+      "taskTitle": "Supabase Integration and Authentication Setup",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Detail each authentication route implementation and the custom hook creation",
+      "reasoning": "Higher complexity due to multiple auth flows and integration with Supabase"
+    },
+    {
+      "taskId": 3,
+      "taskTitle": "Database Schema and Migrations",
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Break down the creation of each table, including constraints, indexes, and triggers",
+      "reasoning": "High complexity due to multiple interconnected tables and advanced database features"
+    },
+    {
+      "taskId": 4,
+      "taskTitle": "Implement Row Level Security (RLS) Policies",
+      "complexityScore": 7,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Detail the implementation of RLS policies for each table and user role",
+      "reasoning": "Moderate to high complexity due to the need for careful access control design"
+    },
+    {
+      "taskId": 5,
+      "taskTitle": "Implement Core API Endpoints",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the implementation of each API endpoint, including validation and error handling",
+      "reasoning": "Moderate to high complexity due to multiple endpoints and integration with Supabase"
+    },
+    {
+      "taskId": 6,
+      "taskTitle": "Develop Trainer Dashboard (Web)",
+      "complexityScore": 6,
+      "recommendedSubtasks": 7,
+      "expansionPrompt": "Detail the creation of each dashboard component and its integration with data sources",
+      "reasoning": "Moderate complexity due to multiple components and real-time updates"
+    },
+    {
+      "taskId": 7,
+      "taskTitle": "Implement Workout Builder",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Break down each feature of the workout builder, including drag-and-drop and validation logic",
+      "reasoning": "High complexity due to interactive features and real-time validations"
+    },
+    {
+      "taskId": 8,
+      "taskTitle": "Develop Chat System",
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Detail the implementation of each chat feature, including real-time updates and notifications",
+      "reasoning": "High complexity due to real-time functionality and integration with exercise mentions"
+    },
+    {
+      "taskId": 9,
+      "taskTitle": "Integrate Stripe for Payment Processing",
+      "complexityScore": 8,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the Stripe integration process, including webhook handling and subscription management",
+      "reasoning": "High complexity due to sensitive payment processing and various subscription scenarios"
+    },
+    {
+      "taskId": 10,
+      "taskTitle": "Implement Client Limit and Upgrade Banner",
+      "complexityScore": 5,
+      "recommendedSubtasks": 6,
+      "expansionPrompt": "Detail the implementation of client limit checks and the upgrade banner component",
+      "reasoning": "Moderate complexity, building on existing functionality with some new features"
+    },
+    {
+      "taskId": 11,
+      "taskTitle": "Develop Mobile App Onboarding and Anamnesis",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the creation of each onboarding screen and the anamnesis questionnaire flow",
+      "reasoning": "Moderate to high complexity due to multi-step forms and mobile-specific considerations"
+    },
+    {
+      "taskId": 12,
+      "taskTitle": "Implement Workout Execution in Mobile App",
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Detail the implementation of each workout execution feature, including offline support",
+      "reasoning": "High complexity due to interactive features and offline functionality requirements"
+    },
+    {
+      "taskId": 13,
+      "taskTitle": "Develop Progress Tracking and History",
+      "complexityScore": 7,
+      "recommendedSubtasks": 8,
+      "expansionPrompt": "Break down the implementation of each progress tracking feature and data visualization",
+      "reasoning": "Moderate to high complexity due to data processing and chart implementations"
+    },
+    {
+      "taskId": 14,
+      "taskTitle": "Implement Offline Support and Sync",
+      "complexityScore": 9,
+      "recommendedSubtasks": 10,
+      "expansionPrompt": "Detail the implementation of offline storage, sync mechanism, and conflict resolution",
+      "reasoning": "High complexity due to complex sync logic and potential edge cases"
+    },
+    {
+      "taskId": 15,
+      "taskTitle": "Implement End-to-End Testing and Performance Optimization",
+      "complexityScore": 8,
+      "recommendedSubtasks": 9,
+      "expansionPrompt": "Break down the setup of e2e testing for web and mobile, and each performance optimization task",
+      "reasoning": "High complexity due to the breadth of testing and optimization across the entire platform"
+    }
+  ]
+}
