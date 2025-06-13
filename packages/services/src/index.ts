@@ -27,10 +27,10 @@ export class ApiClient {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<{ data: T | null; error: string | null }> {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
 
+    try {
       const response = await fetch(`${this.baseURL}${endpoint}`, {
         ...options,
         signal: controller.signal,
@@ -49,6 +49,7 @@ export class ApiClient {
       const data = await response.json();
       return { data, error: null };
     } catch (error) {
+      clearTimeout(timeoutId);
       if (error instanceof Error) {
         return { data: null, error: error.message };
       }
@@ -63,7 +64,7 @@ export class ApiClient {
   async post<T>(endpoint: string, body?: any, headers?: Record<string, string>) {
     return this.request<T>(endpoint, {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
       headers,
     });
   }
@@ -71,7 +72,7 @@ export class ApiClient {
   async put<T>(endpoint: string, body?: any, headers?: Record<string, string>) {
     return this.request<T>(endpoint, {
       method: 'PUT',
-      body: JSON.stringify(body),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
       headers,
     });
   }
