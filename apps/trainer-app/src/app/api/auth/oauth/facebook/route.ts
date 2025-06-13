@@ -4,20 +4,19 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   try {
     // Initiate Facebook OAuth flow
-    const result = await AuthService.signInWithFacebook();
+    const { data, error } = await AuthService.signInWithFacebook();
 
-    if (result.error) {
+    if (error) {
       return NextResponse.json(
-        { error: result.error.message || 'Failed to initiate Facebook OAuth' },
+        { error: error.message || 'Failed to initiate Facebook OAuth' },
         { status: 400 }
       );
     }
 
-    // For OAuth flows, the result typically contains a redirect URL
-    // If successful, client should redirect to OAuth provider
+    // Return the OAuth URL for client-side redirect
     return NextResponse.json({
       success: true,
-      message: 'Facebook OAuth initiated. Redirecting to Facebook...',
+      url: (data as any).url || (data as any).provider?.url,
       provider: 'facebook',
     });
   } catch (error) {
