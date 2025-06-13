@@ -134,6 +134,41 @@ export class AuthService {
   private static rateLimitTracker = new Map<string, { attempts: number; lastAttempt: number }>();
 
   // ========================================
+  // UTILITY METHODS FOR URL CONSTRUCTION
+  // ========================================
+
+  private static getBaseUrl(): string {
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined' && window.location) {
+      return window.location.origin;
+    }
+
+    // Server-side fallback - check common environment variables
+    if (typeof process !== 'undefined' && process.env) {
+      // Next.js and Vercel
+      if (process.env.VERCEL_URL) {
+        return `https://${process.env.VERCEL_URL}`;
+      }
+
+      // Custom base URL environment variable
+      if (process.env.NEXT_PUBLIC_BASE_URL) {
+        return process.env.NEXT_PUBLIC_BASE_URL;
+      }
+
+      // Development fallback
+      if (process.env.NODE_ENV === 'development') {
+        return 'http://localhost:3000';
+      }
+    }
+
+    // Ultimate fallback - this should be replaced with your actual domain
+    console.warn(
+      'Could not determine base URL, using fallback. Consider setting NEXT_PUBLIC_BASE_URL environment variable.'
+    );
+    return 'https://your-domain.com';
+  }
+
+  // ========================================
   // RATE LIMITING
   // ========================================
 
@@ -186,7 +221,7 @@ export class AuthService {
         password: credentials.password,
         options: {
           data: credentials.metadata || {},
-          emailRedirectTo: `${window?.location?.origin}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
+          emailRedirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
         },
       });
 
@@ -274,7 +309,7 @@ export class AuthService {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window?.location?.origin}${AUTH_CONFIG.REDIRECT_URLS.googleCallback}`,
+          redirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.googleCallback}`,
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
@@ -305,7 +340,7 @@ export class AuthService {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
         options: {
-          redirectTo: `${window?.location?.origin}${AUTH_CONFIG.REDIRECT_URLS.facebookCallback}`,
+          redirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.facebookCallback}`,
           scopes: AUTH_CONFIG.OAUTH_PROVIDERS.FACEBOOK.scopes,
         },
       });
@@ -350,7 +385,7 @@ export class AuthService {
       const { data, error } = await supabase.auth.resetPasswordForEmail(credentials.email, {
         redirectTo:
           credentials.redirectTo ||
-          `${window?.location?.origin}${AUTH_CONFIG.REDIRECT_URLS.passwordReset}`,
+          `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.passwordReset}`,
       });
 
       if (error) {
@@ -413,7 +448,7 @@ export class AuthService {
         type: 'signup',
         email: user.email,
         options: {
-          emailRedirectTo: `${window?.location?.origin}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
+          emailRedirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
         },
       });
 
