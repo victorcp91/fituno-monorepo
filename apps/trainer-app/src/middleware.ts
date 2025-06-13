@@ -46,7 +46,11 @@ export async function middleware(request: NextRequest) {
   const origin = request.nextUrl.origin;
 
   // Skip middleware for static files and favicon
-  if (pathname.startsWith('/_next/') || pathname.startsWith('/favicon') || pathname.includes('.')) {
+  if (
+    pathname.startsWith('/_next/') ||
+    pathname.startsWith('/favicon') ||
+    /\.(ico|png|jpg|jpeg|gif|svg|css|js|woff|woff2|ttf|eot)$/i.test(pathname)
+  ) {
     return NextResponse.next();
   }
 
