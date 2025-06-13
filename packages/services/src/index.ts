@@ -162,11 +162,13 @@ export class AuthService {
       }
     }
 
-    // Ultimate fallback - this should be replaced with your actual domain
-    console.warn(
-      'Could not determine base URL, using fallback. Consider setting NEXT_PUBLIC_BASE_URL environment variable.'
+    // Ultimate fallback - throw error to ensure proper configuration
+    console.error(
+      'Could not determine base URL. Please set NEXT_PUBLIC_BASE_URL environment variable or ensure the application is running in a proper environment.'
     );
-    return 'https://your-domain.com';
+    throw new Error(
+      'Base URL could not be determined. Please configure NEXT_PUBLIC_BASE_URL environment variable for production deployment.'
+    );
   }
 
   // ========================================
