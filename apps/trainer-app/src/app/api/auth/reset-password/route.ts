@@ -32,9 +32,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Construct fallback redirect URL with proper validation
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     if (!baseUrl) {
-      console.error('NEXT_PUBLIC_APP_URL environment variable is not set');
+      console.error('NEXT_PUBLIC_BASE_URL environment variable is not set');
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
