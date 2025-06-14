@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
+import { AuthTest } from '../../components/AuthTest';
 import { StorageTest } from '../../components/StorageTest';
 
 export function HomeScreen() {
@@ -17,7 +18,8 @@ export function HomeScreen() {
         </Card.Content>
       </Card>
 
-      {/* Temporary storage test component */}
+      {/* Temporary test components */}
+      <AuthTest />
       <StorageTest />
     </ScrollView>
   );

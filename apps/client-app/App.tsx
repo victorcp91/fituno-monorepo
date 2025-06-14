@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AppNavigator } from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/providers/AuthProvider';
 import { ThemeProvider } from './src/providers/ThemeProvider';
 import { storageService } from './src/services';
 
@@ -22,10 +23,12 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <AppNavigator />
-        <StatusBar style="auto" />
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider>
+          <AppNavigator />
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </AuthProvider>
     </SafeAreaProvider>
   );
 }

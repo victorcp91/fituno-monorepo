@@ -9,3 +9,7 @@ export { StorageService, storageService } from './StorageService';
 
 // Sync Service
 export { SyncQueueService, type SyncQueueItem } from './SyncQueueService';
+
+// Authentication Services
+export { BiometricAuthService, type BiometricAuthResult } from './BiometricAuthService';
+export { SupabaseService } from './SupabaseService';
