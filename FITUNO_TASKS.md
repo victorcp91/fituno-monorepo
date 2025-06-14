@@ -299,11 +299,11 @@ Create the Next.js trainer web application with basic structure and routing.
 
 #### 5.2 ShadCN UI Integration
 
-- [ ] Install and configure ShadCN CLI
-- [ ] Initialize core components
-- [ ] Create custom theme
-- [ ] Set up color palette
-- [ ] Test component rendering
+- [x] Install and configure ShadCN CLI
+- [x] Initialize core components
+- [x] Create custom theme
+- [x] Set up color palette
+- [x] Test component rendering
 
 #### 5.3 App Router Configuration
 

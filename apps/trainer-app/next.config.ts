@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ['@fituno/types', '@fituno/utils', '@fituno/services', '@fituno/constants'],
-    typedRoutes: true,
   },
   
   // Enable strict mode for React
