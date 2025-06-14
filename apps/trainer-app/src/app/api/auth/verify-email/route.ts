@@ -1,10 +1,10 @@
 import { AuthService } from '@fituno/services';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Attempt to resend email verification
-    const { data, error } = await AuthService.resendEmailVerification();
+    const { error } = await AuthService.resendEmailVerification();
 
     if (error) {
       // Handle authentication errors

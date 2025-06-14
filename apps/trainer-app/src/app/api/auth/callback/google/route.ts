@@ -22,9 +22,10 @@ export async function GET(request: NextRequest) {
 
     // Exchange authorization code for session using Supabase directly
     const { supabase } = await import('@fituno/services');
-    const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.exchangeCodeForSession(code);
 
-    if (sessionError || !data.session) {
+    if (sessionError || !sessionData.session) {
       console.error('Session error after OAuth code exchange:', sessionError);
       return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
     }
@@ -47,8 +48,13 @@ export async function GET(request: NextRequest) {
 
     // Existing user with complete profile
     return NextResponse.redirect(new URL(AUTH_CONFIG.REDIRECT_URLS.signIn, request.url));
-  } catch (error) {
-    console.error('Google OAuth callback error:', error);
+  } catch (error: unknown) {
+    // Log the error with proper type checking
+    if (error instanceof Error) {
+      console.error('Google OAuth callback error:', error.message);
+    } else {
+      console.error('Google OAuth callback error:', error);
+    }
     return NextResponse.redirect(new URL('/auth/login?error=internal_error', request.url));
   }
 }

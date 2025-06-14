@@ -1,7 +1,7 @@
 import { AuthService } from '@fituno/services';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Initiate Google OAuth flow
     const { data, error } = await AuthService.signInWithGoogle();
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     // Return the OAuth URL for client-side redirect
     return NextResponse.json({
       success: true,
-      url: data.url || data.provider?.url,
+      url: (data as any)?.url || (data as any)?.provider?.url,
       provider: 'google',
     });
   } catch (error) {

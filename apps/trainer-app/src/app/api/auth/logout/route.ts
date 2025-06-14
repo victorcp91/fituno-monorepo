@@ -1,7 +1,7 @@
 import { AuthService } from '@fituno/services';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     // Perform logout
     const { error } = await AuthService.signOut();

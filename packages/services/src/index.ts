@@ -4,11 +4,30 @@
 /* eslint-disable no-console */
 
 import { API_CONFIG, AUTH_CONFIG, SUPABASE_CONFIG } from '@fituno/constants';
-import type { AuthError, AuthResponse, Session, User, UserResponse } from '@supabase/supabase-js';
+import type { AuthError, Session, User } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase Client
 export const supabase = createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
+
+// ========================================
+// CUSTOM TYPE DEFINITIONS
+// ========================================
+
+export interface FitunoAuthResponse {
+  data: { user: User | null; session: Session | null } | { user: null; session: null };
+  error: AuthError | null;
+}
+
+export interface FitunoUserResponse {
+  data: { user: User | null };
+  error: AuthError | null;
+}
+
+export interface FitunoOAuthResponse {
+  data: { provider?: string; url?: string } | { user: User | null; session: Session | null };
+  error: AuthError | null;
+}
 
 // ========================================
 // API CLIENT
@@ -198,14 +217,15 @@ export class AuthService {
     // Increment attempts
     tracker.attempts += 1;
     tracker.lastAttempt = now;
+
     return true;
   }
 
   // ========================================
-  // EMAIL/PASSWORD AUTHENTICATION
+  // AUTHENTICATION METHODS
   // ========================================
 
-  static async signUp(credentials: SignUpCredentials): Promise<AuthResponse> {
+  static async signUp(credentials: SignUpCredentials): Promise<FitunoAuthResponse> {
     const rateLimitKey = `signup:${credentials.email}`;
 
     if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.signupAttempts)) {
@@ -232,7 +252,7 @@ export class AuthService {
         console.error('SignUp error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoAuthResponse['data'], error };
     } catch (error) {
       console.error('SignUp unexpected error:', error);
       return {
@@ -245,7 +265,7 @@ export class AuthService {
     }
   }
 
-  static async signIn(credentials: SignInCredentials): Promise<AuthResponse> {
+  static async signIn(credentials: SignInCredentials): Promise<FitunoAuthResponse> {
     const rateLimitKey = `signin:${credentials.email}`;
 
     if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.loginAttempts)) {
@@ -268,7 +288,7 @@ export class AuthService {
         console.error('SignIn error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoAuthResponse['data'], error };
     } catch (error) {
       console.error('SignIn unexpected error:', error);
       return {
@@ -307,7 +327,7 @@ export class AuthService {
   // SOCIAL AUTHENTICATION (OAuth)
   // ========================================
 
-  static async signInWithGoogle(): Promise<AuthResponse> {
+  static async signInWithGoogle(): Promise<FitunoOAuthResponse> {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
@@ -325,7 +345,7 @@ export class AuthService {
         console.error('Google OAuth error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoOAuthResponse['data'], error };
     } catch (error) {
       console.error('Google OAuth unexpected error:', error);
       return {
@@ -338,7 +358,7 @@ export class AuthService {
     }
   }
 
-  static async signInWithFacebook(): Promise<AuthResponse> {
+  static async signInWithFacebook(): Promise<FitunoOAuthResponse> {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'facebook',
@@ -352,7 +372,7 @@ export class AuthService {
         console.error('Facebook OAuth error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoOAuthResponse['data'], error };
     } catch (error) {
       console.error('Facebook OAuth unexpected error:', error);
       return {
@@ -408,7 +428,7 @@ export class AuthService {
     }
   }
 
-  static async updatePassword(credentials: UpdatePasswordCredentials): Promise<UserResponse> {
+  static async updatePassword(credentials: UpdatePasswordCredentials): Promise<FitunoUserResponse> {
     try {
       const { data, error } = await supabase.auth.updateUser({
         password: credentials.password,
@@ -418,7 +438,7 @@ export class AuthService {
         console.error('Update password error:', error);
       }
 
-      return { data, error };
+      return { data: { user: data.user }, error };
     } catch (error) {
       console.error('Update password unexpected error:', error);
       return {
@@ -447,6 +467,18 @@ export class AuthService {
         };
       }
 
+      const rateLimitKey = `resend:${user.email}`;
+
+      if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.signupAttempts)) {
+        return {
+          data: null,
+          error: {
+            message: 'Too many email verification attempts. Please try again later.',
+            status: 429,
+          } as AuthError,
+        };
+      }
+
       const { data, error } = await supabase.auth.resend({
         type: 'signup',
         email: user.email,
@@ -456,16 +488,16 @@ export class AuthService {
       });
 
       if (error) {
-        console.error('Resend verification error:', error);
+        console.error('Resend email verification error:', error);
       }
 
       return { data, error };
     } catch (error) {
-      console.error('Resend verification unexpected error:', error);
+      console.error('Resend email verification unexpected error:', error);
       return {
         data: null,
         error: {
-          message: 'An unexpected error occurred while resending verification email',
+          message: 'An unexpected error occurred during email verification resend',
           status: 500,
         } as AuthError,
       };
@@ -473,10 +505,10 @@ export class AuthService {
   }
 
   // ========================================
-  // SESSION MANAGEMENT
+  // USER INFORMATION & SESSION MANAGEMENT
   // ========================================
 
-  static async getCurrentUser(): Promise<UserResponse> {
+  static async getCurrentUser(): Promise<FitunoUserResponse> {
     try {
       const { data, error } = await supabase.auth.getUser();
 
@@ -484,13 +516,13 @@ export class AuthService {
         console.error('Get current user error:', error);
       }
 
-      return { data, error };
+      return { data: { user: data.user }, error };
     } catch (error) {
       console.error('Get current user unexpected error:', error);
       return {
         data: { user: null },
         error: {
-          message: 'An unexpected error occurred while fetching user',
+          message: 'An unexpected error occurred while fetching user data',
           status: 500,
         } as AuthError,
       };
@@ -508,20 +540,20 @@ export class AuthService {
         console.error('Get current session error:', error);
       }
 
-      return { data, error };
+      return { data: { session: data.session }, error };
     } catch (error) {
       console.error('Get current session unexpected error:', error);
       return {
         data: { session: null },
         error: {
-          message: 'An unexpected error occurred while fetching session',
+          message: 'An unexpected error occurred while fetching session data',
           status: 500,
         } as AuthError,
       };
     }
   }
 
-  static async refreshSession(): Promise<AuthResponse> {
+  static async refreshSession(): Promise<FitunoAuthResponse> {
     try {
       const { data, error } = await supabase.auth.refreshSession();
 
@@ -529,34 +561,38 @@ export class AuthService {
         console.error('Refresh session error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoAuthResponse['data'], error };
     } catch (error) {
       console.error('Refresh session unexpected error:', error);
       return {
         data: { user: null, session: null },
         error: {
-          message: 'An unexpected error occurred while refreshing session',
+          message: 'An unexpected error occurred during session refresh',
           status: 500,
         } as AuthError,
       };
     }
   }
 
-  static async updateProfile(credentials: UpdateProfileCredentials): Promise<UserResponse> {
+  static async updateProfile(credentials: UpdateProfileCredentials): Promise<FitunoUserResponse> {
     try {
-      const { data, error } = await supabase.auth.updateUser(credentials);
+      const { data, error } = await supabase.auth.updateUser({
+        email: credentials.email,
+        password: credentials.password,
+        data: credentials.data,
+      });
 
       if (error) {
         console.error('Update profile error:', error);
       }
 
-      return { data, error };
+      return { data: { user: data.user }, error };
     } catch (error) {
       console.error('Update profile unexpected error:', error);
       return {
         data: { user: null },
         error: {
-          message: 'An unexpected error occurred while updating profile',
+          message: 'An unexpected error occurred during profile update',
           status: 500,
         } as AuthError,
       };
@@ -569,39 +605,27 @@ export class AuthService {
 
   static onAuthStateChange(callback: (event: string, session: Session | null) => void) {
     return supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session?.user?.id);
       callback(event, session);
     });
   }
 
-  // ========================================
-  // UTILITY METHODS
-  // ========================================
-
   static isEmailVerified(user: User | null): boolean {
-    return user?.email_confirmed_at !== null;
+    return user?.email_confirmed_at != null;
   }
 
   static isSessionExpired(session: Session | null): boolean {
-    if (!session) return true;
-
-    const expiresAt = session.expires_at;
-    if (!expiresAt) return true;
-
-    return Date.now() / 1000 > expiresAt;
+    if (!session?.expires_at) return true;
+    return Date.now() >= session.expires_at * 1000;
   }
 
   static shouldRefreshSession(session: Session | null): boolean {
-    if (!session) return false;
-
-    const expiresAt = session.expires_at;
-    if (!expiresAt) return false;
-
-    const refreshThreshold = AUTH_CONFIG.REFRESH_THRESHOLD / 1000; // Convert to seconds
-    return Date.now() / 1000 > expiresAt - refreshThreshold;
+    if (!session?.expires_at) return false;
+    const expirationTime = session.expires_at * 1000;
+    const refreshThreshold = 5 * 60 * 1000; // 5 minutes before expiration
+    return Date.now() >= expirationTime - refreshThreshold;
   }
 
-  static async signInAnonymously(): Promise<AuthResponse> {
+  static async signInAnonymously(): Promise<FitunoAuthResponse> {
     try {
       const { data, error } = await supabase.auth.signInAnonymously();
 
@@ -609,7 +633,7 @@ export class AuthService {
         console.error('Anonymous signin error:', error);
       }
 
-      return { data, error };
+      return { data: data as FitunoAuthResponse['data'], error };
     } catch (error) {
       console.error('Anonymous signin unexpected error:', error);
       return {
@@ -622,7 +646,10 @@ export class AuthService {
     }
   }
 
-  // Clear rate limiting data (useful for testing or admin actions)
+  // ========================================
+  // UTILITY METHODS
+  // ========================================
+
   static clearRateLimitData(key?: string): void {
     if (key) {
       this.rateLimitTracker.delete(key);
@@ -647,7 +674,7 @@ export class StorageService {
       const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
         cacheControl: options?.cacheControl || '3600',
         upsert: false,
-        ...options,
+        contentType: options?.contentType,
       });
 
       if (error) {
@@ -659,7 +686,10 @@ export class StorageService {
       console.error('File upload unexpected error:', error);
       return {
         data: null,
-        error: { message: 'An unexpected error occurred during file upload' },
+        error: {
+          message: 'An unexpected error occurred during file upload',
+          status: 500,
+        },
       };
     }
   }
@@ -680,7 +710,10 @@ export class StorageService {
       console.error('File download unexpected error:', error);
       return {
         data: null,
-        error: { message: 'An unexpected error occurred during file download' },
+        error: {
+          message: 'An unexpected error occurred during file download',
+          status: 500,
+        },
       };
     }
   }
@@ -694,15 +727,18 @@ export class StorageService {
       const { data, error } = await supabase.storage.from(bucket).remove(paths);
 
       if (error) {
-        console.error('File delete error:', error);
+        console.error('File deletion error:', error);
       }
 
       return { data, error };
     } catch (error) {
-      console.error('File delete unexpected error:', error);
+      console.error('File deletion unexpected error:', error);
       return {
         data: null,
-        error: { message: 'An unexpected error occurred during file deletion' },
+        error: {
+          message: 'An unexpected error occurred during file deletion',
+          status: 500,
+        },
       };
     }
   }
@@ -720,25 +756,24 @@ export class ValidationService {
 
   static validatePassword(password: string): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
-    const config = AUTH_CONFIG.PASSWORD_REQUIREMENTS;
 
-    if (password.length < config.minLength) {
-      errors.push(`Password must be at least ${config.minLength} characters long`);
+    if (password.length < 8) {
+      errors.push('Password must be at least 8 characters long');
     }
 
-    if (config.requireUppercase && !/[A-Z]/.test(password)) {
+    if (!/[A-Z]/.test(password)) {
       errors.push('Password must contain at least one uppercase letter');
     }
 
-    if (config.requireLowercase && !/[a-z]/.test(password)) {
+    if (!/[a-z]/.test(password)) {
       errors.push('Password must contain at least one lowercase letter');
     }
 
-    if (config.requireNumbers && !/\d/.test(password)) {
+    if (!/\d/.test(password)) {
       errors.push('Password must contain at least one number');
     }
 
-    if (config.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
       errors.push('Password must contain at least one special character');
     }
 
@@ -749,47 +784,48 @@ export class ValidationService {
   }
 
   static validateName(name: string): boolean {
-    return name.length >= 2 && name.length <= 100;
+    return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());
   }
 
   static sanitizeInput(input: string): string {
-    return input.trim().replace(/[<>]/g, '');
+    return input
+      .replace(/[<>'"]/g, '') // Remove potentially dangerous characters
+      .trim();
   }
 }
 
 // ========================================
-// ADDITIONAL SERVICES (placeholder implementations)
+// PLACEHOLDER SERVICES (TO BE IMPLEMENTED)
 // ========================================
 
-// Export existing services for backward compatibility
 export class TrainerService {
-  // Implementation will be added as needed
+  // TODO: Implement trainer-specific methods
 }
 
 export class ClientService {
-  // Implementation will be added as needed
+  // TODO: Implement client-specific methods
 }
 
 export class ExerciseService {
-  // Implementation will be added as needed
+  // TODO: Implement exercise-related methods
 }
 
 export class WorkoutService {
-  // Implementation will be added as needed
+  // TODO: Implement workout-related methods
 }
 
 export class ProgressService {
-  // Implementation will be added as needed
+  // TODO: Implement progress tracking methods
 }
 
 export class ChatService {
-  // Implementation will be added as needed
+  // TODO: Implement chat/messaging methods
 }
 
 export class AnamnesisService {
-  // Implementation will be added as needed
+  // TODO: Implement anamnesis/assessment methods
 }
 
 export class SubscriptionService {
-  // Implementation will be added as needed
+  // TODO: Implement subscription/billing methods
 }
