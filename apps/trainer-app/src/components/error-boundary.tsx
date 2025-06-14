@@ -62,7 +62,7 @@ function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
   );
 }
 
-function ChunkErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps) {
+function ChunkErrorFallback({ resetErrorBoundary }: ErrorFallbackProps) {
   return (
     <div className="border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950 rounded-lg p-4 m-4">
       <div className="flex items-center gap-2 mb-2">

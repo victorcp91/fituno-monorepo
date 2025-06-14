@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     const fallbackRedirectTo = `${baseUrl}/auth/reset-password`;
 
     // Attempt to send password reset email
-    const { data, error } = await AuthService.resetPassword({
+    const { error } = await AuthService.resetPassword({
       email,
       redirectTo: redirectTo || fallbackRedirectTo,
     });

@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { AuthService } from '@fituno/services';
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 const ERROR_MESSAGES = {
   authentication_required: 'Please log in to access this page.',
@@ -20,7 +20,7 @@ const ERROR_MESSAGES = {
   default: 'An error occurred. Please try again.',
 };
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -279,5 +279,22 @@ export default function LoginPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-green-50">
+          <div className="text-center">
+            <div className="fitness-gradient h-12 w-12 rounded-lg mx-auto mb-4 animate-pulse"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

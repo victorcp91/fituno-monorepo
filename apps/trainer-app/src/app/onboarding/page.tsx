@@ -8,10 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { AuthService } from '@fituno/services';
 import { ArrowRight, Briefcase, Loader2, MapPin, Phone, User } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
-export default function OnboardingPage() {
+function OnboardingForm() {
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -22,18 +22,14 @@ export default function OnboardingPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     // Get current user data to pre-fill form
     const loadUserData = async () => {
       try {
-        const { data, error } = await AuthService.getCurrentUser();
+        const { data } = await AuthService.getCurrentUser();
         if (data?.user) {
-          setCurrentUser(data.user);
           setFormData(prev => ({
             ...prev,
             fullName: data.user.user_metadata?.full_name || '',
@@ -61,7 +57,7 @@ export default function OnboardingPage() {
 
     try {
       // Update user metadata with trainer profile information
-      const { data, error } = await AuthService.updateProfile({
+      const { error } = await AuthService.updateProfile({
         data: {
           user_type: 'trainer',
           full_name: formData.fullName,
@@ -218,32 +214,27 @@ export default function OnboardingPage() {
                   <Label htmlFor="bio">Professional Bio *</Label>
                   <Textarea
                     id="bio"
-                    placeholder="Tell potential clients about your background, certifications, training philosophy, and what makes you unique as a trainer..."
+                    placeholder="Tell potential clients about your experience, certifications, and training philosophy..."
                     value={formData.bio}
                     onChange={e => handleInputChange('bio', e.target.value)}
                     required
                     disabled={isLoading}
                     rows={4}
                   />
-                  <p className="text-sm text-gray-500">
-                    This will be visible to potential clients. Highlight your expertise and
-                    approach.
-                  </p>
                 </div>
               </div>
 
               {/* Submit Button */}
-              <div className="pt-6">
+              <div className="pt-4">
                 <Button
                   type="submit"
+                  disabled={!isFormValid || isLoading}
                   className="w-full bg-gradient-to-r from-orange-500 to-green-500 hover:from-orange-600 hover:to-green-600"
-                  disabled={isLoading || !isFormValid}
-                  size="lg"
                 >
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Setting up your profile...
+                      Setting up your account...
                     </>
                   ) : (
                     <>
@@ -252,22 +243,28 @@ export default function OnboardingPage() {
                     </>
                   )}
                 </Button>
-
-                {!isFormValid && (
-                  <p className="text-sm text-gray-500 text-center mt-2">
-                    Please fill in all required fields (marked with *)
-                  </p>
-                )}
               </div>
             </form>
           </CardContent>
         </Card>
-
-        {/* Footer */}
-        <div className="text-center mt-8 text-sm text-gray-500">
-          <p>You can update this information later in your account settings</p>
-        </div>
       </div>
     </div>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-orange-50 to-green-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="fitness-gradient h-12 w-12 rounded-lg mx-auto mb-4 animate-pulse"></div>
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <OnboardingForm />
+    </Suspense>
   );
 }

@@ -16,7 +16,7 @@ export async function POST(_request: NextRequest) {
     // Return the OAuth URL for client-side redirect
     return NextResponse.json({
       success: true,
-      url: data.url || data.provider?.url,
+      url: (data as any)?.url || (data as any)?.provider?.url,
       provider: 'google',
     });
   } catch (error) {
