@@ -1,3 +1,5 @@
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -5,7 +7,8 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { AuthService } from '@fituno/services';
 import { BarChart3, Bell, Calendar, Dumbbell, LogOut, Menu, Settings, Users } from 'lucide-react';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -51,17 +54,57 @@ const navigationItems = [
   },
 ];
 
-async function checkAuth() {
-  const { data, error } = await AuthService.getCurrentUser();
-  if (error || !data.user) {
-    redirect('/auth/login');
-  }
-  return data.user;
-}
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-export default async function DashboardLayout({ children }: DashboardLayoutProps) {
-  // Check authentication - redirect to login if not authenticated
-  const user = await checkAuth();
+  useEffect(() => {
+    // Check authentication on component mount
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await AuthService.getCurrentUser();
+        if (error || !data.user) {
+          router.push('/auth/login');
+          return;
+        }
+        setUser(data.user);
+      } catch (error) {
+        console.error('Auth check error:', error);
+        router.push('/auth/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
+  const handleSignOut = async () => {
+    try {
+      await AuthService.signOut();
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="fitness-gradient h-12 w-12 rounded-lg mx-auto mb-4 animate-pulse"></div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render anything if no user (should redirect to login)
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -109,12 +152,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                 </p>
                 <p className="text-xs text-muted-foreground truncate">Personal Trainer</p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-                onClick={() => AuthService.signOut()}
-              >
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
@@ -174,6 +212,14 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
                       </p>
                       <p className="text-xs text-muted-foreground">Personal Trainer</p>
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
               </div>
