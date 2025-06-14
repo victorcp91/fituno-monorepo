@@ -1,5 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import * as Linking from 'expo-linking';
 import React from 'react';
 import { useTheme } from 'react-native-paper';
 
@@ -16,6 +17,17 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+const linking = {
+  prefixes: [Linking.createURL('/'), 'fituno://', 'https://fituno.app'],
+  config: {
+    screens: {
+      Onboarding: 'onboarding',
+      Auth: 'auth',
+      Main: 'main',
+    },
+  },
+};
+
 export function AppNavigator() {
   const theme = useTheme();
 
@@ -27,7 +39,7 @@ export function AppNavigator() {
   const navigationTheme = theme.dark ? CombinedDarkTheme : CombinedDefaultTheme;
 
   return (
-    <NavigationContainer theme={navigationTheme}>
+    <NavigationContainer theme={navigationTheme} linking={linking}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,
