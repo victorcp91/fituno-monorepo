@@ -1,316 +1,615 @@
 // Fituno Services Package
 // Shared services for the Fituno monorepo
-import { API_CONFIG, SUPABASE_CONFIG } from '@fituno/constants';
+/* eslint-disable no-console */
+import { API_CONFIG, AUTH_CONFIG, SUPABASE_CONFIG } from '@fituno/constants';
 import { createClient } from '@supabase/supabase-js';
 // Supabase Client
 export const supabase = createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
-// API Client Class
+// ========================================
+// API CLIENT
+// ========================================
 export class ApiClient {
-    constructor(config = {}) {
-        this.baseURL = config.baseURL || API_CONFIG.BASE_URL;
-        this.timeout = config.timeout || API_CONFIG.TIMEOUT;
-        this.defaultHeaders = {
-            'Content-Type': 'application/json',
-            ...config.headers,
-        };
+    constructor(baseURL = API_CONFIG.BASE_URL, timeout = API_CONFIG.TIMEOUT) {
+        this.baseURL = baseURL;
+        this.timeout = timeout;
     }
     async request(endpoint, options = {}) {
-        const url = `${this.baseURL}${endpoint}`;
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), this.timeout);
         try {
-            const response = await fetch(url, {
+            const response = await fetch(`${this.baseURL}${endpoint}`, {
                 ...options,
+                signal: controller.signal,
                 headers: {
-                    ...this.defaultHeaders,
+                    'Content-Type': 'application/json',
                     ...options.headers,
                 },
-                signal: controller.signal,
             });
             clearTimeout(timeoutId);
-            const data = await response.json();
             if (!response.ok) {
-                return {
-                    error: data.error || 'Request failed',
-                    status: response.status,
-                };
+                return { data: null, error: `HTTP ${response.status}: ${response.statusText}` };
             }
-            return {
-                data,
-                status: response.status,
-            };
+            const data = await response.json();
+            return { data, error: null };
         }
         catch (error) {
             clearTimeout(timeoutId);
             if (error instanceof Error) {
-                if (error.name === 'AbortError') {
-                    return {
-                        error: 'Request timeout',
-                        status: 408,
-                    };
-                }
-                return {
-                    error: error.message,
-                    status: 0,
-                };
+                return { data: null, error: error.message };
             }
-            return {
-                error: 'Unknown error',
-                status: 0,
-            };
+            return { data: null, error: 'Unknown error occurred' };
         }
     }
     async get(endpoint, headers) {
-        return this.request(endpoint, {
-            method: 'GET',
-            headers,
-        });
+        return this.request(endpoint, { method: 'GET', headers });
     }
     async post(endpoint, body, headers) {
         return this.request(endpoint, {
             method: 'POST',
-            body: body ? JSON.stringify(body) : undefined,
+            body: body !== undefined ? JSON.stringify(body) : undefined,
             headers,
         });
     }
     async put(endpoint, body, headers) {
         return this.request(endpoint, {
             method: 'PUT',
-            body: body ? JSON.stringify(body) : undefined,
-            headers,
-        });
-    }
-    async patch(endpoint, body, headers) {
-        return this.request(endpoint, {
-            method: 'PATCH',
-            body: body ? JSON.stringify(body) : undefined,
+            body: body !== undefined ? JSON.stringify(body) : undefined,
             headers,
         });
     }
     async delete(endpoint, headers) {
-        return this.request(endpoint, {
-            method: 'DELETE',
-            headers,
-        });
-    }
-    setAuthToken(token) {
-        this.defaultHeaders['Authorization'] = `Bearer ${token}`;
-    }
-    removeAuthToken() {
-        delete this.defaultHeaders['Authorization'];
+        return this.request(endpoint, { method: 'DELETE', headers });
     }
 }
-// Default API Client Instance
+// Global API client instance
 export const apiClient = new ApiClient();
-// Auth Service
 export class AuthService {
-    static async signUp(email, password, metadata) {
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                data: metadata,
-            },
-        });
-        return { data, error };
+    // ========================================
+    // UTILITY METHODS FOR URL CONSTRUCTION
+    // ========================================
+    static getBaseUrl() {
+        // Check if we're in a browser environment
+        if (typeof window !== 'undefined' && window.location) {
+            return window.location.origin;
+        }
+        // Server-side fallback - check common environment variables
+        if (typeof process !== 'undefined' && process.env) {
+            // Next.js and Vercel
+            if (process.env.VERCEL_URL) {
+                return `https://${process.env.VERCEL_URL}`;
+            }
+            // Custom base URL environment variable
+            if (process.env.NEXT_PUBLIC_BASE_URL) {
+                return process.env.NEXT_PUBLIC_BASE_URL;
+            }
+            // Development fallback
+            if (process.env.NODE_ENV === 'development') {
+                return 'http://localhost:3000';
+            }
+        }
+        // Ultimate fallback - throw error to ensure proper configuration
+        console.error('Could not determine base URL. Please set NEXT_PUBLIC_BASE_URL environment variable or ensure the application is running in a proper environment.');
+        throw new Error('Base URL could not be determined. Please configure NEXT_PUBLIC_BASE_URL environment variable for production deployment.');
     }
-    static async signIn(email, password) {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-        return { data, error };
+    // ========================================
+    // RATE LIMITING
+    // ========================================
+    static checkRateLimit(key, maxAttempts) {
+        const now = Date.now();
+        const tracker = this.rateLimitTracker.get(key);
+        if (!tracker) {
+            this.rateLimitTracker.set(key, { attempts: 1, lastAttempt: now });
+            return true;
+        }
+        // Reset if cooldown period has passed
+        if (now - tracker.lastAttempt > AUTH_CONFIG.RATE_LIMITS.cooldownPeriod) {
+            this.rateLimitTracker.set(key, { attempts: 1, lastAttempt: now });
+            return true;
+        }
+        // Check if limit exceeded
+        if (tracker.attempts >= maxAttempts) {
+            return false;
+        }
+        // Increment attempts
+        tracker.attempts += 1;
+        tracker.lastAttempt = now;
+        return true;
+    }
+    // ========================================
+    // EMAIL/PASSWORD AUTHENTICATION
+    // ========================================
+    static async signUp(credentials) {
+        const rateLimitKey = `signup:${credentials.email}`;
+        if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.signupAttempts)) {
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'Too many signup attempts. Please try again later.',
+                    status: 429,
+                },
+            };
+        }
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email: credentials.email,
+                password: credentials.password,
+                options: {
+                    data: credentials.metadata || {},
+                    emailRedirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
+                },
+            });
+            if (error) {
+                console.error('SignUp error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('SignUp unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred during signup',
+                    status: 500,
+                },
+            };
+        }
+    }
+    static async signIn(credentials) {
+        const rateLimitKey = `signin:${credentials.email}`;
+        if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.loginAttempts)) {
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'Too many login attempts. Please try again later.',
+                    status: 429,
+                },
+            };
+        }
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: credentials.email,
+                password: credentials.password,
+            });
+            if (error) {
+                console.error('SignIn error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('SignIn unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred during signin',
+                    status: 500,
+                },
+            };
+        }
     }
     static async signOut() {
-        const { error } = await supabase.auth.signOut();
-        return { error };
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('SignOut error:', error);
+            }
+            // Clear any local storage or cache here if needed
+            return { error };
+        }
+        catch (error) {
+            console.error('SignOut unexpected error:', error);
+            return {
+                error: {
+                    message: 'An unexpected error occurred during signout',
+                    status: 500,
+                },
+            };
+        }
     }
+    // ========================================
+    // SOCIAL AUTHENTICATION (OAuth)
+    // ========================================
+    static async signInWithGoogle() {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.googleCallback}`,
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
+                    scopes: AUTH_CONFIG.OAUTH_PROVIDERS.GOOGLE.scopes,
+                },
+            });
+            if (error) {
+                console.error('Google OAuth error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Google OAuth unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred during Google authentication',
+                    status: 500,
+                },
+            };
+        }
+    }
+    static async signInWithFacebook() {
+        try {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'facebook',
+                options: {
+                    redirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.facebookCallback}`,
+                    scopes: AUTH_CONFIG.OAUTH_PROVIDERS.FACEBOOK.scopes,
+                },
+            });
+            if (error) {
+                console.error('Facebook OAuth error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Facebook OAuth unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred during Facebook authentication',
+                    status: 500,
+                },
+            };
+        }
+    }
+    // ========================================
+    // PASSWORD RESET & EMAIL VERIFICATION
+    // ========================================
+    static async resetPassword(credentials) {
+        const rateLimitKey = `reset:${credentials.email}`;
+        if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.passwordResetAttempts)) {
+            return {
+                data: null,
+                error: {
+                    message: 'Too many password reset attempts. Please try again later.',
+                    status: 429,
+                },
+            };
+        }
+        try {
+            const { data, error } = await supabase.auth.resetPasswordForEmail(credentials.email, {
+                redirectTo: credentials.redirectTo ||
+                    `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.passwordReset}`,
+            });
+            if (error) {
+                console.error('Password reset error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Password reset unexpected error:', error);
+            return {
+                data: null,
+                error: {
+                    message: 'An unexpected error occurred during password reset',
+                    status: 500,
+                },
+            };
+        }
+    }
+    static async updatePassword(credentials) {
+        try {
+            const { data, error } = await supabase.auth.updateUser({
+                password: credentials.password,
+            });
+            if (error) {
+                console.error('Update password error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Update password unexpected error:', error);
+            return {
+                data: { user: null },
+                error: {
+                    message: 'An unexpected error occurred during password update',
+                    status: 500,
+                },
+            };
+        }
+    }
+    static async resendEmailVerification() {
+        try {
+            const { data: { user }, } = await supabase.auth.getUser();
+            if (!user?.email) {
+                return {
+                    data: null,
+                    error: {
+                        message: 'No authenticated user found',
+                        status: 401,
+                    },
+                };
+            }
+            const { data, error } = await supabase.auth.resend({
+                type: 'signup',
+                email: user.email,
+                options: {
+                    emailRedirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
+                },
+            });
+            if (error) {
+                console.error('Resend verification error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Resend verification unexpected error:', error);
+            return {
+                data: null,
+                error: {
+                    message: 'An unexpected error occurred while resending verification email',
+                    status: 500,
+                },
+            };
+        }
+    }
+    // ========================================
+    // SESSION MANAGEMENT
+    // ========================================
     static async getCurrentUser() {
-        const { data: { user }, error, } = await supabase.auth.getUser();
-        return { user, error };
+        try {
+            const { data, error } = await supabase.auth.getUser();
+            if (error) {
+                console.error('Get current user error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Get current user unexpected error:', error);
+            return {
+                data: { user: null },
+                error: {
+                    message: 'An unexpected error occurred while fetching user',
+                    status: 500,
+                },
+            };
+        }
     }
-    static async resetPassword(email) {
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email);
-        return { data, error };
+    static async getCurrentSession() {
+        try {
+            const { data, error } = await supabase.auth.getSession();
+            if (error) {
+                console.error('Get current session error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Get current session unexpected error:', error);
+            return {
+                data: { session: null },
+                error: {
+                    message: 'An unexpected error occurred while fetching session',
+                    status: 500,
+                },
+            };
+        }
     }
-    static async updatePassword(password) {
-        const { data, error } = await supabase.auth.updateUser({
-            password,
-        });
-        return { data, error };
+    static async refreshSession() {
+        try {
+            const { data, error } = await supabase.auth.refreshSession();
+            if (error) {
+                console.error('Refresh session error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Refresh session unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred while refreshing session',
+                    status: 500,
+                },
+            };
+        }
     }
+    static async updateProfile(credentials) {
+        try {
+            const { data, error } = await supabase.auth.updateUser(credentials);
+            if (error) {
+                console.error('Update profile error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Update profile unexpected error:', error);
+            return {
+                data: { user: null },
+                error: {
+                    message: 'An unexpected error occurred while updating profile',
+                    status: 500,
+                },
+            };
+        }
+    }
+    // ========================================
+    // AUTH STATE MANAGEMENT
+    // ========================================
     static onAuthStateChange(callback) {
-        return supabase.auth.onAuthStateChange(callback);
+        return supabase.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event, session?.user?.id);
+            callback(event, session);
+        });
+    }
+    // ========================================
+    // UTILITY METHODS
+    // ========================================
+    static isEmailVerified(user) {
+        return user?.email_confirmed_at !== null;
+    }
+    static isSessionExpired(session) {
+        if (!session)
+            return true;
+        const expiresAt = session.expires_at;
+        if (!expiresAt)
+            return true;
+        return Date.now() / 1000 > expiresAt;
+    }
+    static shouldRefreshSession(session) {
+        if (!session)
+            return false;
+        const expiresAt = session.expires_at;
+        if (!expiresAt)
+            return false;
+        const refreshThreshold = AUTH_CONFIG.REFRESH_THRESHOLD / 1000; // Convert to seconds
+        return Date.now() / 1000 > expiresAt - refreshThreshold;
+    }
+    static async signInAnonymously() {
+        try {
+            const { data, error } = await supabase.auth.signInAnonymously();
+            if (error) {
+                console.error('Anonymous signin error:', error);
+            }
+            return { data, error };
+        }
+        catch (error) {
+            console.error('Anonymous signin unexpected error:', error);
+            return {
+                data: { user: null, session: null },
+                error: {
+                    message: 'An unexpected error occurred during anonymous signin',
+                    status: 500,
+                },
+            };
+        }
+    }
+    // Clear rate limiting data (useful for testing or admin actions)
+    static clearRateLimitData(key) {
+        if (key) {
+            this.rateLimitTracker.delete(key);
+        }
+        else {
+            this.rateLimitTracker.clear();
+        }
     }
 }
-// Storage Service
+AuthService.rateLimitTracker = new Map();
+// ========================================
+// STORAGE SERVICE
+// ========================================
 export class StorageService {
-    static get(key) {
-        if (typeof window === 'undefined')
-            return null;
+    static async uploadFile(bucket, path, file, options) {
         try {
-            return localStorage.getItem(key);
+            const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+                cacheControl: options?.cacheControl || '3600',
+                upsert: false,
+                ...options,
+            });
+            if (error) {
+                console.error('File upload error:', error);
+            }
+            return { data, error };
         }
-        catch {
-            return null;
+        catch (error) {
+            console.error('File upload unexpected error:', error);
+            return {
+                data: null,
+                error: { message: 'An unexpected error occurred during file upload' },
+            };
         }
     }
-    static set(key, value) {
-        if (typeof window === 'undefined')
-            return false;
+    static async downloadFile(bucket, path) {
         try {
-            localStorage.setItem(key, value);
-            return true;
+            const { data, error } = await supabase.storage.from(bucket).download(path);
+            if (error) {
+                console.error('File download error:', error);
+            }
+            return { data, error };
         }
-        catch {
-            return false;
+        catch (error) {
+            console.error('File download unexpected error:', error);
+            return {
+                data: null,
+                error: { message: 'An unexpected error occurred during file download' },
+            };
         }
     }
-    static remove(key) {
-        if (typeof window === 'undefined')
-            return false;
-        try {
-            localStorage.removeItem(key);
-            return true;
-        }
-        catch {
-            return false;
-        }
+    static getPublicUrl(bucket, path) {
+        return supabase.storage.from(bucket).getPublicUrl(path);
     }
-    static clear() {
-        if (typeof window === 'undefined')
-            return false;
+    static async deleteFile(bucket, paths) {
         try {
-            localStorage.clear();
-            return true;
+            const { data, error } = await supabase.storage.from(bucket).remove(paths);
+            if (error) {
+                console.error('File delete error:', error);
+            }
+            return { data, error };
         }
-        catch {
-            return false;
-        }
-    }
-    static getJSON(key) {
-        const value = this.get(key);
-        if (!value)
-            return null;
-        try {
-            return JSON.parse(value);
-        }
-        catch {
-            return null;
-        }
-    }
-    static setJSON(key, value) {
-        try {
-            return this.set(key, JSON.stringify(value));
-        }
-        catch {
-            return false;
+        catch (error) {
+            console.error('File delete unexpected error:', error);
+            return {
+                data: null,
+                error: { message: 'An unexpected error occurred during file deletion' },
+            };
         }
     }
 }
-// Validation Service
+// ========================================
+// VALIDATION SERVICE
+// ========================================
 export class ValidationService {
-    static isEmail(email) {
+    static validateEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
-    static isStrongPassword(password) {
-        // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
-    }
-    static isValidName(name) {
-        return name.trim().length >= 2 && name.trim().length <= 100;
-    }
-    static isValidPhoneNumber(phone) {
-        // Brazilian phone number format
-        const phoneRegex = /^(\+55\s?)?(\(?\d{2}\)?\s?)?\d{4,5}-?\d{4}$/;
-        return phoneRegex.test(phone);
-    }
-    static sanitizeString(str) {
-        return str.trim().replace(/\s+/g, ' ');
-    }
-    static isValidURL(url) {
-        try {
-            new URL(url);
-            return true;
+    static validatePassword(password) {
+        const errors = [];
+        const config = AUTH_CONFIG.PASSWORD_REQUIREMENTS;
+        if (password.length < config.minLength) {
+            errors.push(`Password must be at least ${config.minLength} characters long`);
         }
-        catch {
-            return false;
+        if (config.requireUppercase && !/[A-Z]/.test(password)) {
+            errors.push('Password must contain at least one uppercase letter');
         }
+        if (config.requireLowercase && !/[a-z]/.test(password)) {
+            errors.push('Password must contain at least one lowercase letter');
+        }
+        if (config.requireNumbers && !/\d/.test(password)) {
+            errors.push('Password must contain at least one number');
+        }
+        if (config.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            errors.push('Password must contain at least one special character');
+        }
+        return {
+            isValid: errors.length === 0,
+            errors,
+        };
+    }
+    static validateName(name) {
+        return name.length >= 2 && name.length <= 100;
+    }
+    static sanitizeInput(input) {
+        return input.trim().replace(/[<>]/g, '');
     }
 }
-// Date Service
-export class DateService {
-    static formatDate(date, locale = 'pt-BR') {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return new Intl.DateTimeFormat(locale, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }).format(dateObj);
-    }
-    static formatDateTime(date, locale = 'pt-BR') {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        return new Intl.DateTimeFormat(locale, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-        }).format(dateObj);
-    }
-    static getRelativeTime(date, locale = 'pt-BR') {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        const now = new Date();
-        const diffInSeconds = Math.floor((now.getTime() - dateObj.getTime()) / 1000);
-        const rtf = new Intl.RelativeTimeFormat(locale, { numeric: 'auto' });
-        if (diffInSeconds < 60) {
-            return rtf.format(-diffInSeconds, 'second');
-        }
-        else if (diffInSeconds < 3600) {
-            return rtf.format(-Math.floor(diffInSeconds / 60), 'minute');
-        }
-        else if (diffInSeconds < 86400) {
-            return rtf.format(-Math.floor(diffInSeconds / 3600), 'hour');
-        }
-        else {
-            return rtf.format(-Math.floor(diffInSeconds / 86400), 'day');
-        }
-    }
-    static isToday(date) {
-        const dateObj = typeof date === 'string' ? new Date(date) : date;
-        const today = new Date();
-        return dateObj.toDateString() === today.toDateString();
-    }
-    static addDays(date, days) {
-        const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-        dateObj.setDate(dateObj.getDate() + days);
-        return dateObj;
-    }
+// ========================================
+// ADDITIONAL SERVICES (placeholder implementations)
+// ========================================
+// Export existing services for backward compatibility
+export class TrainerService {
 }
-// Error Handler Service
-export class ErrorService {
-    static handleApiError(error) {
-        if (typeof error === 'string') {
-            return error;
-        }
-        if (error?.message) {
-            return error.message;
-        }
-        if (error?.error) {
-            return error.error;
-        }
-        return 'Ocorreu um erro inesperado';
-    }
-    static logError(error, context) {
-        if (process.env.NODE_ENV === 'development') {
-            // eslint-disable-next-line no-console
-            console.error(`[${context || 'Error'}]:`, error);
-        }
-        // In production, you might want to send to an error tracking service
-        // like Sentry, LogRocket, etc.
-    }
+export class ClientService {
 }
-// All services are exported above
+export class ExerciseService {
+}
+export class WorkoutService {
+}
+export class ProgressService {
+}
+export class ChatService {
+}
+export class AnamnesisService {
+}
+export class SubscriptionService {
+}
 //# sourceMappingURL=index.js.map

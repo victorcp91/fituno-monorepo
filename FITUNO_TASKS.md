@@ -291,11 +291,11 @@ Create the Next.js trainer web application with basic structure and routing.
 
 #### 5.1 Next.js Project Setup
 
-- [ ] Create project with Next.js 13+
-- [ ] Configure next.config.js
-- [ ] Set up TypeScript strict mode
-- [ ] Configure ESLint rules
-- [ ] Test project build
+- [x] Create project with Next.js 13+
+- [x] Configure next.config.js
+- [x] Set up TypeScript strict mode
+- [x] Configure ESLint rules
+- [x] Test project build
 
 #### 5.2 ShadCN UI Integration
 
