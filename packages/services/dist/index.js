@@ -116,7 +116,7 @@ export class AuthService {
         return true;
     }
     // ========================================
-    // EMAIL/PASSWORD AUTHENTICATION
+    // AUTHENTICATION METHODS
     // ========================================
     static async signUp(credentials) {
         const rateLimitKey = `signup:${credentials.email}`;
@@ -141,7 +141,7 @@ export class AuthService {
             if (error) {
                 console.error('SignUp error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('SignUp unexpected error:', error);
@@ -173,7 +173,7 @@ export class AuthService {
             if (error) {
                 console.error('SignIn error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('SignIn unexpected error:', error);
@@ -224,7 +224,7 @@ export class AuthService {
             if (error) {
                 console.error('Google OAuth error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('Google OAuth unexpected error:', error);
@@ -249,7 +249,7 @@ export class AuthService {
             if (error) {
                 console.error('Facebook OAuth error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('Facebook OAuth unexpected error:', error);
@@ -305,7 +305,7 @@ export class AuthService {
             if (error) {
                 console.error('Update password error:', error);
             }
-            return { data, error };
+            return { data: { user: data.user }, error };
         }
         catch (error) {
             console.error('Update password unexpected error:', error);
@@ -330,6 +330,16 @@ export class AuthService {
                     },
                 };
             }
+            const rateLimitKey = `resend:${user.email}`;
+            if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.signupAttempts)) {
+                return {
+                    data: null,
+                    error: {
+                        message: 'Too many email verification attempts. Please try again later.',
+                        status: 429,
+                    },
+                };
+            }
             const { data, error } = await supabase.auth.resend({
                 type: 'signup',
                 email: user.email,
@@ -338,23 +348,23 @@ export class AuthService {
                 },
             });
             if (error) {
-                console.error('Resend verification error:', error);
+                console.error('Resend email verification error:', error);
             }
             return { data, error };
         }
         catch (error) {
-            console.error('Resend verification unexpected error:', error);
+            console.error('Resend email verification unexpected error:', error);
             return {
                 data: null,
                 error: {
-                    message: 'An unexpected error occurred while resending verification email',
+                    message: 'An unexpected error occurred during email verification resend',
                     status: 500,
                 },
             };
         }
     }
     // ========================================
-    // SESSION MANAGEMENT
+    // USER INFORMATION & SESSION MANAGEMENT
     // ========================================
     static async getCurrentUser() {
         try {
@@ -362,14 +372,14 @@ export class AuthService {
             if (error) {
                 console.error('Get current user error:', error);
             }
-            return { data, error };
+            return { data: { user: data.user }, error };
         }
         catch (error) {
             console.error('Get current user unexpected error:', error);
             return {
                 data: { user: null },
                 error: {
-                    message: 'An unexpected error occurred while fetching user',
+                    message: 'An unexpected error occurred while fetching user data',
                     status: 500,
                 },
             };
@@ -381,14 +391,14 @@ export class AuthService {
             if (error) {
                 console.error('Get current session error:', error);
             }
-            return { data, error };
+            return { data: { session: data.session }, error };
         }
         catch (error) {
             console.error('Get current session unexpected error:', error);
             return {
                 data: { session: null },
                 error: {
-                    message: 'An unexpected error occurred while fetching session',
+                    message: 'An unexpected error occurred while fetching session data',
                     status: 500,
                 },
             };
@@ -400,14 +410,14 @@ export class AuthService {
             if (error) {
                 console.error('Refresh session error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('Refresh session unexpected error:', error);
             return {
                 data: { user: null, session: null },
                 error: {
-                    message: 'An unexpected error occurred while refreshing session',
+                    message: 'An unexpected error occurred during session refresh',
                     status: 500,
                 },
             };
@@ -415,18 +425,22 @@ export class AuthService {
     }
     static async updateProfile(credentials) {
         try {
-            const { data, error } = await supabase.auth.updateUser(credentials);
+            const { data, error } = await supabase.auth.updateUser({
+                email: credentials.email,
+                password: credentials.password,
+                data: credentials.data,
+            });
             if (error) {
                 console.error('Update profile error:', error);
             }
-            return { data, error };
+            return { data: { user: data.user }, error };
         }
         catch (error) {
             console.error('Update profile unexpected error:', error);
             return {
                 data: { user: null },
                 error: {
-                    message: 'An unexpected error occurred while updating profile',
+                    message: 'An unexpected error occurred during profile update',
                     status: 500,
                 },
             };
@@ -437,32 +451,23 @@ export class AuthService {
     // ========================================
     static onAuthStateChange(callback) {
         return supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth state changed:', event, session?.user?.id);
             callback(event, session);
         });
     }
-    // ========================================
-    // UTILITY METHODS
-    // ========================================
     static isEmailVerified(user) {
-        return user?.email_confirmed_at !== null;
+        return user?.email_confirmed_at != null;
     }
     static isSessionExpired(session) {
-        if (!session)
+        if (!session?.expires_at)
             return true;
-        const expiresAt = session.expires_at;
-        if (!expiresAt)
-            return true;
-        return Date.now() / 1000 > expiresAt;
+        return Date.now() >= session.expires_at * 1000;
     }
     static shouldRefreshSession(session) {
-        if (!session)
+        if (!session?.expires_at)
             return false;
-        const expiresAt = session.expires_at;
-        if (!expiresAt)
-            return false;
-        const refreshThreshold = AUTH_CONFIG.REFRESH_THRESHOLD / 1000; // Convert to seconds
-        return Date.now() / 1000 > expiresAt - refreshThreshold;
+        const expirationTime = session.expires_at * 1000;
+        const refreshThreshold = 5 * 60 * 1000; // 5 minutes before expiration
+        return Date.now() >= expirationTime - refreshThreshold;
     }
     static async signInAnonymously() {
         try {
@@ -470,7 +475,7 @@ export class AuthService {
             if (error) {
                 console.error('Anonymous signin error:', error);
             }
-            return { data, error };
+            return { data: data, error };
         }
         catch (error) {
             console.error('Anonymous signin unexpected error:', error);
@@ -483,7 +488,9 @@ export class AuthService {
             };
         }
     }
-    // Clear rate limiting data (useful for testing or admin actions)
+    // ========================================
+    // UTILITY METHODS
+    // ========================================
     static clearRateLimitData(key) {
         if (key) {
             this.rateLimitTracker.delete(key);
@@ -503,7 +510,7 @@ export class StorageService {
             const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
                 cacheControl: options?.cacheControl || '3600',
                 upsert: false,
-                ...options,
+                contentType: options?.contentType,
             });
             if (error) {
                 console.error('File upload error:', error);
@@ -514,7 +521,10 @@ export class StorageService {
             console.error('File upload unexpected error:', error);
             return {
                 data: null,
-                error: { message: 'An unexpected error occurred during file upload' },
+                error: {
+                    message: 'An unexpected error occurred during file upload',
+                    status: 500,
+                },
             };
         }
     }
@@ -530,7 +540,10 @@ export class StorageService {
             console.error('File download unexpected error:', error);
             return {
                 data: null,
-                error: { message: 'An unexpected error occurred during file download' },
+                error: {
+                    message: 'An unexpected error occurred during file download',
+                    status: 500,
+                },
             };
         }
     }
@@ -541,15 +554,18 @@ export class StorageService {
         try {
             const { data, error } = await supabase.storage.from(bucket).remove(paths);
             if (error) {
-                console.error('File delete error:', error);
+                console.error('File deletion error:', error);
             }
             return { data, error };
         }
         catch (error) {
-            console.error('File delete unexpected error:', error);
+            console.error('File deletion unexpected error:', error);
             return {
                 data: null,
-                error: { message: 'An unexpected error occurred during file deletion' },
+                error: {
+                    message: 'An unexpected error occurred during file deletion',
+                    status: 500,
+                },
             };
         }
     }
@@ -564,20 +580,19 @@ export class ValidationService {
     }
     static validatePassword(password) {
         const errors = [];
-        const config = AUTH_CONFIG.PASSWORD_REQUIREMENTS;
-        if (password.length < config.minLength) {
-            errors.push(`Password must be at least ${config.minLength} characters long`);
+        if (password.length < 8) {
+            errors.push('Password must be at least 8 characters long');
         }
-        if (config.requireUppercase && !/[A-Z]/.test(password)) {
+        if (!/[A-Z]/.test(password)) {
             errors.push('Password must contain at least one uppercase letter');
         }
-        if (config.requireLowercase && !/[a-z]/.test(password)) {
+        if (!/[a-z]/.test(password)) {
             errors.push('Password must contain at least one lowercase letter');
         }
-        if (config.requireNumbers && !/\d/.test(password)) {
+        if (!/\d/.test(password)) {
             errors.push('Password must contain at least one number');
         }
-        if (config.requireSpecialChars && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
             errors.push('Password must contain at least one special character');
         }
         return {
@@ -586,16 +601,17 @@ export class ValidationService {
         };
     }
     static validateName(name) {
-        return name.length >= 2 && name.length <= 100;
+        return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());
     }
     static sanitizeInput(input) {
-        return input.trim().replace(/[<>]/g, '');
+        return input
+            .replace(/[<>'"]/g, '') // Remove potentially dangerous characters
+            .trim();
     }
 }
 // ========================================
-// ADDITIONAL SERVICES (placeholder implementations)
+// PLACEHOLDER SERVICES (TO BE IMPLEMENTED)
 // ========================================
-// Export existing services for backward compatibility
 export class TrainerService {
 }
 export class ClientService {

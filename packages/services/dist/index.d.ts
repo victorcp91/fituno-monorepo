@@ -1,5 +1,31 @@
-import type { AuthError, AuthResponse, Session, User, UserResponse } from '@supabase/supabase-js';
+import type { AuthError, Session, User } from '@supabase/supabase-js';
 export declare const supabase: import("@supabase/supabase-js").SupabaseClient<any, "public", any>;
+export interface FitunoAuthResponse {
+    data: {
+        user: User | null;
+        session: Session | null;
+    } | {
+        user: null;
+        session: null;
+    };
+    error: AuthError | null;
+}
+export interface FitunoUserResponse {
+    data: {
+        user: User | null;
+    };
+    error: AuthError | null;
+}
+export interface FitunoOAuthResponse {
+    data: {
+        provider?: string;
+        url?: string;
+    } | {
+        user: User | null;
+        session: Session | null;
+    };
+    error: AuthError | null;
+}
 export declare class ApiClient {
     private baseURL;
     private timeout;
@@ -62,31 +88,31 @@ export declare class AuthService {
     private static rateLimitTracker;
     private static getBaseUrl;
     private static checkRateLimit;
-    static signUp(credentials: SignUpCredentials): Promise<AuthResponse>;
-    static signIn(credentials: SignInCredentials): Promise<AuthResponse>;
+    static signUp(credentials: SignUpCredentials): Promise<FitunoAuthResponse>;
+    static signIn(credentials: SignInCredentials): Promise<FitunoAuthResponse>;
     static signOut(): Promise<{
         error: AuthError | null;
     }>;
-    static signInWithGoogle(): Promise<AuthResponse>;
-    static signInWithFacebook(): Promise<AuthResponse>;
+    static signInWithGoogle(): Promise<FitunoOAuthResponse>;
+    static signInWithFacebook(): Promise<FitunoOAuthResponse>;
     static resetPassword(credentials: PasswordResetCredentials): Promise<{
         data: any;
         error: AuthError | null;
     }>;
-    static updatePassword(credentials: UpdatePasswordCredentials): Promise<UserResponse>;
+    static updatePassword(credentials: UpdatePasswordCredentials): Promise<FitunoUserResponse>;
     static resendEmailVerification(): Promise<{
         data: any;
         error: AuthError | null;
     }>;
-    static getCurrentUser(): Promise<UserResponse>;
+    static getCurrentUser(): Promise<FitunoUserResponse>;
     static getCurrentSession(): Promise<{
         data: {
             session: Session | null;
         };
         error: AuthError | null;
     }>;
-    static refreshSession(): Promise<AuthResponse>;
-    static updateProfile(credentials: UpdateProfileCredentials): Promise<UserResponse>;
+    static refreshSession(): Promise<FitunoAuthResponse>;
+    static updateProfile(credentials: UpdateProfileCredentials): Promise<FitunoUserResponse>;
     static onAuthStateChange(callback: (event: string, session: Session | null) => void): {
         data: {
             subscription: import("@supabase/auth-js").Subscription;
@@ -95,7 +121,7 @@ export declare class AuthService {
     static isEmailVerified(user: User | null): boolean;
     static isSessionExpired(session: Session | null): boolean;
     static shouldRefreshSession(session: Session | null): boolean;
-    static signInAnonymously(): Promise<AuthResponse>;
+    static signInAnonymously(): Promise<FitunoAuthResponse>;
     static clearRateLimitData(key?: string): void;
 }
 export declare class StorageService {
