@@ -1,0 +1,58 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Fituno - Regras de Fluxo de Desenvolvimento
+
+---
+description: Guia obrigatório para fluxo de desenvolvimento, controle de tarefas e versionamento no projeto Fituno
+globs: FITUNO_TASKS.md, .roo/rules/*.md, apps/**, packages/**
+alwaysApply: true
+---
+
+- **O agente deve atuar como um desenvolvedor experiente, seguindo rigorosamente todas as regras dos arquivos em `.roo/rules/`**
+  - Antes de iniciar qualquer implementação, revisar e aplicar todas as regras relevantes
+  - Consultar regras específicas para estrutura, testes, commits, segurança, etc.
+
+- **Controle de Tarefas com FITUNO_TASKS.md**
+  - Sempre verificar o arquivo [FITUNO_TASKS.md](mdc:FITUNO_TASKS.md) para identificar a próxima task/subtask pendente
+  - Iniciar sempre da task/subtask de maior prioridade ainda não concluída
+  - Atualizar o status da task/subtask para "🚧 In Progress" ao iniciar e "✅ Done" ao finalizar
+  - Após finalizar uma subtask, atualizar imediatamente o status no arquivo e commitar a alteração
+
+- **Branches e Versionamento**
+  - Ao iniciar uma task/subtask, criar uma nova branch com nome descritivo (ex: `feat/task-5.1-nextjs-setup`)
+  - Todos os avanços devem ser commitados na branch correspondente, preferencialmente ao finalizar cada subtask
+  - O commit deve seguir o padrão Conventional Commits, incluindo o ID da task/subtask no escopo
+  - Exemplo: `feat(task-5.1): configura Next.js com TypeScript`
+
+- **Pull Requests**
+  - Ao finalizar uma task completa (todas as subtasks concluídas), abrir um Pull Request para revisão
+  - O PR deve referenciar todas as subtasks implementadas e incluir checklist de critérios de aceite
+
+- **Checklist de Finalização**
+  - [ ] Implementação completa da subtask
+  - [ ] Testes ≥ 80% cobertura
+  - [ ] Lint sem erros
+  - [ ] Build funcionando
+  - [ ] Commit realizado
+  - [ ] Status atualizado em [FITUNO_TASKS.md](mdc:FITUNO_TASKS.md)
+  - [ ] PR aberto (ao concluir task major)
+
+- **Exemplo de Fluxo**
+  1. Verificar próxima subtask pendente em [FITUNO_TASKS.md](mdc:FITUNO_TASKS.md)
+  2. Criar branch: `git checkout -b feat/task-5.1-nextjs-setup`
+  3. Implementar funcionalidade e testes
+  4. Commitar: `git commit -m "feat(task-5.1): configura Next.js com TypeScript"`
+  5. Atualizar status da subtask para "✅ Done" em [FITUNO_TASKS.md](mdc:FITUNO_TASKS.md) e commitar
+  6. Ao concluir todas as subtasks da task major, abrir PR
+
+- **Observações**
+  - Nunca prossiga para próxima task/subtask sem atualizar status e commitar
+  - Sempre siga as regras de estrutura, testes e commits do projeto
+  - O agente deve ser proativo em corrigir desvios do fluxo e alertar sobre pendências
+
+- **Atenção ao Escopo da Task/Subtask**
+  - O agente deve se ater estritamente à task ou subtask em andamento, sem implementar funcionalidades, melhorias ou alterações fora do escopo definido na descrição da task/subtask
+  - Qualquer sugestão de melhoria ou ajuste fora do escopo deve ser registrada para avaliação futura, nunca implementada imediatamente
