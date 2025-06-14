@@ -33,7 +33,7 @@ implementation.
 | 2   | Database Schema Implementation         | High     | 1                | ✅ Done        | 14 main entities, RLS policies, triggers, indexes              |
 | 3   | Shared Packages Implementation         | High     | 1, 2             | ⏳ Pending     | TypeScript interfaces, utils, Supabase client, i18n            |
 | 4   | Authentication System                  | High     | 2, 3             | 🚧 In Progress | Email/password, social login, verification, session management |
-| 5   | Trainer Web App Foundation             | High     | 3, 4             | ⏳ Pending     | Next.js 13+, ShadCN UI, routing, auth middleware               |
+| 5   | Trainer Web App Foundation             | High     | 3, 4             | 🚧 In Progress | Next.js 13+, ShadCN UI, routing, auth middleware               |
 | 6   | Client Mobile App Foundation           | High     | 3, 4             | ⏳ Pending     | Expo, React Native Paper, navigation, offline storage          |
 | 7   | Plan & Subscription System             | High     | 5                | ⏳ Pending     | Free plan (2 clients), PRO upgrade, webhooks                   |
 | 8   | Client Management System               | High     | 5, 7             | ⏳ Pending     | Client invitation, status management, RLS enforcement          |
@@ -283,7 +283,7 @@ Implement complete authentication system with Supabase Auth for both apps.
 
 ## Task 5: Trainer Web App Foundation
 
-**Priority**: High | **Dependencies**: 3, 4 | **Status**: ⏳ Pending
+**Priority**: High | **Dependencies**: 3, 4 | **Status**: 🚧 In Progress
 
 Create the Next.js trainer web application with basic structure and routing.
 
