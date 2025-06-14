@@ -1,20 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Tabs } from 'expo-router';
 import React from 'react';
 import { useTheme } from 'react-native-paper';
-import { HomeScreen } from '../screens/main/HomeScreen';
-import { ProfileScreen } from '../screens/main/ProfileScreen';
-import { ProgressScreen } from '../screens/main/ProgressScreen';
-import { WorkoutsScreen } from '../screens/main/WorkoutsScreen';
-import { MainTabParamList } from './types';
 
-const Tab = createBottomTabNavigator<MainTabParamList>();
-
-export function MainNavigator() {
+export default function AppLayout() {
   const theme = useTheme();
 
   return (
-    <Tab.Navigator
+    <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
@@ -25,42 +18,42 @@ export function MainNavigator() {
         tabBarInactiveTintColor: theme.colors.onSurfaceDisabled,
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
+      <Tabs.Screen
+        name="home"
         options={{
+          title: 'Home',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" size={size} color={color} />
           ),
         }}
       />
-      <Tab.Screen
-        name="Workouts"
-        component={WorkoutsScreen}
+      <Tabs.Screen
+        name="workouts"
         options={{
+          title: 'Workouts',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="dumbbell" size={size} color={color} />
           ),
         }}
       />
-      <Tab.Screen
-        name="Progress"
-        component={ProgressScreen}
+      <Tabs.Screen
+        name="progress"
         options={{
+          title: 'Progress',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chart-line" size={size} color={color} />
           ),
         }}
       />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
+      <Tabs.Screen
+        name="profile"
         options={{
+          title: 'Profile',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account" size={size} color={color} />
           ),
         }}
       />
-    </Tab.Navigator>
+    </Tabs>
   );
 }
