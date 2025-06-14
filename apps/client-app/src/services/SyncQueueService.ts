@@ -89,16 +89,27 @@ export class SyncQueueService {
   // Mark item as failed (increment retry count)
   public async markAsFailed(id: string, error: string): Promise<void> {
     try {
+      // First get the current item
+      const [currentItem] = await this.dbManager.select(TABLES.SYNC_QUEUE, '*', 'id = ?', [id]);
+
+      if (!currentItem) {
+        throw new Error(`Sync queue item ${id} not found`);
+      }
+
+      // Increment retry count
+      const newRetryCount = (currentItem.retry_count || 0) + 1;
+
+      // Update with new values
       await this.dbManager.update(
         TABLES.SYNC_QUEUE,
         {
-          retry_count: 'retry_count + 1',
+          retry_count: newRetryCount,
           last_error: error,
         },
         'id = ?',
         [id]
       );
-      console.log(`Marked item ${id} as failed, retry count incremented`);
+      console.log(`Marked item ${id} as failed, retry count incremented to ${newRetryCount}`);
     } catch (dbError) {
       console.error('Failed to mark item as failed:', dbError);
       throw dbError;
