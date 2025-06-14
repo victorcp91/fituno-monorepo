@@ -144,18 +144,21 @@ export const useUIStore = create<UIState>((set, get) => ({
   setTheme: theme => {
     set({ theme });
 
-    // Apply theme to document
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else if (theme === 'light') {
-      document.documentElement.classList.remove('dark');
-    } else {
-      // System theme
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (prefersDark) {
+    // Only run DOM manipulation in browser environment
+    if (typeof window !== 'undefined') {
+      // Apply theme to document
+      if (theme === 'dark') {
         document.documentElement.classList.add('dark');
-      } else {
+      } else if (theme === 'light') {
         document.documentElement.classList.remove('dark');
+      } else {
+        // System theme
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (prefersDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
       }
     }
   },
