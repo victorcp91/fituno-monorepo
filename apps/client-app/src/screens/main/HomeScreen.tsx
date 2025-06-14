@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
+import { StorageTest } from '../../components/StorageTest';
 
 export function HomeScreen() {
   const theme = useTheme();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <Card style={styles.card}>
         <Card.Content>
           <Text variant="headlineMedium">Welcome Back!</Text>
@@ -15,7 +16,10 @@ export function HomeScreen() {
           </Text>
         </Card.Content>
       </Card>
-    </View>
+
+      {/* Temporary storage test component */}
+      <StorageTest />
+    </ScrollView>
   );
 }
 
