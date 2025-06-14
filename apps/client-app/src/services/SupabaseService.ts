@@ -15,25 +15,65 @@ export class SupabaseService {
       auth: {
         storage: {
           getItem: async (key: string) => {
-            // Use our secure storage for auth tokens
-            if (key.includes('token') || key.includes('session')) {
-              return await storageService.getSecureItem('ACCESS_TOKEN');
+            // Map specific Supabase keys to our secure storage
+            switch (key) {
+              case 'sb-access-token':
+                return await storageService.getSecureItem('ACCESS_TOKEN');
+              case 'sb-refresh-token':
+                return await storageService.getSecureItem('REFRESH_TOKEN');
+              case 'sb-provider-token':
+                return await storageService.getSecureItem('ID_TOKEN');
+              case 'sb-auth-session':
+                return await storageService.getSecureItem('USER_CREDENTIALS');
+              case 'sb-user':
+                return await storageService.getPreference('USER_PROFILE_CACHE');
+              default:
+                console.warn(`Unknown storage key requested: ${key}`);
+                return null;
             }
-            return await storageService.getPreference('USER_PROFILE_CACHE');
           },
           setItem: async (key: string, value: string) => {
-            // Store auth tokens securely
-            if (key.includes('token') || key.includes('session')) {
-              await storageService.setSecureItem('ACCESS_TOKEN', value);
-            } else {
-              await storageService.setPreference('USER_PROFILE_CACHE', value);
+            // Map specific Supabase keys to our secure storage
+            switch (key) {
+              case 'sb-access-token':
+                await storageService.setSecureItem('ACCESS_TOKEN', value);
+                break;
+              case 'sb-refresh-token':
+                await storageService.setSecureItem('REFRESH_TOKEN', value);
+                break;
+              case 'sb-provider-token':
+                await storageService.setSecureItem('ID_TOKEN', value);
+                break;
+              case 'sb-auth-session':
+                await storageService.setSecureItem('USER_CREDENTIALS', value);
+                break;
+              case 'sb-user':
+                await storageService.setPreference('USER_PROFILE_CACHE', value);
+                break;
+              default:
+                console.warn(`Unknown storage key requested: ${key}`);
             }
           },
           removeItem: async (key: string) => {
-            if (key.includes('token') || key.includes('session')) {
-              await storageService.removeSecureItem('ACCESS_TOKEN');
-            } else {
-              await storageService.removePreference('USER_PROFILE_CACHE');
+            // Map specific Supabase keys to our secure storage
+            switch (key) {
+              case 'sb-access-token':
+                await storageService.removeSecureItem('ACCESS_TOKEN');
+                break;
+              case 'sb-refresh-token':
+                await storageService.removeSecureItem('REFRESH_TOKEN');
+                break;
+              case 'sb-provider-token':
+                await storageService.removeSecureItem('ID_TOKEN');
+                break;
+              case 'sb-auth-session':
+                await storageService.removeSecureItem('USER_CREDENTIALS');
+                break;
+              case 'sb-user':
+                await storageService.removePreference('USER_PROFILE_CACHE');
+                break;
+              default:
+                console.warn(`Unknown storage key requested: ${key}`);
             }
           },
         },
