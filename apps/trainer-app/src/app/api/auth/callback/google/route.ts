@@ -22,9 +22,10 @@ export async function GET(request: NextRequest) {
 
     // Exchange authorization code for session using Supabase directly
     const { supabase } = await import('@fituno/services');
-    const { data, error: sessionError } = await supabase.auth.exchangeCodeForSession(code);
+    const { data: sessionData, error: sessionError } =
+      await supabase.auth.exchangeCodeForSession(code);
 
-    if (sessionError || !data.session) {
+    if (sessionError || !sessionData.session) {
       console.error('Session error after OAuth code exchange:', sessionError);
       return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
     }
