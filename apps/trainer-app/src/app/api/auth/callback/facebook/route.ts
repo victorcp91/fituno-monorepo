@@ -50,8 +50,13 @@ export async function GET(request: NextRequest) {
 
     // Existing user with complete profile
     return NextResponse.redirect(new URL(AUTH_CONFIG.REDIRECT_URLS.signIn, request.url));
-  } catch (error) {
-    console.error('Facebook OAuth callback error:', error);
+  } catch (error: unknown) {
+    // Log the error with proper type checking
+    if (error instanceof Error) {
+      console.error('Facebook OAuth callback error:', error.message);
+    } else {
+      console.error('Facebook OAuth callback error:', error);
+    }
     return NextResponse.redirect(new URL('/auth/login?error=internal_error', request.url));
   }
 }

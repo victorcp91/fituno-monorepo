@@ -1,158 +1,186 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
 
-export default function HomePage() {
+export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="mx-auto max-w-4xl space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-foreground">Fituno Trainer Dashboard</h1>
-          <p className="text-xl text-muted-foreground">Welcome to your fitness training platform</p>
-          <div className="fitness-gradient h-2 w-full rounded-full" />
-        </div>
-
-        {/* Component Showcase */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Buttons Card */}
-          <Card className="workout-card">
-            <CardHeader>
-              <CardTitle>Action Buttons</CardTitle>
-              <CardDescription>Primary actions for trainers</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Button className="w-full">Start Workout</Button>
-              <Button variant="secondary" className="w-full">
-                View Progress
-              </Button>
-              <Button variant="outline" className="w-full">
-                Settings
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* User Profile Card */}
-          <Card className="workout-card">
-            <CardHeader>
-              <CardTitle>Trainer Profile</CardTitle>
-              <CardDescription>Your account information</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">JT</span>
-                </div>
-                <div>
-                  <p className="font-medium">John Trainer</p>
-                  <p className="text-sm text-muted-foreground">Certified Trainer</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Badge variant="default">Pro Plan</Badge>
-                <Badge variant="secondary">5 Clients</Badge>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Stats Card */}
-          <Card className="workout-card">
-            <CardHeader>
-              <CardTitle>Today's Overview</CardTitle>
-              <CardDescription>Quick performance metrics</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-center">
-                <div>
-                  <p className="text-2xl font-bold metric-highlight">12</p>
-                  <p className="text-sm text-muted-foreground">Workouts</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold metric-highlight">8</p>
-                  <p className="text-sm text-muted-foreground">Active Clients</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold metric-highlight">45m</p>
-                  <p className="text-sm text-muted-foreground">Avg Session</p>
-                </div>
-                <div>
-                  <p className="text-2xl font-bold metric-highlight">98%</p>
-                  <p className="text-sm text-muted-foreground">Completion</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions Card */}
-          <Card className="workout-card md:col-span-2 lg:col-span-3">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Common trainer tasks</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="client-search">Find Client</Label>
-                  <Input
-                    id="client-search"
-                    placeholder="Search by name or email..."
-                    className="w-full"
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button variant="outline" className="w-full">
-                    Add New Client
-                  </Button>
-                </div>
-                <div className="flex items-end">
-                  <Button variant="secondary" className="w-full">
-                    Create Workout Plan
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Theme Testing Section */}
-        <Card className="workout-card">
-          <CardHeader>
-            <CardTitle>Theme Preview</CardTitle>
-            <CardDescription>Fituno custom color palette in action</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="text-center space-y-2">
-                <div className="h-16 w-full bg-primary rounded-lg"></div>
-                <p className="text-sm font-medium">Primary</p>
-                <p className="text-xs text-muted-foreground">Energetic Orange</p>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="h-16 w-full bg-secondary rounded-lg"></div>
-                <p className="text-sm font-medium">Secondary</p>
-                <p className="text-xs text-muted-foreground">Vibrant Green</p>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="h-16 w-full bg-accent rounded-lg"></div>
-                <p className="text-sm font-medium">Accent</p>
-                <p className="text-xs text-muted-foreground">Electric Blue</p>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="h-16 w-full bg-muted rounded-lg"></div>
-                <p className="text-sm font-medium">Muted</p>
-                <p className="text-xs text-muted-foreground">Soft Gray</p>
-              </div>
-              <div className="text-center space-y-2">
-                <div className="h-16 w-full bg-destructive rounded-lg"></div>
-                <p className="text-sm font-medium">Destructive</p>
-                <p className="text-xs text-muted-foreground">Warning Red</p>
-              </div>
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-16 items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">F</span>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <span className="text-xl font-bold">Fituno</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <Link href="/auth/login">
+              <Button variant="ghost">Login</Button>
+            </Link>
+            <Link href="/auth/register">
+              <Button>Get Started</Button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="py-24 px-4">
+        <div className="container mx-auto text-center space-y-8">
+          <div className="space-y-4">
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground">
+              Transform Your
+              <span className="block fitness-gradient-text">Fitness Business</span>
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              The complete platform for personal trainers to manage clients, create workout plans,
+              and grow their business.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register">
+              <Button size="lg" className="w-full sm:w-auto">
+                Start Free Trial
+              </Button>
+            </Link>
+            <Link href="/auth/login">
+              <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                Login to Dashboard
+              </Button>
+            </Link>
+          </div>
+
+          <div className="fitness-gradient h-2 w-32 rounded-full mx-auto" />
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 bg-muted/50">
+        <div className="container mx-auto">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold">Everything You Need</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Powerful tools designed specifically for personal trainers and fitness professionals.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <span className="text-primary-foreground text-sm">👥</span>
+                  </div>
+                  <span>Client Management</span>
+                </CardTitle>
+                <CardDescription>
+                  Organize your clients, track progress, and manage relationships all in one place.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                    <span className="text-secondary-foreground text-sm">💪</span>
+                  </div>
+                  <span>Workout Planning</span>
+                </CardTitle>
+                <CardDescription>
+                  Create custom workout plans and programs tailored to each client's needs and
+                  goals.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                    <span className="text-accent-foreground text-sm">📊</span>
+                  </div>
+                  <span>Progress Tracking</span>
+                </CardTitle>
+                <CardDescription>
+                  Monitor client progress with detailed analytics and visual progress reports.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <span className="text-primary-foreground text-sm">📱</span>
+                  </div>
+                  <span>Mobile Ready</span>
+                </CardTitle>
+                <CardDescription>
+                  Access your trainer dashboard from anywhere with our responsive web platform.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+                    <span className="text-secondary-foreground text-sm">💬</span>
+                  </div>
+                  <span>Client Communication</span>
+                </CardTitle>
+                <CardDescription>
+                  Stay connected with your clients through integrated messaging and updates.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="workout-card">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                    <span className="text-accent-foreground text-sm">⚡</span>
+                  </div>
+                  <span>Performance Analytics</span>
+                </CardTitle>
+                <CardDescription>
+                  Gain insights into your business with detailed performance metrics and reports.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto text-center space-y-8">
+          <div className="space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold">Ready to Get Started?</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Join thousands of trainers who are already growing their business with Fituno.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/auth/register">
+              <Button size="lg" className="w-full sm:w-auto">
+                Create Free Account
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t py-8 px-4">
+        <div className="container mx-auto text-center text-muted-foreground">
+          <p>&copy; 2024 Fituno. All rights reserved.</p>
+        </div>
+      </footer>
     </div>
   );
 }

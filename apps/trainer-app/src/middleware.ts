@@ -1,4 +1,5 @@
 import { AuthService } from '@fituno/services';
+import type { User } from '@supabase/supabase-js';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
@@ -6,6 +7,7 @@ import { NextResponse } from 'next/server';
 const routeConfig = {
   // Public routes - no authentication required
   public: [
+    '/', // Landing page
     '/auth/verify-email',
     '/auth/reset-password',
     '/api/auth',
@@ -21,21 +23,20 @@ const routeConfig = {
   // Protected routes - require authentication
   protected: {
     // Trainer-only routes
-    trainer: ['/', '/clients', '/workouts', '/programs', '/analytics', '/settings', '/api/v1'],
+    trainer: [
+      '/dashboard',
+      '/clients',
+      '/workouts',
+      '/programs',
+      '/analytics',
+      '/settings',
+      '/api/v1',
+    ],
 
     // Admin-only routes (future use)
     admin: ['/admin'],
   },
 };
-
-interface User {
-  id: string;
-  email: string;
-  user_metadata?: {
-    user_type?: 'trainer' | 'client' | 'admin';
-    full_name?: string;
-  };
-}
 
 interface AuthResult {
   isAuthenticated: boolean;
@@ -48,7 +49,8 @@ async function validateAuthentication(): Promise<AuthResult> {
   try {
     const { data, error } = await AuthService.getCurrentUser();
 
-    if (error || !data?.user) {
+    // Check if user exists (AuthService now silently handles missing session)
+    if (!data?.user) {
       return {
         isAuthenticated: false,
         user: null,
@@ -57,13 +59,14 @@ async function validateAuthentication(): Promise<AuthResult> {
       };
     }
 
-    const user = data.user as User;
+    // If we have a user, consider them authenticated
+    const user = data.user;
     const userType = user.user_metadata?.user_type || null;
 
     return {
       isAuthenticated: true,
       user,
-      userType,
+      userType: userType as 'trainer' | 'client' | 'admin' | null,
     };
   } catch (error) {
     console.error('Auth validation error:', error);
@@ -145,98 +148,51 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Allow public routes without authentication
+  // Check if it's a public route
   if (isPublicRoute(pathname)) {
-    const response = NextResponse.next();
-    return addSecurityHeaders(response);
+    return addSecurityHeaders(NextResponse.next());
   }
 
-  try {
-    // Validate authentication
-    const authResult = await validateAuthentication();
+  // Validate authentication
+  const { isAuthenticated, userType } = await validateAuthentication();
 
-    // Handle auth routes
-    if (isAuthRoute(pathname)) {
-      if (authResult.isAuthenticated) {
-        // Redirect authenticated users away from auth pages
-        const redirectUrl = new URL('/', request.url);
-        const response = NextResponse.redirect(redirectUrl);
-        return addSecurityHeaders(response);
-      }
-      // Allow unauthenticated users to access auth pages
-      const response = NextResponse.next();
-      return addSecurityHeaders(response);
+  // Handle auth routes (login/register)
+  if (isAuthRoute(pathname)) {
+    if (isAuthenticated) {
+      // Redirect authenticated users away from auth routes
+      const redirectUrl = new URL('/dashboard', request.url);
+      return addSecurityHeaders(NextResponse.redirect(redirectUrl));
     }
+    return addSecurityHeaders(NextResponse.next());
+  }
 
-    // Handle protected routes
-    if (!authResult.isAuthenticated) {
-      // Redirect unauthenticated users to login
-      const redirectUrl = new URL('/auth/login', request.url);
-      redirectUrl.searchParams.set('redirectTo', pathname);
-      redirectUrl.searchParams.set('error', 'authentication_required');
-      const response = NextResponse.redirect(redirectUrl);
-      return addSecurityHeaders(response);
-    }
-
-    // Check role-based access
-    const accessCheck = checkRouteAccess(pathname, authResult.userType);
-
-    if (!accessCheck.hasAccess) {
-      // User doesn't have required role
-      console.warn(
-        `Access denied: User ${authResult.user?.email} (${authResult.userType}) tried to access ${pathname} (requires ${accessCheck.requiredRole})`
-      );
-
-      // Redirect to appropriate page based on user type
-      let redirectPath = '/auth/login';
-      if (authResult.userType === 'client') {
-        redirectPath = '/client/dashboard'; // Future client dashboard
-      } else if (authResult.userType === 'trainer') {
-        redirectPath = '/';
-      }
-
-      const redirectUrl = new URL(redirectPath, request.url);
-      redirectUrl.searchParams.set('error', 'insufficient_permissions');
-      const response = NextResponse.redirect(redirectUrl);
-      return addSecurityHeaders(response);
-    }
-
-    // Check if trainer profile is complete
-    if (authResult.userType === 'trainer' && authResult.user) {
-      const hasCompleteProfile = authResult.user.user_metadata?.user_type === 'trainer';
-
-      if (!hasCompleteProfile && pathname !== '/onboarding') {
-        // Redirect to profile completion
-        const redirectUrl = new URL('/onboarding', request.url);
-        redirectUrl.searchParams.set('redirectTo', pathname);
-        const response = NextResponse.redirect(redirectUrl);
-        return addSecurityHeaders(response);
-      }
-    }
-
-    // Allow access with security headers
-    const response = NextResponse.next();
-    return addSecurityHeaders(response);
-  } catch (error) {
-    console.error('Middleware error:', error);
-
-    // On error, redirect to login for protected routes
+  // Handle protected routes
+  if (!isAuthenticated) {
+    // Redirect unauthenticated users to login
     const redirectUrl = new URL('/auth/login', request.url);
-    redirectUrl.searchParams.set('error', 'session_error');
-    redirectUrl.searchParams.set('redirectTo', pathname);
-    const response = NextResponse.redirect(redirectUrl);
-    return addSecurityHeaders(response);
+    redirectUrl.searchParams.set('redirect', pathname);
+    return addSecurityHeaders(NextResponse.redirect(redirectUrl));
   }
+
+  // Check role-based access
+  const { hasAccess, requiredRole } = checkRouteAccess(pathname, userType);
+  if (!hasAccess) {
+    // Redirect to appropriate error page or dashboard based on role
+    const redirectUrl = new URL(userType ? '/dashboard' : '/auth/login', request.url);
+    if (requiredRole) {
+      redirectUrl.searchParams.set('error', `requires_${requiredRole}_role`);
+    }
+    return addSecurityHeaders(NextResponse.redirect(redirectUrl));
+  }
+
+  return addSecurityHeaders(NextResponse.next());
 }
 
 export const config = {
   matcher: [
     /*
-     * Match all request paths except:
-     * - API routes (handled separately)
-     * - Static files (_next/static, images, etc.)
-     * - Favicon and other assets
+     * Match all request paths except for static files
      */
-    '/((?!api/auth/callback|api/health|_next/static|_next/image|favicon.ico|.*\\..*).)*',
+    '/((?!_next/static|_next/image|favicon.ico|.*\\..*).)*',
   ],
 };

@@ -29,12 +29,10 @@ function OnboardingForm() {
     const loadUserData = async () => {
       try {
         const { data } = await AuthService.getCurrentUser();
-        if (data?.user) {
-          setFormData(prev => ({
-            ...prev,
-            fullName: data.user.user_metadata?.full_name || '',
-          }));
-        }
+        setFormData(prev => ({
+          ...prev,
+          fullName: data?.user?.user_metadata?.full_name || '',
+        }));
       } catch (error) {
         console.error('Error loading user data:', error);
       }
