@@ -1,12 +1,11 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, HelperText, Text, TextInput, useTheme } from 'react-native-paper';
-import { useAuthNavigation } from '../../navigation/hooks';
 import { useAuth } from '../../providers/AuthProvider';
 
 export function ForgotPasswordScreen() {
   const theme = useTheme();
-  const navigation = useAuthNavigation();
   const { resetPassword } = useAuth();
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -80,7 +79,7 @@ export function ForgotPasswordScreen() {
 
       <Button
         mode="text"
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => router.replace('/auth/login')}
         disabled={isLoading}
         style={styles.button}
       >
