@@ -1,20 +1,31 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Card, Text, useTheme } from 'react-native-paper';
+import { Button, Text, useTheme } from 'react-native-paper';
+import { useAuth } from '../../providers/AuthProvider';
 
 export function ProfileScreen() {
   const theme = useTheme();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text variant="headlineMedium">Your Profile</Text>
-          <Text variant="bodyLarge" style={{ marginTop: 10 }}>
-            Manage your account settings
-          </Text>
-        </Card.Content>
-      </Card>
+      <Text variant="headlineMedium" style={{ color: theme.colors.onBackground }}>
+        Profile
+      </Text>
+      <Text variant="bodyLarge" style={{ color: theme.colors.onBackground, marginVertical: 20 }}>
+        {user?.email}
+      </Text>
+      <Button mode="contained" onPress={handleSignOut} style={styles.button}>
+        Sign Out
+      </Button>
     </View>
   );
 }
@@ -22,9 +33,12 @@ export function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
-  card: {
-    marginBottom: 16,
+  button: {
+    width: '100%',
+    marginTop: 10,
   },
 });

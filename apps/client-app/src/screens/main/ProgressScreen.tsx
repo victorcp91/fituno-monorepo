@@ -1,20 +1,18 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Card, Text, useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 export function ProgressScreen() {
   const theme = useTheme();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Card style={styles.card}>
-        <Card.Content>
-          <Text variant="headlineMedium">Your Progress</Text>
-          <Text variant="bodyLarge" style={{ marginTop: 10 }}>
-            See how far you've come
-          </Text>
-        </Card.Content>
-      </Card>
+      <Text variant="headlineMedium" style={{ color: theme.colors.onBackground }}>
+        Progress
+      </Text>
+      <Text variant="bodyLarge" style={{ color: theme.colors.onBackground }}>
+        Track your fitness journey
+      </Text>
     </View>
   );
 }
@@ -22,9 +20,8 @@ export function ProgressScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-  },
-  card: {
-    marginBottom: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
 });
