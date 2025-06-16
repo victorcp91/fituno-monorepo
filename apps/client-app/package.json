@@ -13,7 +13,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "type-check": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
