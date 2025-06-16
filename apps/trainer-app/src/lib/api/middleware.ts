@@ -37,9 +37,8 @@ export async function withErrorHandling(handler: (request: NextRequest) => Promi
   return async (request: NextRequest) => {
     try {
       return await handler(request);
-    } catch {
-
-
+    } catch (error) {
+      // Handle error silently and return generic error response
       return createErrorResponse(
         error instanceof Error ? error.message : 'Internal server error',
         500

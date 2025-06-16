@@ -7,11 +7,32 @@ import { API_CONFIG, AUTH_CONFIG, SUPABASE_CONFIG } from '@fituno/constants';
 import type { AuthError, Session, User } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase Client with build-time safety
+// Environment validation
+const isSupabaseConfigured = () => {
+  return (
+    SUPABASE_CONFIG.URL &&
+    SUPABASE_CONFIG.URL !== '' &&
+    !SUPABASE_CONFIG.URL.includes('placeholder') &&
+    SUPABASE_CONFIG.ANON_KEY &&
+    SUPABASE_CONFIG.ANON_KEY !== '' &&
+    !SUPABASE_CONFIG.ANON_KEY.includes('placeholder')
+  );
+};
+
+// Supabase Client with proper validation
 export const supabase = createClient(
   SUPABASE_CONFIG.URL || 'https://placeholder.supabase.co',
   SUPABASE_CONFIG.ANON_KEY || 'placeholder-key'
 );
+
+// Helper function to create a consistent error for missing configuration
+const createConfigurationError = (): AuthError =>
+  ({
+    message:
+      'Supabase is not properly configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY environment variables.',
+    status: 400,
+    name: 'ConfigurationError',
+  }) as AuthError;
 
 // ========================================
 // CUSTOM TYPE DEFINITIONS
@@ -513,15 +534,23 @@ export class AuthService {
 
   static async getCurrentUser(): Promise<FitunoUserResponse> {
     try {
+      // Check if Supabase is properly configured
+      if (!isSupabaseConfigured()) {
+        return {
+          data: { user: null },
+          error: createConfigurationError(),
+        };
+      }
+
       const { data, error } = await supabase.auth.getUser();
 
       if (error) {
-        console.error('Get current user error:', error);
+        // Handle error silently
       }
 
       return { data: { user: data.user }, error };
-    } catch (error) {
-      console.error('Get current user unexpected error:', error);
+    } catch {
+      // Handle error silently
       return {
         data: { user: null },
         error: {
