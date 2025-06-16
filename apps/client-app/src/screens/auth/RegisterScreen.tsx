@@ -32,7 +32,7 @@ export function RegisterScreen() {
       if (!success) {
         setError(signUpError || 'Failed to sign up');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);

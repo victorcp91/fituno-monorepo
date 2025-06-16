@@ -13,9 +13,9 @@ interface AuthContextType {
   error: string | null;
 
   // Actions
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (_email: string, _password: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
-  updateProfile: (data: any) => Promise<{ success: boolean; error?: string }>;
+  updateProfile: (_data: any) => Promise<{ success: boolean; error?: string }>;
   checkAuth: () => Promise<void>;
   clearError: () => void;
 
@@ -114,8 +114,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [setUser]);
 
   // Enhanced sign in with query invalidation
-  const signIn = async (email: string, password: string) => {
-    const result = await storeSignIn(email, password);
+  const signIn = async (_email: string, _password: string) => {
+    const result = await storeSignIn(_email, _password);
 
     if (result.success) {
       // Invalidate and refetch auth-related queries
@@ -134,8 +134,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Enhanced profile update with query invalidation
-  const updateProfile = async (data: any) => {
-    const result = await storeUpdateProfile(data);
+  const updateProfile = async (_data: any) => {
+    const result = await storeUpdateProfile(_data);
 
     if (result.success) {
       // Invalidate auth and related queries
@@ -257,7 +257,7 @@ export function usePermissions() {
   };
 
   const isEmailVerified = () => {
-    return isAuthenticated && !!user?.email_confirmed_at;
+    return user?.email_confirmed_at != null;
   };
 
   return {

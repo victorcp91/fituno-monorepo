@@ -258,7 +258,7 @@ export class BiometricAuthService {
 
       // TODO: Replace with proper encryption library
       const decodedData = atob(encryptedData.encrypted);
-      const [_, data] = decodedData.split(':');
+      const [, data] = decodedData.split(':');
 
       if (!data) {
         throw new Error('Invalid encrypted data format');

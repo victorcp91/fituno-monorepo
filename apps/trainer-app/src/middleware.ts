@@ -80,7 +80,7 @@ async function validateAuthentication(): Promise<AuthResult> {
 }
 
 function isPublicRoute(pathname: string): boolean {
-  return routeConfig.public.some(route => pathname === route || pathname.startsWith(route + '/'));
+  return routeConfig.public.some(route => pathname === route || pathname.startsWith(`${route  }/`));
 }
 
 function isAuthRoute(pathname: string): boolean {
@@ -97,7 +97,7 @@ function checkRouteAccess(
   // Check trainer routes
   if (
     routeConfig.protected.trainer.some(
-      route => pathname === route || pathname.startsWith(route + '/')
+      route => pathname === route || pathname.startsWith(`${route  }/`)
     )
   ) {
     return {
@@ -109,7 +109,7 @@ function checkRouteAccess(
   // Check admin routes
   if (
     routeConfig.protected.admin.some(
-      route => pathname === route || pathname.startsWith(route + '/')
+      route => pathname === route || pathname.startsWith(`${route  }/`)
     )
   ) {
     return {

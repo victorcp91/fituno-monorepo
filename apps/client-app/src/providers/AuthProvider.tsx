@@ -23,22 +23,22 @@ export interface AuthState {
 
 export interface AuthContextType extends AuthState {
   // Authentication methods
-  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signIn: (_email: string, _password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (
-    email: string,
-    password: string,
-    metadata?: Record<string, any>
+    _email: string,
+    _password: string,
+    _metadata?: Record<string, any>
   ) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
-  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
-  updatePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
+  resetPassword: (_email: string) => Promise<{ success: boolean; error?: string }>;
+  updatePassword: (_newPassword: string) => Promise<{ success: boolean; error?: string }>;
 
   // Social authentication
   signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   signInWithFacebook: () => Promise<{ success: boolean; error?: string }>;
 
   // Biometric authentication
-  enableBiometric: (credentials: {
+  enableBiometric: (_credentials: {
     email: string;
     password: string;
   }) => Promise<{ success: boolean; error?: string }>;
@@ -157,30 +157,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signIn = async (email: string, password: string): Promise<AuthResponse> => {
+  const signIn = async (_email: string, _password: string): Promise<AuthResponse> => {
     try {
-      const { error } = await supabaseService.signIn(email, password);
+      const { error } = await supabaseService.signIn(_email, _password);
       if (error) {
         return { success: false, error: (error as AuthError).message || 'Sign in failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Sign in failed' };
     }
   };
 
   const signUp = async (
-    email: string,
-    password: string,
-    metadata?: { [key: string]: any }
+    _email: string,
+    _password: string,
+    _metadata?: { [key: string]: any }
   ): Promise<AuthResponse> => {
     try {
-      const { error } = await supabaseService.signUp(email, password, metadata);
+      const { error } = await supabaseService.signUp(_email, _password, _metadata);
       if (error) {
         return { success: false, error: (error as AuthError).message || 'Sign up failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Sign up failed' };
     }
   };
@@ -195,26 +195,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email: string): Promise<AuthResponse> => {
+  const resetPassword = async (_email: string): Promise<AuthResponse> => {
     try {
-      const { error } = await supabaseService.resetPassword(email);
+      const { error } = await supabaseService.resetPassword(_email);
       if (error) {
         return { success: false, error: (error as AuthError).message || 'Password reset failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Password reset failed' };
     }
   };
 
-  const updatePassword = async (newPassword: string): Promise<AuthResponse> => {
+  const updatePassword = async (_newPassword: string): Promise<AuthResponse> => {
     try {
-      const { error } = await supabaseService.updatePassword(newPassword);
+      const { error } = await supabaseService.updatePassword(_newPassword);
       if (error) {
         return { success: false, error: (error as AuthError).message || 'Password update failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Password update failed' };
     }
   };
@@ -226,7 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, error: (error as AuthError).message || 'Google sign in failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Google sign in failed' };
     }
   };
@@ -238,7 +238,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return { success: false, error: (error as AuthError).message || 'Facebook sign in failed' };
       }
       return { success: true };
-    } catch (error) {
+    } catch {
       return { success: false, error: 'Facebook sign in failed' };
     }
   };
