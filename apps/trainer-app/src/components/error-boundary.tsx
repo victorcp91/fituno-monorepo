@@ -84,24 +84,24 @@ function ChunkErrorFallback({ resetErrorBoundary }: ErrorFallbackProps) {
 interface ErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ComponentType<ErrorFallbackProps>;
-  onError?: (error: Error, errorInfo: React.ErrorInfo) => void;
+  onError?: (_error: Error, _errorInfo: React.ErrorInfo) => void;
   level?: 'page' | 'component';
 }
 
 export function ErrorBoundary({ children, fallback, onError, level = 'page' }: ErrorBoundaryProps) {
   const FallbackComponent = fallback || (level === 'page' ? ErrorFallback : ChunkErrorFallback);
 
-  const handleError = (error: Error, errorInfo: React.ErrorInfo) => {
-    console.error('Error caught by boundary:', error, errorInfo);
+  const handleError = (_error: Error, _errorInfo: React.ErrorInfo) => {
+    console.error('Error caught by boundary:', _error, _errorInfo);
 
     // Log error to external service in production
     if (process.env.NODE_ENV === 'production') {
       // TODO: Integrate with error reporting service (e.g., Sentry)
-      // logErrorToService(error, errorInfo);
+      // logErrorToService(_error, _errorInfo);
     }
 
     // Call custom error handler if provided
-    onError?.(error, errorInfo);
+    onError?.(_error, _errorInfo);
   };
 
   const handleReset = () => {
@@ -126,8 +126,8 @@ export function QueryErrorBoundary({ children }: { children: React.ReactNode }) 
   return (
     <ErrorBoundary
       level="component"
-      onError={error => {
-        console.error('Query error:', error);
+      onError={_error => {
+        console.error('Query error:', _error);
         // Could invalidate related queries here
       }}
     >
@@ -140,8 +140,8 @@ export function AuthErrorBoundary({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary
       level="page"
-      onError={error => {
-        console.error('Auth error:', error);
+      onError={_error => {
+        console.error('Auth error:', _error);
         // Could trigger auth state reset here
       }}
     >

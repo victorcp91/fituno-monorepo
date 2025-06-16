@@ -26,7 +26,7 @@ export function LoginScreen() {
       if (!success) {
         setError(signInError || 'Failed to sign in');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
