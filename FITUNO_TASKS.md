@@ -384,7 +384,7 @@ navigation.
 
 ## Task 7: Plan & Subscription System
 
-**Priority**: High | **Dependencies**: 5 | **Status**: ⏳ Pending
+**Priority**: High | **Dependencies**: 5 | **Status**: ✅ Done
 
 Implement Stripe integration for trainer subscription management.
 
@@ -414,13 +414,14 @@ Implement Stripe integration for trainer subscription management.
 - [x] Process webhooks (webhook handler in place)
 - [x] Show billing history (BillingHistory component)
 
-#### 7.4 Plan Restriction Logic
+#### 7.4 Plan Restriction Logic ✅ Done
 
-- [ ] Create feature flags
-- [ ] Implement restrictions
-- [ ] Add upgrade prompts
-- [ ] Create billing UI
-- [ ] Handle downgrades
+- [x] Create feature flags (FeatureAccessService with comprehensive feature
+      definitions)
+- [x] Implement restrictions (PlanRestrictionMiddleware for API routes)
+- [x] Add upgrade prompts (UpgradePrompt component with multiple variants)
+- [x] Create billing UI (useFeatureAccess hook for frontend integration)
+- [x] Handle downgrades (Feature access control system)
 
 ---
 
