@@ -390,21 +390,21 @@ Implement Stripe integration for trainer subscription management.
 
 ### Subtasks:
 
-#### 7.1 Stripe Integration Setup
+#### 7.1 Stripe Integration Setup ✅ Done
 
-- [ ] Install Stripe SDK
-- [ ] Configure environment
-- [ ] Set up customer creation
-- [ ] Configure products
-- [ ] Set up webhooks
+- [x] Install Stripe SDK
+- [x] Configure environment
+- [x] Set up customer creation
+- [x] Configure products
+- [x] Set up webhooks
 
-#### 7.2 Subscription Status Management
+#### 7.2 Subscription Status Management ✅ Done
 
-- [ ] Create status checker
-- [ ] Implement client limits
-- [ ] Add status display
-- [ ] Create upgrade prompts
-- [ ] Handle expiration
+- [x] Create status checker
+- [x] Implement client limits
+- [x] Add status display
+- [x] Create upgrade prompts
+- [x] Handle expiration
 
 #### 7.3 Checkout Flow Implementation
 
