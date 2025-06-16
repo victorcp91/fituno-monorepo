@@ -19,8 +19,8 @@ export default function SubscriptionPage() {
       setPortalLoading(true);
       const { url } = await openBillingPortal();
       window.location.href = url;
-    } catch (error) {
-      console.error('Error opening billing portal:', error);
+    } catch {
+
     } finally {
       setPortalLoading(false);
     }

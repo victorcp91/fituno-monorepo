@@ -106,8 +106,8 @@ export class SubscriptionService {
         daysUntilExpiry,
         needsUpgrade: !isWithinLimits || !plan,
       };
-    } catch (error) {
-      console.error('Error getting subscription status:', error);
+    } catch {
+
 
       // Return safe defaults on error
       return {

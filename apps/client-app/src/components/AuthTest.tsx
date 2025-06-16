@@ -27,7 +27,7 @@ export const AuthTest: React.FC = () => {
     try {
       const result = await signUp(email, password, { full_name: 'Test User' });
       setMessage(result.success ? '✅ Sign up successful!' : `❌ ${result.error}`);
-    } catch (error) {
+    } catch {
       setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
@@ -40,7 +40,7 @@ export const AuthTest: React.FC = () => {
     try {
       const result = await signIn(email, password);
       setMessage(result.success ? '✅ Sign in successful!' : `❌ ${result.error}`);
-    } catch (error) {
+    } catch {
       setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
@@ -53,7 +53,7 @@ export const AuthTest: React.FC = () => {
     try {
       await signOut();
       setMessage('✅ Signed out successfully!');
-    } catch (error) {
+    } catch {
       setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
@@ -66,7 +66,7 @@ export const AuthTest: React.FC = () => {
     try {
       const result = await enableBiometric({ email, password });
       setMessage(result.success ? '✅ Biometric enabled!' : `❌ ${result.error}`);
-    } catch (error) {
+    } catch {
       setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
@@ -79,7 +79,7 @@ export const AuthTest: React.FC = () => {
     try {
       const result = await signInWithBiometric();
       setMessage(result.success ? '✅ Biometric sign in successful!' : `❌ ${result.error}`);
-    } catch (error) {
+    } catch {
       setMessage(`❌ Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);

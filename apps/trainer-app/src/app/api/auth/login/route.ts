@@ -78,8 +78,8 @@ export async function POST(request: NextRequest) {
         expiresAt: data.session?.expires_at,
       },
     });
-  } catch (error) {
-    console.error('Login API error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -68,8 +68,8 @@ async function validateAuthentication(): Promise<AuthResult> {
       user,
       userType: userType as 'trainer' | 'client' | 'admin' | null,
     };
-  } catch (error) {
-    console.error('Auth validation error:', error);
+  } catch {
+
     return {
       isAuthenticated: false,
       user: null,

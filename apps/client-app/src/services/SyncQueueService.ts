@@ -46,9 +46,9 @@ export class SyncQueueService {
       };
 
       await this.dbManager.insert(TABLES.SYNC_QUEUE, queueItem);
-      console.log(`Added ${operation} operation for ${tableName}:${recordId} to sync queue`);
-    } catch (error) {
-      console.error('Failed to add item to sync queue:', error);
+
+    } catch {
+
       throw error;
     }
   }
@@ -69,8 +69,8 @@ export class SyncQueueService {
         ...item,
         data: JSON.parse(item.data),
       }));
-    } catch (error) {
-      console.error('Failed to get pending sync items:', error);
+    } catch {
+
       return [];
     }
   }
@@ -79,9 +79,9 @@ export class SyncQueueService {
   public async markAsSynced(id: string): Promise<void> {
     try {
       await this.dbManager.delete(TABLES.SYNC_QUEUE, 'id = ?', [id]);
-      console.log(`Removed synced item ${id} from queue`);
-    } catch (error) {
-      console.error('Failed to mark item as synced:', error);
+
+    } catch {
+
       throw error;
     }
   }
@@ -109,9 +109,9 @@ export class SyncQueueService {
         'id = ?',
         [id]
       );
-      console.log(`Marked item ${id} as failed, retry count incremented to ${newRetryCount}`);
+
     } catch (dbError) {
-      console.error('Failed to mark item as failed:', dbError);
+
       throw dbError;
     }
   }
@@ -131,8 +131,8 @@ export class SyncQueueService {
         ...item,
         data: JSON.parse(item.data),
       }));
-    } catch (error) {
-      console.error('Failed to get failed sync items:', error);
+    } catch {
+
       return [];
     }
   }
@@ -141,9 +141,9 @@ export class SyncQueueService {
   public async clearFailedItems(): Promise<void> {
     try {
       const deletedCount = await this.dbManager.delete(TABLES.SYNC_QUEUE, 'retry_count >= ?', [5]);
-      console.log(`Cleared ${deletedCount} failed sync items`);
-    } catch (error) {
-      console.error('Failed to clear failed items:', error);
+
+    } catch {
+
       throw error;
     }
   }
@@ -166,8 +166,8 @@ export class SyncQueueService {
         failed: failedResult[0]?.count || 0,
         total: totalResult[0]?.count || 0,
       };
-    } catch (error) {
-      console.error('Failed to get queue stats:', error);
+    } catch {
+
       return { pending: 0, failed: 0, total: 0 };
     }
   }
@@ -176,9 +176,9 @@ export class SyncQueueService {
   public async clearQueue(): Promise<void> {
     try {
       await this.dbManager.clearTable(TABLES.SYNC_QUEUE);
-      console.log('Cleared all sync queue items');
-    } catch (error) {
-      console.error('Failed to clear sync queue:', error);
+
+    } catch {
+
       throw error;
     }
   }
@@ -201,13 +201,13 @@ export class SyncQueueService {
           await this.markAsFailed(item.id, 'Sync handler returned false');
           failed++;
         }
-      } catch (error) {
+      } catch {
         await this.markAsFailed(item.id, error instanceof Error ? error.message : 'Unknown error');
         failed++;
       }
     }
 
-    console.log(`Sync queue processed: ${processed} successful, ${failed} failed`);
+
     return { processed, failed };
   }
 

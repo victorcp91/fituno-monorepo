@@ -38,8 +38,8 @@ export async function GET(
         'Content-Length': pdfBuffer.byteLength.toString(),
       },
     });
-  } catch (error) {
-    console.error('Error downloading invoice:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Failed to download invoice' }, { status: 500 });
   }
 }

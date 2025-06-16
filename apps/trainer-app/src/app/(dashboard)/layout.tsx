@@ -69,8 +69,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           return;
         }
         setUser(data.user);
-      } catch (error) {
-        console.error('Auth check error:', error);
+      } catch {
+
         router.push('/auth/login');
       } finally {
         setLoading(false);
@@ -84,8 +84,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     try {
       await AuthService.signOut();
       router.push('/auth/login');
-    } catch (error) {
-      console.error('Sign out error:', error);
+    } catch {
+
     }
   };
 

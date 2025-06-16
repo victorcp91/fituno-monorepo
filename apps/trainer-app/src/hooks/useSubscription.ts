@@ -56,7 +56,7 @@ export function useSubscription(customerId?: string): UseSubscriptionResult {
 
       setStatus(subscriptionStatus);
     } catch (err) {
-      console.error('Error fetching subscription status:', err);
+
       setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(false);
@@ -89,8 +89,8 @@ export function useSubscription(customerId?: string): UseSubscriptionResult {
         }
 
         return await response.json();
-      } catch (error) {
-        console.error('Error checking client limit:', error);
+      } catch {
+
         return {
           canAdd: false,
           reason: 'Error checking limit',

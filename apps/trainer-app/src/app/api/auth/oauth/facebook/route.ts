@@ -19,8 +19,8 @@ export async function POST(_request: NextRequest) {
       url: (data as any).url || (data as any).provider?.url,
       provider: 'facebook',
     });
-  } catch (error) {
-    console.error('Facebook OAuth initiation error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

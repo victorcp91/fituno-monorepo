@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
     const result = await subscriptionService.canAddClient(customerId, currentClientCount);
 
     return NextResponse.json(result);
-  } catch (error) {
-    console.error('Error checking client add capability:', error);
+  } catch {
+
 
     return NextResponse.json({ error: 'Failed to check client add capability' }, { status: 500 });
   }

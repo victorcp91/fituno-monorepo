@@ -58,7 +58,7 @@ export function BillingHistory({ customerId }: BillingHistoryProps) {
         const data = await response.json();
         setInvoices(data.invoices || []);
       } catch (err) {
-        console.error('Error fetching invoices:', err);
+
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
         setLoading(false);
@@ -130,8 +130,8 @@ export function BillingHistory({ customerId }: BillingHistoryProps) {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (error) {
-      console.error('Error downloading invoice:', error);
+    } catch {
+
     }
   };
 

@@ -110,8 +110,8 @@ export async function POST(request: NextRequest) {
       },
       requiresVerification: !AuthService.isEmailVerified(data.user),
     });
-  } catch (error) {
-    console.error('Registration API error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

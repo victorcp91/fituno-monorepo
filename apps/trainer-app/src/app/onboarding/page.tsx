@@ -33,8 +33,8 @@ function OnboardingForm() {
           ...prev,
           fullName: data?.user?.user_metadata?.full_name || '',
         }));
-      } catch (error) {
-        console.error('Error loading user data:', error);
+      } catch {
+
       }
     };
 
@@ -85,8 +85,8 @@ function OnboardingForm() {
         // Use window.location for consistent navigation
         window.location.href = '/';
       }
-    } catch (error) {
-      console.error('Profile update error:', error);
+    } catch {
+
       setError('An unexpected error occurred');
     } finally {
       setIsLoading(false);

@@ -28,8 +28,8 @@ export async function POST(_request: NextRequest) {
       success: true,
       message: 'Verification email sent successfully. Please check your inbox.',
     });
-  } catch (error) {
-    console.error('Verify email API error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

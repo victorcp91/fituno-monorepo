@@ -90,8 +90,8 @@ function LoginForm() {
           router.push('/');
         }
       }
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch {
+
       setError(ERROR_MESSAGES.default);
     } finally {
       setIsLoading(false);
@@ -114,8 +114,8 @@ function LoginForm() {
         setError(result.error.message || `Failed to sign in with ${provider}`);
       }
       // OAuth will redirect automatically on success
-    } catch (error) {
-      console.error(`${provider} OAuth error:`, error);
+    } catch {
+
       setError(`Failed to sign in with ${provider}`);
     } finally {
       setIsLoading(false);

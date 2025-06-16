@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
 
     // Handle OAuth errors
     if (error) {
-      console.error('Facebook OAuth error:', error);
+
       return NextResponse.redirect(
         new URL(`/auth/login?error=${encodeURIComponent(error)}`, request.url)
       );
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       await supabase.auth.exchangeCodeForSession(code);
 
     if (sessionError || !sessionData.session) {
-      console.error('Session error after OAuth code exchange:', sessionError);
+
       return NextResponse.redirect(new URL('/auth/login?error=oauth_failed', request.url));
     }
 
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
     const { data: userData, error: userError } = await AuthService.getCurrentUser();
 
     if (userError || !userData.user) {
-      console.error('User error after OAuth:', userError);
+
       return NextResponse.redirect(new URL('/auth/login?error=user_fetch_failed', request.url));
     }
 
@@ -53,9 +53,9 @@ export async function GET(request: NextRequest) {
   } catch (error: unknown) {
     // Log the error with proper type checking
     if (error instanceof Error) {
-      console.error('Facebook OAuth callback error:', error.message);
+
     } else {
-      console.error('Facebook OAuth callback error:', error);
+
     }
     return NextResponse.redirect(new URL('/auth/login?error=internal_error', request.url));
   }

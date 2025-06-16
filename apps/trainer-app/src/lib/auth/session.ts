@@ -35,8 +35,8 @@ export class SessionManager {
       const bufferTime = 5 * 60; // 5 minutes buffer
 
       return expiresAt > now + bufferTime;
-    } catch (error) {
-      console.error('Error checking session validity:', error);
+    } catch {
+
       return false;
     }
   }
@@ -62,7 +62,7 @@ export class SessionManager {
       const { data, error } = await AuthService.refreshSession();
 
       if (error) {
-        console.error('Session refresh failed:', error);
+
         return { success: false, error: error.message };
       }
 
@@ -71,8 +71,8 @@ export class SessionManager {
       }
 
       return { success: true };
-    } catch (error) {
-      console.error('Session refresh error:', error);
+    } catch {
+
       return { success: false, error: 'Refresh failed' };
     }
   }
@@ -112,8 +112,8 @@ export class SessionManager {
           metadata: user.user_metadata || {},
         },
       };
-    } catch (error) {
-      console.error('Error getting session data:', error);
+    } catch {
+
       return null;
     }
   }
@@ -124,8 +124,8 @@ export class SessionManager {
   static async clearSession(): Promise<void> {
     try {
       await AuthService.signOut();
-    } catch (error) {
-      console.error('Error clearing session:', error);
+    } catch {
+
     }
   }
 
@@ -156,7 +156,7 @@ export class SessionManager {
         const { success } = await this.refreshSession();
 
         if (!success) {
-          console.warn('Session auto-refresh failed');
+
           // Optional: redirect to login or show notification
         }
       }

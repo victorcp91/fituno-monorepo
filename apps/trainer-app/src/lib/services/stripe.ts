@@ -133,7 +133,7 @@ export class StripeService {
       name: planConfig.name,
       description: `${planConfig.name} - ${planConfig.features.join(', ')}`,
       metadata: {
-        plan: plan,
+        plan,
       },
     });
 
@@ -146,7 +146,7 @@ export class StripeService {
         interval: planConfig.interval,
       },
       metadata: {
-        plan: plan,
+        plan,
       },
     });
 
@@ -167,41 +167,41 @@ export class StripeService {
   /**
    * Handle subscription created webhook
    */
-  async handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
+  async handleSubscriptionCreated(_subscription: Stripe.Subscription): Promise<void> {
     // This will be implemented when we integrate with the database
-    console.log('Subscription created:', subscription.id);
+    // TODO: Store subscription data in database
   }
 
   /**
    * Handle subscription updated webhook
    */
-  async handleSubscriptionUpdated(subscription: Stripe.Subscription): Promise<void> {
+  async handleSubscriptionUpdated(_subscription: Stripe.Subscription): Promise<void> {
     // This will be implemented when we integrate with the database
-    console.log('Subscription updated:', subscription.id);
+    // TODO: Update subscription data in database
   }
 
   /**
    * Handle subscription deleted webhook
    */
-  async handleSubscriptionDeleted(subscription: Stripe.Subscription): Promise<void> {
+  async handleSubscriptionDeleted(_subscription: Stripe.Subscription): Promise<void> {
     // This will be implemented when we integrate with the database
-    console.log('Subscription deleted:', subscription.id);
+    // TODO: Remove or mark subscription as deleted in database
   }
 
   /**
    * Handle invoice payment succeeded webhook
    */
-  async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
+  async handleInvoicePaymentSucceeded(_invoice: Stripe.Invoice): Promise<void> {
     // This will be implemented when we integrate with the database
-    console.log('Invoice payment succeeded:', invoice.id);
+    // TODO: Update payment status in database
   }
 
   /**
    * Handle invoice payment failed webhook
    */
-  async handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
+  async handleInvoicePaymentFailed(_invoice: Stripe.Invoice): Promise<void> {
     // This will be implemented when we integrate with the database
-    console.log('Invoice payment failed:', invoice.id);
+    // TODO: Handle failed payment, notify user, update status
   }
 
   /**

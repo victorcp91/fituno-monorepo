@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     // Construct fallback redirect URL with proper validation
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
     if (!baseUrl) {
-      console.error('NEXT_PUBLIC_BASE_URL environment variable is not set');
+
       return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
     }
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 
       // For security reasons, we don't reveal if the email exists or not
       // So we always return success, but log the actual error
-      console.error('Password reset error:', error);
+
     }
 
     // Always return success for security reasons
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'If an account with this email exists, you will receive a password reset link.',
     });
-  } catch (error) {
-    console.error('Reset password API error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

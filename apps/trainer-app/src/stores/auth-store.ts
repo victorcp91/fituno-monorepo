@@ -85,7 +85,7 @@ export const useAuthStore = create<AuthState>()(
 
           set({ error: 'Invalid response from server', isLoading: false });
           return { success: false, error: 'Invalid response from server' };
-        } catch (error) {
+        } catch {
           const errorMessage =
             error instanceof Error ? error.message : 'An unexpected error occurred';
           set({ error: errorMessage, isLoading: false });
@@ -98,8 +98,8 @@ export const useAuthStore = create<AuthState>()(
 
         try {
           await AuthService.signOut();
-        } catch (error) {
-          console.error('Sign out error:', error);
+        } catch {
+
         } finally {
           set({
             user: null,
@@ -134,7 +134,7 @@ export const useAuthStore = create<AuthState>()(
 
           set({ error: 'Failed to update profile', isLoading: false });
           return { success: false, error: 'Failed to update profile' };
-        } catch (error) {
+        } catch {
           const errorMessage =
             error instanceof Error ? error.message : 'An unexpected error occurred';
           set({ error: errorMessage, isLoading: false });
@@ -164,8 +164,8 @@ export const useAuthStore = create<AuthState>()(
             error: null,
             isLoading: false,
           });
-        } catch (error) {
-          console.error('Auth check error:', error);
+        } catch {
+
           set({
             user: null,
             isAuthenticated: false,

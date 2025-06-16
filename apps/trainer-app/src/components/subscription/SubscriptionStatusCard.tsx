@@ -77,8 +77,8 @@ export function SubscriptionStatusCard({
         const { url } = await createCheckoutSession(plan);
         window.location.href = url;
       }
-    } catch (error) {
-      console.error('Error starting upgrade:', error);
+    } catch {
+
     }
   };
 
@@ -90,8 +90,8 @@ export function SubscriptionStatusCard({
         const { url } = await openBillingPortal();
         window.location.href = url;
       }
-    } catch (error) {
-      console.error('Error opening billing portal:', error);
+    } catch {
+
     }
   };
 

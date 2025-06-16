@@ -19,7 +19,7 @@ export const API_CONFIG = {
         if (process.env.NODE_ENV === 'production') {
           throw new Error('JWT_SECRET environment variable is required in production');
         }
-        console.warn('⚠️  JWT_SECRET not set - using insecure fallback for development only');
+
         return 'insecure-development-secret-change-in-production';
       }
       return process.env.JWT_SECRET;

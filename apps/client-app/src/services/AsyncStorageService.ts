@@ -17,8 +17,8 @@ export class AsyncStorageService {
     try {
       const jsonValue = JSON.stringify(value);
       await AsyncStorage.setItem(key, jsonValue);
-    } catch (error) {
-      console.error(`Error storing item with key ${key}:`, error);
+    } catch {
+
       throw error;
     }
   }
@@ -27,8 +27,8 @@ export class AsyncStorageService {
     try {
       const jsonValue = await AsyncStorage.getItem(key);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.error(`Error retrieving item with key ${key}:`, error);
+    } catch {
+
       return null;
     }
   }
@@ -36,8 +36,8 @@ export class AsyncStorageService {
   public async removeItem(key: string): Promise<void> {
     try {
       await AsyncStorage.removeItem(key);
-    } catch (error) {
-      console.error(`Error removing item with key ${key}:`, error);
+    } catch {
+
       throw error;
     }
   }
@@ -45,8 +45,8 @@ export class AsyncStorageService {
   public async clear(): Promise<void> {
     try {
       await AsyncStorage.clear();
-    } catch (error) {
-      console.error('Error clearing AsyncStorage:', error);
+    } catch {
+
       throw error;
     }
   }
@@ -54,8 +54,8 @@ export class AsyncStorageService {
   public async getAllKeys(): Promise<readonly string[]> {
     try {
       return await AsyncStorage.getAllKeys();
-    } catch (error) {
-      console.error('Error getting all keys:', error);
+    } catch {
+
       return [];
     }
   }
@@ -63,8 +63,8 @@ export class AsyncStorageService {
   public async multiGet(keys: string[]): Promise<readonly (readonly [string, string | null])[]> {
     try {
       return await AsyncStorage.multiGet(keys);
-    } catch (error) {
-      console.error('Error getting multiple items:', error);
+    } catch {
+
       return [];
     }
   }
@@ -72,8 +72,8 @@ export class AsyncStorageService {
   public async multiSet(keyValuePairs: Array<[string, string]>): Promise<void> {
     try {
       await AsyncStorage.multiSet(keyValuePairs);
-    } catch (error) {
-      console.error('Error setting multiple items:', error);
+    } catch {
+
       throw error;
     }
   }
@@ -81,8 +81,8 @@ export class AsyncStorageService {
   public async multiRemove(keys: string[]): Promise<void> {
     try {
       await AsyncStorage.multiRemove(keys);
-    } catch (error) {
-      console.error('Error removing multiple items:', error);
+    } catch {
+
       throw error;
     }
   }

@@ -29,8 +29,8 @@ export async function GET(_request: NextRequest) {
         lastSignIn: data.user.last_sign_in_at,
       },
     });
-  } catch (error) {
-    console.error('Profile API error:', error);
+  } catch {
+
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

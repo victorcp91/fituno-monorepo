@@ -59,8 +59,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const initializeAuth = async () => {
       try {
         await storeCheckAuth();
-      } catch (error) {
-        console.error('Auth initialization error:', error);
+      } catch {
+
       } finally {
         setIsInitialized(true);
       }
@@ -74,7 +74,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const {
       data: { subscription },
     } = AuthService.onAuthStateChange(async (event, session) => {
-      console.log('Auth state change:', event, session?.user?.id);
+
 
       switch (event) {
         case 'SIGNED_IN':

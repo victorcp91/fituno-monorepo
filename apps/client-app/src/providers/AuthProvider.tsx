@@ -87,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const {
       data: { subscription },
     } = supabaseService.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
+
 
       if (session?.user) {
         await updateAuthState(session.user, session);
@@ -120,8 +120,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isBiometricAvailable: biometricInfo.isAvailable,
         isBiometricEnabled: biometricInfo.isEnabled,
       });
-    } catch (error) {
-      console.error('Error initializing auth:', error);
+    } catch {
+
       setAuthState(prev => ({
         ...prev,
         isLoading: false,
@@ -145,8 +145,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         isBiometricEnabled: biometricInfo.isEnabled,
         isLoading: false,
       }));
-    } catch (error) {
-      console.error('Error updating auth state:', error);
+    } catch {
+
       setAuthState(prev => ({
         ...prev,
         user,
@@ -189,8 +189,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await supabaseService.signOut();
       // Auth state will be updated by the listener
-    } catch (error) {
-      console.error('Sign out error:', error);
+    } catch {
+
       throw error;
     }
   };
@@ -256,8 +256,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       return result;
-    } catch (error) {
-      console.error('Enable biometric error:', error);
+    } catch {
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -269,8 +269,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       await biometricService.disableBiometric();
       setAuthState(prev => ({ ...prev, isBiometricEnabled: false }));
-    } catch (error) {
-      console.error('Disable biometric error:', error);
+    } catch {
+
       throw error;
     }
   };
@@ -290,8 +290,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       return result;
-    } catch (error) {
-      console.error('Biometric sign in error:', error);
+    } catch {
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -302,8 +302,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const refreshSession = async (): Promise<void> => {
     try {
       await supabaseService.refreshSession();
-    } catch (error) {
-      console.error('Refresh session error:', error);
+    } catch {
+
       throw error;
     }
   };

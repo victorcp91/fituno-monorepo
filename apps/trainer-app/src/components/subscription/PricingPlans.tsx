@@ -34,8 +34,8 @@ export function PricingPlans({
       setLoading(planKey);
       const { url } = await createCheckoutSession(planKey);
       window.location.href = url;
-    } catch (error) {
-      console.error('Error creating checkout session:', error);
+    } catch {
+      // Handle error silently
     } finally {
       setLoading(null);
     }
@@ -89,26 +89,13 @@ export function PricingPlans({
   };
 
   const getButtonText = (planKey: string) => {
-    if (isCurrentPlan(planKey)) {
-      return 'Current Plan';
-    }
-    if (currentPlan && planKey === 'BASIC') {
-      return 'Downgrade';
-    }
-    if (currentPlan) {
-      return 'Upgrade';
-    }
-    return 'Get Started';
+    if (isCurrentPlan(planKey)) return 'Current Plan';
+    return 'Select Plan';
   };
 
   const getButtonVariant = (planKey: string) => {
-    if (isCurrentPlan(planKey)) {
-      return 'outline';
-    }
-    if (planKey === 'PRO') {
-      return 'default';
-    }
-    return 'outline';
+    if (isCurrentPlan(planKey)) return 'outline';
+    return planKey === 'PRO' ? 'default' : 'outline';
   };
 
   return (

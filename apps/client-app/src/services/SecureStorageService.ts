@@ -15,8 +15,8 @@ export class SecureStorageService {
   public async setItem(key: string, value: string): Promise<void> {
     try {
       await SecureStore.setItemAsync(key, value);
-    } catch (error) {
-      console.error(`Error storing secure item with key ${key}:`, error);
+    } catch {
+
       throw error;
     }
   }
@@ -24,8 +24,8 @@ export class SecureStorageService {
   public async getItem(key: string): Promise<string | null> {
     try {
       return await SecureStore.getItemAsync(key);
-    } catch (error) {
-      console.error(`Error retrieving secure item with key ${key}:`, error);
+    } catch {
+
       return null;
     }
   }
@@ -33,8 +33,8 @@ export class SecureStorageService {
   public async removeItem(key: string): Promise<void> {
     try {
       await SecureStore.deleteItemAsync(key);
-    } catch (error) {
-      console.error(`Error removing secure item with key ${key}:`, error);
+    } catch {
+
       throw error;
     }
   }
@@ -44,8 +44,8 @@ export class SecureStorageService {
     try {
       const jsonValue = JSON.stringify(value);
       await this.setItem(key, jsonValue);
-    } catch (error) {
-      console.error(`Error storing secure object with key ${key}:`, error);
+    } catch {
+
       throw error;
     }
   }
@@ -54,8 +54,8 @@ export class SecureStorageService {
     try {
       const jsonValue = await this.getItem(key);
       return jsonValue ? JSON.parse(jsonValue) : null;
-    } catch (error) {
-      console.error(`Error retrieving secure object with key ${key}:`, error);
+    } catch {
+
       return null;
     }
   }
@@ -65,8 +65,8 @@ export class SecureStorageService {
     try {
       const value = await this.getItem(key);
       return value !== null;
-    } catch (error) {
-      console.error(`Error checking secure item with key ${key}:`, error);
+    } catch {
+
       return false;
     }
   }

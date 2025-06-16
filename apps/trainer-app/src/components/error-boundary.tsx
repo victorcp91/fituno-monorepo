@@ -92,7 +92,7 @@ export function ErrorBoundary({ children, fallback, onError, level = 'page' }: E
   const FallbackComponent = fallback || (level === 'page' ? ErrorFallback : ChunkErrorFallback);
 
   const handleError = (_error: Error, _errorInfo: React.ErrorInfo) => {
-    console.error('Error caught by boundary:', _error, _errorInfo);
+
 
     // Log error to external service in production
     if (process.env.NODE_ENV === 'production') {
@@ -127,7 +127,7 @@ export function QueryErrorBoundary({ children }: { children: React.ReactNode }) 
     <ErrorBoundary
       level="component"
       onError={_error => {
-        console.error('Query error:', _error);
+
         // Could invalidate related queries here
       }}
     >
@@ -141,7 +141,7 @@ export function AuthErrorBoundary({ children }: { children: React.ReactNode }) {
     <ErrorBoundary
       level="page"
       onError={_error => {
-        console.error('Auth error:', _error);
+
         // Could trigger auth state reset here
       }}
     >

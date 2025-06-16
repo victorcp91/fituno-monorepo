@@ -40,7 +40,7 @@ export const StorageTest: React.FC = () => {
       addResult(`✅ SQLite: Setting stored and retrieved: ${setting?.value}`);
 
       addResult('🎉 All storage tests passed!');
-    } catch (error) {
+    } catch {
       addResult(`❌ Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);

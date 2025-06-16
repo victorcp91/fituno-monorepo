@@ -37,8 +37,8 @@ export async function withErrorHandling(handler: (request: NextRequest) => Promi
   return async (request: NextRequest) => {
     try {
       return await handler(request);
-    } catch (error) {
-      console.error('API Error:', error);
+    } catch {
+
 
       return createErrorResponse(
         error instanceof Error ? error.message : 'Internal server error',

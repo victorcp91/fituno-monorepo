@@ -389,4 +389,8 @@ export function isMobile() {
         return false;
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
+// ========================================
+// LOGGING UTILITIES
+// ========================================
+export { logger, LogLevel } from './logger';
 //# sourceMappingURL=index.js.map

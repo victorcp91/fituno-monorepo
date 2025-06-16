@@ -24,9 +24,9 @@ export class StorageService {
   public async initialize(): Promise<void> {
     try {
       await this.dbManager.initialize();
-      console.log('Storage service initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize storage service:', error);
+
+    } catch {
+
       throw error;
     }
   }

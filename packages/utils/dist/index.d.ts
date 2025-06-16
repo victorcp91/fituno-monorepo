@@ -136,4 +136,5 @@ export declare function isBrowser(): boolean;
  * Check if running on mobile device (basic)
  */
 export declare function isMobile(): boolean;
+export { logger, LogLevel } from './logger';
 //# sourceMappingURL=index.d.ts.map

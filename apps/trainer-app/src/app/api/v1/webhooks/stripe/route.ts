@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!endpointSecret) {
-      console.error('STRIPE_WEBHOOK_SECRET is not configured');
+
       return NextResponse.json({ error: 'Webhook configuration error' }, { status: 500 });
     }
 
@@ -22,13 +22,13 @@ export async function POST(request: NextRequest) {
     let event: Stripe.Event;
     try {
       event = stripeService.verifyWebhookSignature(body, signature, endpointSecret);
-    } catch (error) {
-      console.error('Webhook signature verification failed:', error);
+    } catch {
+
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
     // Handle the event
-    console.log('Processing webhook event:', event.type);
+
 
     switch (event.type) {
       case 'customer.subscription.created':
@@ -52,12 +52,12 @@ export async function POST(request: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+
     }
 
     return NextResponse.json({ received: true });
-  } catch (error) {
-    console.error('Error processing webhook:', error);
+  } catch {
+
 
     return NextResponse.json({ error: 'Failed to process webhook' }, { status: 500 });
   }

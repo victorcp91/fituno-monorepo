@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
       activeSubscription,
       hasActiveSubscription: !!activeSubscription,
     });
-  } catch (error) {
-    console.error('Error fetching subscription info:', error);
+  } catch {
+
 
     return NextResponse.json({ error: 'Failed to fetch subscription info' }, { status: 500 });
   }
@@ -50,8 +50,8 @@ export async function DELETE(request: NextRequest) {
         ? 'Subscription canceled immediately'
         : 'Subscription will be canceled at the end of the billing period',
     });
-  } catch (error) {
-    console.error('Error canceling subscription:', error);
+  } catch {
+
 
     return NextResponse.json({ error: 'Failed to cancel subscription' }, { status: 500 });
   }

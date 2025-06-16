@@ -27,8 +27,8 @@ export class BiometricAuthService {
       const isEnrolled = await LocalAuthentication.isEnrolledAsync();
 
       return hasHardware && isEnrolled;
-    } catch (error) {
-      console.error('Error checking biometric availability:', error);
+    } catch {
+
       return false;
     }
   }
@@ -37,8 +37,8 @@ export class BiometricAuthService {
   public async getSupportedTypes(): Promise<LocalAuthentication.AuthenticationType[]> {
     try {
       return await LocalAuthentication.supportedAuthenticationTypesAsync();
-    } catch (error) {
-      console.error('Error getting supported auth types:', error);
+    } catch {
+
       return [];
     }
   }
@@ -48,8 +48,8 @@ export class BiometricAuthService {
     try {
       const biometricKey = await storageService.getSecureItem('BIOMETRIC_KEY');
       return biometricKey !== null;
-    } catch (error) {
-      console.error('Error checking biometric enabled status:', error);
+    } catch {
+
       return false;
     }
   }
@@ -101,8 +101,8 @@ export class BiometricAuthService {
         success: true,
         biometricToken,
       };
-    } catch (error) {
-      console.error('Error enabling biometric auth:', error);
+    } catch {
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -117,8 +117,8 @@ export class BiometricAuthService {
         storageService.removeSecureItem('BIOMETRIC_KEY'),
         storageService.removeSecureItem('USER_CREDENTIALS'),
       ]);
-    } catch (error) {
-      console.error('Error disabling biometric auth:', error);
+    } catch {
+
       throw error;
     }
   }
@@ -162,8 +162,8 @@ export class BiometricAuthService {
         success: true,
         biometricToken,
       };
-    } catch (error) {
-      console.error('Error authenticating with biometric:', error);
+    } catch {
+
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -185,8 +185,8 @@ export class BiometricAuthService {
       }
 
       return await this.decryptCredentials(encryptedCredentials, biometricResult.biometricToken);
-    } catch (error) {
-      console.error('Error getting stored credentials:', error);
+    } catch {
+
       return null;
     }
   }
@@ -216,8 +216,8 @@ export class BiometricAuthService {
         supportedTypes,
         securityLevel,
       };
-    } catch (error) {
-      console.error('Error getting biometric info:', error);
+    } catch {
+
       return {
         isAvailable: false,
         isEnabled: false,
@@ -265,8 +265,8 @@ export class BiometricAuthService {
       }
 
       return JSON.parse(data);
-    } catch (error) {
-      console.error('Error decrypting credentials:', error);
+    } catch {
+
       throw new Error('Credential decryption failed - use proper encryption library');
     }
   }

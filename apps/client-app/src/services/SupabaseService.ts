@@ -28,7 +28,7 @@ export class SupabaseService {
               case 'sb-user':
                 return await storageService.getPreference('USER_PROFILE_CACHE');
               default:
-                console.warn(`Unknown storage key requested: ${key}`);
+
                 return null;
             }
           },
@@ -51,7 +51,7 @@ export class SupabaseService {
                 await storageService.setPreference('USER_PROFILE_CACHE', value);
                 break;
               default:
-                console.warn(`Unknown storage key requested: ${key}`);
+
             }
           },
           removeItem: async (key: string) => {
@@ -73,7 +73,7 @@ export class SupabaseService {
                 await storageService.removePreference('USER_PROFILE_CACHE');
                 break;
               default:
-                console.warn(`Unknown storage key requested: ${key}`);
+
             }
           },
         },
@@ -114,8 +114,8 @@ export class SupabaseService {
       }
 
       return { data, error: null };
-    } catch (error) {
-      console.error('Signup error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -136,8 +136,8 @@ export class SupabaseService {
       }
 
       return { data, error: null };
-    } catch (error) {
-      console.error('Signin error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -152,8 +152,8 @@ export class SupabaseService {
       await this.clearUserData();
 
       return { error: null };
-    } catch (error) {
-      console.error('Signout error:', error);
+    } catch {
+
       return { error };
     }
   }
@@ -165,8 +165,8 @@ export class SupabaseService {
       });
 
       return { data, error };
-    } catch (error) {
-      console.error('Reset password error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -178,8 +178,8 @@ export class SupabaseService {
       });
 
       return { data, error };
-    } catch (error) {
-      console.error('Update password error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -192,13 +192,13 @@ export class SupabaseService {
       } = await this.client.auth.getUser();
 
       if (error) {
-        console.error('Get user error:', error);
+
         return null;
       }
 
       return user;
-    } catch (error) {
-      console.error('Get current user error:', error);
+    } catch {
+
       return null;
     }
   }
@@ -211,13 +211,13 @@ export class SupabaseService {
       } = await this.client.auth.getSession();
 
       if (error) {
-        console.error('Get session error:', error);
+
         return null;
       }
 
       return session;
-    } catch (error) {
-      console.error('Get current session error:', error);
+    } catch {
+
       return null;
     }
   }
@@ -233,8 +233,8 @@ export class SupabaseService {
       }
 
       return { data, error: null };
-    } catch (error) {
-      console.error('Refresh session error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -250,8 +250,8 @@ export class SupabaseService {
       });
 
       return { data, error };
-    } catch (error) {
-      console.error('Google signin error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -266,8 +266,8 @@ export class SupabaseService {
       });
 
       return { data, error };
-    } catch (error) {
-      console.error('Facebook signin error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -297,8 +297,8 @@ export class SupabaseService {
 
       // Store in cache
       await storageService.setPreference('USER_PROFILE_CACHE', userData);
-    } catch (error) {
-      console.error('Error storing user data:', error);
+    } catch {
+
     }
   }
 
@@ -310,8 +310,8 @@ export class SupabaseService {
       if (session.provider_token) {
         await storageService.setSecureItem('ID_TOKEN', session.provider_token);
       }
-    } catch (error) {
-      console.error('Error storing session:', error);
+    } catch {
+
     }
   }
 
@@ -322,8 +322,8 @@ export class SupabaseService {
         storageService.removePreference('USER_PROFILE_CACHE'),
         storageService.database.clearTable('user_profile'),
       ]);
-    } catch (error) {
-      console.error('Error clearing user data:', error);
+    } catch {
+
     }
   }
 
@@ -337,8 +337,8 @@ export class SupabaseService {
         .single();
 
       return { data, error };
-    } catch (error) {
-      console.error('Get user profile error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }
@@ -357,8 +357,8 @@ export class SupabaseService {
       }
 
       return { data, error };
-    } catch (error) {
-      console.error('Update user profile error:', error);
+    } catch {
+
       return { data: null, error };
     }
   }

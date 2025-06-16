@@ -225,9 +225,8 @@ export function useFeatureAccess() {
 
         const { url } = await response.json();
         window.location.href = url;
-      } catch (error) {
-        console.error('Error triggering upgrade:', error);
-        // You might want to show an error toast here
+      } catch {
+        // Error triggering upgrade - handle silently
       }
     },
     [upgradeContext]

@@ -12,9 +12,9 @@ export default function RootLayout() {
     const initializeStorage = async () => {
       try {
         await storageService.initialize();
-        console.log('Storage service initialized successfully');
-      } catch (error) {
-        console.error('Failed to initialize storage service:', error);
+        // Storage service initialized successfully
+      } catch {
+        // Failed to initialize storage service - handle silently or with user notification
       }
     };
 

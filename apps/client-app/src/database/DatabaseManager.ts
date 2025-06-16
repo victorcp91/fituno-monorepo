@@ -18,9 +18,9 @@ export class DatabaseManager {
     try {
       this.db = await SQLite.openDatabaseAsync(DATABASE_NAME);
       await this.runMigrations();
-      console.log('Database initialized successfully');
-    } catch (error) {
-      console.error('Failed to initialize database:', error);
+
+    } catch {
+
       throw error;
     }
   }
@@ -35,13 +35,13 @@ export class DatabaseManager {
       // Create all tables
       for (const [tableName, createSQL] of Object.entries(CREATE_TABLES)) {
         await this.db.execAsync(createSQL);
-        console.log(`Created table: ${tableName}`);
+
       }
 
       // Set database version
       await this.db.execAsync(`PRAGMA user_version = ${DATABASE_VERSION};`);
-    } catch (error) {
-      console.error('Migration failed:', error);
+    } catch {
+
       throw error;
     }
   }

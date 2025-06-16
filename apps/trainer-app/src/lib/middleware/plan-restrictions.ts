@@ -63,8 +63,8 @@ export class PlanRestrictionMiddleware {
         allowed: true,
         currentPlan: status.plan,
       };
-    } catch (error) {
-      console.error('Error checking feature access:', error);
+    } catch {
+
       return {
         allowed: false,
         reason: 'Unable to verify subscription status',
@@ -101,8 +101,8 @@ export class PlanRestrictionMiddleware {
         suggestedPlan: canAdd.suggestedPlan,
         currentPlan: status.plan,
       };
-    } catch (error) {
-      console.error('Error checking client limit:', error);
+    } catch {
+
       return {
         allowed: false,
         reason: 'Unable to verify client limit',
@@ -147,8 +147,8 @@ export class PlanRestrictionMiddleware {
         allowed: true,
         currentPlan: status.plan,
       };
-    } catch (error) {
-      console.error('Error checking allowed plans:', error);
+    } catch {
+
       return {
         allowed: false,
         reason: 'Unable to verify subscription status',
@@ -241,8 +241,8 @@ export class PlanRestrictionMiddleware {
         }
 
         return response;
-      } catch (error) {
-        console.error('Plan restriction middleware error:', error);
+      } catch {
+
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
       }
     };
