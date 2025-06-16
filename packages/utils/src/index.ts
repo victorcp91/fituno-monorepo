@@ -1,6 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+// Add type import for NodeJS.Timeout
+type Timeout = ReturnType<typeof setTimeout>;
+
 // ========================================
 // UI UTILITIES
 // ========================================
@@ -318,7 +321,7 @@ export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
+  let timeout: Timeout;
 
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);

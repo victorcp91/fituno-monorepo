@@ -250,12 +250,24 @@ export class BiometricAuthService {
     encryptedData: any,
     key: string
   ): Promise<{ email: string; password: string }> {
-    // This is a simplified decryption - in production, use proper encryption
-    // For now, we'll store credentials in a way that requires biometric auth to access
-    // The actual decryption would need a proper encryption library
+    try {
+      // Basic implementation stub
+      if (!encryptedData?.encrypted || !key) {
+        throw new Error('Missing required parameters');
+      }
 
-    // For demo purposes, we'll return placeholder credentials
-    // In production, implement proper decryption
-    throw new Error('Credential decryption not implemented - use proper encryption library');
+      // TODO: Replace with proper encryption library
+      const decodedData = atob(encryptedData.encrypted);
+      const [_, data] = decodedData.split(':');
+
+      if (!data) {
+        throw new Error('Invalid encrypted data format');
+      }
+
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error decrypting credentials:', error);
+      throw new Error('Credential decryption failed - use proper encryption library');
+    }
   }
 }

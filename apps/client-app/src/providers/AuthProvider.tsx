@@ -3,6 +3,15 @@ import React, { createContext, ReactNode, useContext, useEffect, useState } from
 import { BiometricAuthService } from '../services/BiometricAuthService';
 import { SupabaseService } from '../services/SupabaseService';
 
+interface AuthResponse {
+  success: boolean;
+  error?: string;
+}
+
+interface AuthError {
+  message: string;
+}
+
 export interface AuthState {
   user: User | null;
   session: Session | null;
@@ -148,46 +157,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signIn = async (
-    email: string,
-    password: string
-  ): Promise<{ success: boolean; error?: string }> => {
+  const signIn = async (email: string, password: string): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.signIn(email, password);
-
+      const { error } = await supabaseService.signIn(email, password);
       if (error) {
-        return { success: false, error: (error as any)?.message || 'Sign in failed' };
+        return { success: false, error: (error as AuthError).message || 'Sign in failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Sign in error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Sign in failed' };
     }
   };
 
   const signUp = async (
     email: string,
     password: string,
-    metadata?: Record<string, any>
-  ): Promise<{ success: boolean; error?: string }> => {
+    metadata?: { [key: string]: any }
+  ): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.signUp(email, password, metadata);
-
+      const { error } = await supabaseService.signUp(email, password, metadata);
       if (error) {
-        return { success: false, error: (error as any)?.message || 'Sign up failed' };
+        return { success: false, error: (error as AuthError).message || 'Sign up failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Sign up error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Sign up failed' };
     }
   };
 
@@ -201,77 +195,51 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const resetPassword = async (email: string): Promise<{ success: boolean; error?: string }> => {
+  const resetPassword = async (email: string): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.resetPassword(email);
-
+      const { error } = await supabaseService.resetPassword(email);
       if (error) {
-        return { success: false, error: (error as any)?.message || 'Password reset failed' };
+        return { success: false, error: (error as AuthError).message || 'Password reset failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Reset password error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Password reset failed' };
     }
   };
 
-  const updatePassword = async (
-    newPassword: string
-  ): Promise<{ success: boolean; error?: string }> => {
+  const updatePassword = async (newPassword: string): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.updatePassword(newPassword);
-
+      const { error } = await supabaseService.updatePassword(newPassword);
       if (error) {
-        return { success: false, error: (error as any)?.message || 'Password update failed' };
+        return { success: false, error: (error as AuthError).message || 'Password update failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Update password error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Password update failed' };
     }
   };
 
-  const signInWithGoogle = async (): Promise<{ success: boolean; error?: string }> => {
+  const signInWithGoogle = async (): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.signInWithGoogle();
-
+      const { error } = await supabaseService.signInWithGoogle();
       if (error) {
-        return { success: false, error: (error as any)?.message || 'Google sign in failed' };
+        return { success: false, error: (error as AuthError).message || 'Google sign in failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Google sign in error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Google sign in failed' };
     }
   };
 
-  const signInWithFacebook = async (): Promise<{ success: boolean; error?: string }> => {
+  const signInWithFacebook = async (): Promise<AuthResponse> => {
     try {
-      const { data, error } = await supabaseService.signInWithFacebook();
-
+      const { error } = await supabaseService.signInWithFacebook();
       if (error) {
-        return { success: false, error: error.message || 'Facebook sign in failed' };
+        return { success: false, error: (error as AuthError).message || 'Facebook sign in failed' };
       }
-
       return { success: true };
     } catch (error) {
-      console.error('Facebook sign in error:', error);
-      return {
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
-      };
+      return { success: false, error: 'Facebook sign in failed' };
     }
   };
 
