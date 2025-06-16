@@ -2,10 +2,13 @@ import type Stripe from 'stripe';
 import { getStripe, STRIPE_CONFIG, type StripePlan } from '../config/stripe';
 
 export class StripeService {
-  private stripe: Stripe;
+  private stripe: Stripe | null = null;
 
-  constructor() {
-    this.stripe = getStripe();
+  private getStripeInstance(): Stripe {
+    if (!this.stripe) {
+      this.stripe = getStripe();
+    }
+    return this.stripe;
   }
 
   /**
@@ -16,7 +19,7 @@ export class StripeService {
     name?: string;
     metadata?: Record<string, string>;
   }): Promise<Stripe.Customer> {
-    return this.stripe.customers.create({
+    return this.getStripeInstance().customers.create({
       email: params.email,
       name: params.name,
       metadata: params.metadata,
@@ -54,7 +57,7 @@ export class StripeService {
       sessionParams.customer_email = params.customerEmail;
     }
 
-    return this.stripe.checkout.sessions.create(sessionParams);
+    return this.getStripeInstance().checkout.sessions.create(sessionParams);
   }
 
   /**
@@ -64,7 +67,7 @@ export class StripeService {
     customerId: string;
     returnUrl: string;
   }): Promise<Stripe.BillingPortal.Session> {
-    return this.stripe.billingPortal.sessions.create({
+    return this.getStripeInstance().billingPortal.sessions.create({
       customer: params.customerId,
       return_url: params.returnUrl,
     });
@@ -74,7 +77,7 @@ export class StripeService {
    * Get customer subscriptions
    */
   async getCustomerSubscriptions(customerId: string): Promise<Stripe.Subscription[]> {
-    const subscriptions = await this.stripe.subscriptions.list({
+    const subscriptions = await this.getStripeInstance().subscriptions.list({
       customer: customerId,
       status: 'all',
     });
@@ -86,7 +89,7 @@ export class StripeService {
    * Get active subscription for customer
    */
   async getActiveSubscription(customerId: string): Promise<Stripe.Subscription | null> {
-    const subscriptions = await this.stripe.subscriptions.list({
+    const subscriptions = await this.getStripeInstance().subscriptions.list({
       customer: customerId,
       status: 'active',
       limit: 1,
@@ -102,7 +105,7 @@ export class StripeService {
     subscriptionId: string,
     atPeriodEnd = true
   ): Promise<Stripe.Subscription> {
-    return this.stripe.subscriptions.update(subscriptionId, {
+    return this.getStripeInstance().subscriptions.update(subscriptionId, {
       cancel_at_period_end: atPeriodEnd,
     });
   }
@@ -111,7 +114,7 @@ export class StripeService {
    * Reactivate subscription
    */
   async reactivateSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
-    return this.stripe.subscriptions.update(subscriptionId, {
+    return this.getStripeInstance().subscriptions.update(subscriptionId, {
       cancel_at_period_end: false,
     });
   }
@@ -126,7 +129,7 @@ export class StripeService {
     const planConfig = STRIPE_CONFIG.PLANS[plan];
 
     // Create product
-    const product = await this.stripe.products.create({
+    const product = await this.getStripeInstance().products.create({
       name: planConfig.name,
       description: `${planConfig.name} - ${planConfig.features.join(', ')}`,
       metadata: {
@@ -135,7 +138,7 @@ export class StripeService {
     });
 
     // Create price
-    const price = await this.stripe.prices.create({
+    const price = await this.getStripeInstance().prices.create({
       product: product.id,
       unit_amount: planConfig.price,
       currency: STRIPE_CONFIG.CURRENCY,
@@ -158,7 +161,7 @@ export class StripeService {
     signature: string,
     endpointSecret: string
   ): Stripe.Event {
-    return this.stripe.webhooks.constructEvent(payload, signature, endpointSecret);
+    return this.getStripeInstance().webhooks.constructEvent(payload, signature, endpointSecret);
   }
 
   /**
@@ -199,6 +202,25 @@ export class StripeService {
   async handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
     // This will be implemented when we integrate with the database
     console.log('Invoice payment failed:', invoice.id);
+  }
+
+  /**
+   * Get customer invoices
+   */
+  async getCustomerInvoices(customerId: string): Promise<Stripe.Invoice[]> {
+    const invoices = await this.getStripeInstance().invoices.list({
+      customer: customerId,
+      limit: 100,
+    });
+
+    return invoices.data;
+  }
+
+  /**
+   * Get a specific invoice
+   */
+  async getInvoice(invoiceId: string): Promise<Stripe.Invoice> {
+    return this.getStripeInstance().invoices.retrieve(invoiceId);
   }
 }
 
