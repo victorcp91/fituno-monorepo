@@ -7,8 +7,11 @@ import { API_CONFIG, AUTH_CONFIG, SUPABASE_CONFIG } from '@fituno/constants';
 import type { AuthError, Session, User } from '@supabase/supabase-js';
 import { createClient } from '@supabase/supabase-js';
 
-// Supabase Client
-export const supabase = createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
+// Supabase Client with build-time safety
+export const supabase = createClient(
+  SUPABASE_CONFIG.URL || 'https://placeholder.supabase.co',
+  SUPABASE_CONFIG.ANON_KEY || 'placeholder-key'
+);
 
 // ========================================
 // CUSTOM TYPE DEFINITIONS
