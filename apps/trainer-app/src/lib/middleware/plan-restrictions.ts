@@ -197,7 +197,7 @@ export class PlanRestrictionMiddleware {
   static withPlanRestriction(options: PlanRestrictionOptions) {
     return async (
       request: NextRequest,
-      context: { params: any },
+      _context: { params: any },
       next: () => Promise<NextResponse>
     ): Promise<NextResponse> => {
       try {

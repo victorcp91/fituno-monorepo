@@ -38,7 +38,6 @@ export async function withErrorHandling(handler: (request: NextRequest) => Promi
     try {
       return await handler(request);
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('API Error:', error);
 
       return createErrorResponse(
