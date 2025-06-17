@@ -20,84 +20,121 @@ const ERROR_MESSAGES = {
   expired_token: 'This verification link has expired. Please request a new verification email.',
   invalid_token: 'This verification link is invalid. Please request a new verification email.',
   already_verified: 'Your email has already been verified. You can sign in now.',
-  verification_failed: 'Email verification failed. Please try again.',
+  verification_failed: 'An error occurred during verification. Please try again.',
   default: 'An error occurred during verification. Please try again.',
 };
 
 function VerifyEmailContent() {
-  const [status, setStatus] = useState<'loading' | 'success' | 'error' | 'resend'>('loading');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState('');
   const [isResending, setIsResending] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   useEffect(() => {
+    let mounted = true;
+    let authListener: any;
+
     const handleVerification = async () => {
       try {
-        // Get verification parameters from URL
-        const _token = searchParams.get('token');
-        const type = searchParams.get('type');
-        const _email = searchParams.get('email');
+        // Check for immediate error parameters from Supabase redirect
+        const errorParam = searchParams.get('error');
+        const errorDescription = searchParams.get('error_description');
 
-        // Check if this is an email confirmation
-        if (type === 'signup' || type === 'email') {
-          // The token should be automatically processed by Supabase Auth
-          // We need to check the current session to see if verification was successful
-          const { data: sessionData, error: sessionError } = await AuthService.getCurrentSession();
-
-          if (sessionError || !sessionData.session) {
-            // No session - verification might have failed
-            setError(ERROR_MESSAGES.verification_failed);
+        if (errorParam) {
+          if (mounted) {
+            if (errorParam === 'expired_token' || errorDescription?.includes('expired')) {
+              setError(ERROR_MESSAGES.expired_token);
+            } else if (errorParam === 'invalid_token' || errorDescription?.includes('invalid')) {
+              setError(ERROR_MESSAGES.invalid_token);
+            } else if (errorDescription?.includes('already')) {
+              setError(ERROR_MESSAGES.already_verified);
+            } else {
+              setError(errorDescription || ERROR_MESSAGES.verification_failed);
+            }
             setStatus('error');
-            return;
           }
+          return;
+        }
 
-          const { data: userData, error: userError } = await AuthService.getCurrentUser();
+        // Set up auth state listener to catch verification success
+        authListener = AuthService.onAuthStateChange(async (event, session) => {
+          console.log('Auth state change:', event, session?.user?.email_confirmed_at);
 
-          if (userError || !userData.user) {
-            setError(ERROR_MESSAGES.verification_failed);
-            setStatus('error');
-            return;
+          if (!mounted) return;
+
+          if (event === 'SIGNED_IN' && session?.user) {
+            // Check if email is now verified
+            if (session.user.email_confirmed_at) {
+              localStorage.removeItem('pendingVerificationEmail');
+              setStatus('success');
+
+              // Redirect to dashboard after 3 seconds
+              setTimeout(() => {
+                if (mounted) {
+                  router.push('/');
+                }
+              }, 3000);
+            }
+          } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+            // Also check on token refresh
+            if (session.user.email_confirmed_at) {
+              localStorage.removeItem('pendingVerificationEmail');
+              setStatus('success');
+
+              setTimeout(() => {
+                if (mounted) {
+                  router.push('/');
+                }
+              }, 3000);
+            }
           }
+        });
 
-          // Check if email is verified
-          if (userData.user.email_confirmed_at) {
+        // Check current session status
+        const { data: userData, error: _userError } = await AuthService.getCurrentUser();
+
+        if (mounted) {
+          if (userData.user?.email_confirmed_at) {
+            // Already verified
+            localStorage.removeItem('pendingVerificationEmail');
             setStatus('success');
 
-            // Redirect to dashboard after 3 seconds
             setTimeout(() => {
-              router.push('/');
+              if (mounted) {
+                router.push('/');
+              }
             }, 3000);
           } else {
-            setError(ERROR_MESSAGES.verification_failed);
-            setStatus('error');
+            // Wait for potential auth state change or timeout
+            setTimeout(() => {
+              if (mounted && status === 'loading') {
+                setError(ERROR_MESSAGES.verification_failed);
+                setStatus('error');
+              }
+            }, 5000); // Give 5 seconds for verification to complete
           }
-        } else {
-          // Handle error cases from URL parameters
-          const errorParam = searchParams.get('error');
-          const errorDescription = searchParams.get('error_description');
-
-          if (errorParam === 'expired_token' || errorDescription?.includes('expired')) {
-            setError(ERROR_MESSAGES.expired_token);
-          } else if (errorParam === 'invalid_token' || errorDescription?.includes('invalid')) {
-            setError(ERROR_MESSAGES.invalid_token);
-          } else if (errorDescription?.includes('already')) {
-            setError(ERROR_MESSAGES.already_verified);
-          } else {
-            setError(errorDescription || ERROR_MESSAGES.default);
-          }
+        }
+      } catch (err) {
+        console.error('Verification error:', err);
+        if (mounted) {
+          setError(ERROR_MESSAGES.default);
           setStatus('error');
         }
-      } catch {
-        setError(ERROR_MESSAGES.default);
-        setStatus('error');
       }
     };
 
     handleVerification();
-  }, [searchParams, router]);
+
+    // Cleanup function
+    return () => {
+      mounted = false;
+      if (authListener?.data?.subscription) {
+        authListener.data.subscription.unsubscribe();
+      }
+    };
+  }, [searchParams, router, status]);
 
   const handleResendVerification = async () => {
     setIsResending(true);
