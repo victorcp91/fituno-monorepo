@@ -1,9 +1,9 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Avatar, AvatarFallback, AvatarImage } from '@fituno/ui';
+import { Badge } from '@fituno/ui';
+import { Button } from '@fituno/ui';
+import { Sheet, SheetContent, SheetTrigger } from '@fituno/ui';
 import { AuthService } from '@fituno/services';
 import { BarChart3, Bell, Calendar, Dumbbell, LogOut, Menu, Settings, Users } from 'lucide-react';
 import Link from 'next/link';

@@ -42,7 +42,7 @@ export default function SubscriptionPlansPage() {
       )}
 
       {/* Pricing Plans */}
-      <PricingPlans currentPlan={status?.plan || undefined} showCurrentPlan={!!status?.isActive} />
+      <PricingPlans currentPlanId={status?.plan || undefined} />
 
       {/* Additional Information */}
       <div className="mt-16 bg-gray-50 rounded-lg p-8">

@@ -1,6 +1,6 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@fituno/ui';
+import { Button } from '@fituno/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
 import { Activity, Calendar, Clock, Dumbbell, Plus, Target, TrendingUp, Users } from 'lucide-react';
 
 export default function DashboardPage() {

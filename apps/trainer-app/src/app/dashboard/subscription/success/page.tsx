@@ -3,8 +3,8 @@
 import { ArrowRight, CheckCircle, Home } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
-import { Button } from '../../../../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card';
+import { Button } from '@fituno/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@fituno/ui';
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();

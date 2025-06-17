@@ -1,11 +1,11 @@
 'use client';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@fituno/ui';
+import { Button } from '@fituno/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
+import { Input } from '@fituno/ui';
+import { Label } from '@fituno/ui';
+import { Textarea } from '@fituno/ui';
 import { AuthService } from '@fituno/services';
 import { ArrowRight, Briefcase, Loader2, MapPin, Phone, User } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';

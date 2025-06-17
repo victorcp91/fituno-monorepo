@@ -1,0 +1,140 @@
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    /* Fituno Fitness Theme - Light Mode */
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+
+    /* Primary: Energetic Orange */
+    --primary: 20 90% 50%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Secondary: Vibrant Green */
+    --secondary: 142 76% 36%;
+    --secondary-foreground: 0 0% 98%;
+
+    /* Muted: Soft Gray */
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    /* Accent: Electric Blue */
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 98%;
+
+    /* Destructive: Warning Red */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Borders and Inputs */
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 20 90% 50%;
+
+    /* Border radius */
+    --radius: 0.75rem;
+
+    /* Chart colors for fitness analytics */
+    --chart-1: 20 90% 50%; /* Orange - Primary metric */
+    --chart-2: 142 76% 36%; /* Green - Growth/Progress */
+    --chart-3: 217 91% 60%; /* Blue - Secondary metric */
+    --chart-4: 271 81% 56%; /* Purple - Additional data */
+    --chart-5: 346 87% 43%; /* Pink - Accent data */
+  }
+
+  .dark {
+    /* Fituno Fitness Theme - Dark Mode */
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+
+    /* Primary: Energetic Orange (adjusted for dark) */
+    --primary: 20 90% 56%;
+    --primary-foreground: 224 71.4% 4.1%;
+
+    /* Secondary: Vibrant Green (adjusted for dark) */
+    --secondary: 142 76% 42%;
+    --secondary-foreground: 224 71.4% 4.1%;
+
+    /* Muted: Dark Gray */
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+
+    /* Accent: Electric Blue (adjusted for dark) */
+    --accent: 217 91% 66%;
+    --accent-foreground: 224 71.4% 4.1%;
+
+    /* Destructive: Warning Red (adjusted for dark) */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+
+    /* Borders and Inputs */
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 20 90% 56%;
+
+    /* Chart colors for fitness analytics (dark mode) */
+    --chart-1: 20 90% 56%; /* Orange - Primary metric */
+    --chart-2: 142 76% 42%; /* Green - Growth/Progress */
+    --chart-3: 217 91% 66%; /* Blue - Secondary metric */
+    --chart-4: 271 81% 62%; /* Purple - Additional data */
+    --chart-5: 346 87% 49%; /* Pink - Accent data */
+  }
+}
+
+@layer base {
+  body {
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      Roboto,
+      'Helvetica Neue',
+      Arial,
+      'Noto Sans',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* Fitness-specific utility classes */
+  .fitness-gradient {
+    background: linear-gradient(
+      to right,
+      hsl(var(--primary)),
+      hsl(var(--accent)),
+      hsl(var(--secondary))
+    );
+  }
+
+  .workout-card {
+    background-color: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 0.5rem;
+    box-shadow:
+      0 1px 3px 0 rgba(0, 0, 0, 0.1),
+      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s ease-in-out;
+  }
+
+  .workout-card:hover {
+    box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .metric-highlight {
+    font-weight: 600;
+    color: hsl(var(--primary));
+  }
+}

@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@fituno/ui';
+import { Card, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
 import Link from 'next/link';
 
 export default function LandingPage() {

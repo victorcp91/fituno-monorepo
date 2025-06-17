@@ -2,8 +2,8 @@
 
 import { ArrowLeft, MessageCircle, RefreshCw, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Button } from '../../../../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../../../components/ui/card';
+import { Button } from '@fituno/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@fituno/ui';
 
 export default function SubscriptionCanceledPage() {
   const router = useRouter();
