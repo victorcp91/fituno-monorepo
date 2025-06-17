@@ -650,4 +650,127 @@ export class AnamnesisService {
 }
 export class SubscriptionService {
 }
+export class EmailService {
+    /**
+     * Send client invitation email
+     * This would typically use a service like SendGrid, Resend, or similar
+     */
+    static async sendClientInvitation(data) {
+        try {
+            // In a real implementation, you would use an email service
+            // For now, we'll simulate the email sending
+            console.log('📧 Sending client invitation email:', {
+                to: data.clientEmail,
+                subject: `Convite para ser cliente do ${data.trainerName} - Fituno`,
+                trainerName: data.trainerName,
+                invitationUrl: data.invitationUrl,
+                expirationDate: data.expirationDate,
+            });
+            // TODO: Implement actual email sending using your preferred service
+            // Example with Resend:
+            // const response = await fetch('https://api.resend.com/emails', {
+            //   method: 'POST',
+            //   headers: {
+            //     'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            //     'Content-Type': 'application/json',
+            //   },
+            //   body: JSON.stringify({
+            //     from: 'noreply@fituno.app',
+            //     to: data.clientEmail,
+            //     subject: `Convite para ser cliente do ${data.trainerName} - Fituno`,
+            //     html: this.generateInvitationEmailTemplate(data),
+            //   }),
+            // });
+            // For development/testing, we'll just return success
+            // Log the generated template for debugging
+            console.log('Generated email template:', this.generateInvitationEmailTemplate(data));
+            return { success: true };
+        }
+        catch (error) {
+            console.error('Error sending invitation email:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error occurred',
+            };
+        }
+    }
+    /**
+     * Generate HTML template for invitation email
+     */
+    static generateInvitationEmailTemplate(data) {
+        return `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Convite - Fituno</title>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background: #2563eb; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+            .content { background: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+            .button { display: inline-block; background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+            .footer { text-align: center; margin-top: 20px; font-size: 14px; color: #666; }
+            .expiration { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 15px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>🏋️ Fituno</h1>
+              <h2>Você foi convidado para ser cliente!</h2>
+            </div>
+            <div class="content">
+              <p>Olá!</p>
+              <p><strong>${data.trainerName}</strong> te convidou para ser seu cliente no Fituno.</p>
+              <p>Com o Fituno, você terá acesso a:</p>
+              <ul>
+                <li>📱 Treinos personalizados no seu celular</li>
+                <li>📊 Acompanhamento de progresso</li>
+                <li>💬 Comunicação direta com seu treinador</li>
+                <li>📈 Relatórios detalhados de evolução</li>
+              </ul>
+              
+              <div style="text-align: center;">
+                <a href="${data.invitationUrl}" class="button">Aceitar Convite</a>
+              </div>
+              
+              <div class="expiration">
+                <strong>⚠️ Importante:</strong> Este convite expira em <strong>${data.expirationDate}</strong>
+              </div>
+              
+              <p>Se você não conseguir clicar no botão, copie e cole este link no seu navegador:</p>
+              <p style="word-break: break-all; color: #2563eb;">${data.invitationUrl}</p>
+              
+              <p>Atenciosamente,<br>Equipe Fituno</p>
+            </div>
+            <div class="footer">
+              <p>Este é um email automático. Se você não solicitou este convite, pode ignorar esta mensagem.</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+    }
+    /**
+     * Send welcome email to new clients
+     */
+    static async sendWelcomeEmail(clientEmail, clientName) {
+        try {
+            console.log('📧 Sending welcome email:', {
+                to: clientEmail,
+                subject: `Bem-vindo ao Fituno, ${clientName}!`,
+            });
+            // TODO: Implement actual email sending
+            return { success: true };
+        }
+        catch (error) {
+            console.error('Error sending welcome email:', error);
+            return {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error occurred',
+            };
+        }
+    }
+}
 //# sourceMappingURL=index.js.map

@@ -171,4 +171,31 @@ export declare class AnamnesisService {
 }
 export declare class SubscriptionService {
 }
+export interface InvitationEmailData {
+    trainerName: string;
+    clientEmail: string;
+    invitationUrl: string;
+    expirationDate: string;
+}
+export declare class EmailService {
+    /**
+     * Send client invitation email
+     * This would typically use a service like SendGrid, Resend, or similar
+     */
+    static sendClientInvitation(data: InvitationEmailData): Promise<{
+        success: boolean;
+        error?: string;
+    }>;
+    /**
+     * Generate HTML template for invitation email
+     */
+    private static generateInvitationEmailTemplate;
+    /**
+     * Send welcome email to new clients
+     */
+    static sendWelcomeEmail(clientEmail: string, clientName: string): Promise<{
+        success: boolean;
+        error?: string;
+    }>;
+}
 //# sourceMappingURL=index.d.ts.map

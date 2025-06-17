@@ -909,6 +909,8 @@ export class EmailService {
       // });
 
       // For development/testing, we'll just return success
+      // Log the generated template for debugging
+      console.log('Generated email template:', this.generateInvitationEmailTemplate(data));
       return { success: true };
     } catch (error) {
       console.error('Error sending invitation email:', error);

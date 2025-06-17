@@ -8,16 +8,13 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-interface RouteParams {
-  params: {
-    token: string;
-  };
-}
-
 // GET: Verify invitation token and return invitation details
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: Promise<{ token: string }> }
+) {
   try {
-    const { token } = params;
+    const { token } = await params;
 
     if (!token) {
       return NextResponse.json({ error: 'Invitation token is required' }, { status: 400 });
@@ -95,9 +92,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // POST: Accept invitation and create client profile
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ token: string }> }
+) {
   try {
-    const { token } = params;
+    const { token } = await params;
     const body = await request.json();
 
     if (!token) {
@@ -242,9 +242,12 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 }
 
 // DELETE: Revoke invitation (only trainer can do this)
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  _request: NextRequest,
+  { params }: { params: Promise<{ token: string }> }
+) {
   try {
-    const { token } = params;
+    const { token } = await params;
 
     // Get current user (trainer)
     const { data: authData, error: authError } = await AuthService.getCurrentUser();
