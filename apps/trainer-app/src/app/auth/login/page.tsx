@@ -1,12 +1,20 @@
 'use client';
 
-import { Alert, AlertDescription } from '@fituno/ui';
-import { Button } from '@fituno/ui';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
-import { Input } from '@fituno/ui';
-import { Label } from '@fituno/ui';
 import { AuthService } from '@fituno/services';
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  Input,
+  Label,
+} from '@fituno/ui';
 import { AlertCircle, Eye, EyeOff, Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 
@@ -91,7 +99,6 @@ function LoginForm() {
         }
       }
     } catch {
-
       setError(ERROR_MESSAGES.default);
     } finally {
       setIsLoading(false);
@@ -115,7 +122,6 @@ function LoginForm() {
       }
       // OAuth will redirect automatically on success
     } catch {
-
       setError(`Failed to sign in with ${provider}`);
     } finally {
       setIsLoading(false);
@@ -265,15 +271,18 @@ function LoginForm() {
           <div className="text-center space-y-2">
             <p className="text-sm text-muted-foreground">
               Forgot your password?{' '}
-              <Button variant="link" className="p-0 h-auto font-normal text-primary">
+              <Link
+                href="/auth/forgot-password"
+                className="font-medium text-primary hover:underline"
+              >
                 Reset it here
-              </Button>
+              </Link>
             </p>
             <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
-              <Button variant="link" className="p-0 h-auto font-normal text-primary">
-                Sign up
-              </Button>
+              <Link href="/auth/register" className="font-medium text-primary hover:underline">
+                Sign up for free
+              </Link>
             </p>
           </div>
         </CardContent>

@@ -254,6 +254,10 @@ Implement complete authentication system with Supabase Auth for both apps.
 - [x] Add password reset
 - [x] Set up email verification
 - [x] Add error handling
+- [x] Create trainer registration page (/auth/register)
+- [x] Create forgot password page (/auth/forgot-password)
+- [x] Create reset password page (/auth/reset-password)
+- [x] Update login page with navigation links
 
 #### 4.3 Add social login (Google, Facebook)
 
