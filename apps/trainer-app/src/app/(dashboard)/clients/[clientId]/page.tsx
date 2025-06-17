@@ -36,8 +36,11 @@ import {
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { ClientStatusManager } from '../../../../components/clients/ClientStatusManager';
 
 // Mock interfaces - these would come from @fituno/types in a real implementation
+type ClientStatus = 'PENDING' | 'ACTIVE' | 'INACTIVE' | 'PAUSED' | 'TRANSFERRED' | 'ARCHIVED';
+
 interface Client {
   id: string;
   email: string;
@@ -50,7 +53,8 @@ interface Client {
   timezone: string;
   language: string;
   current_trainer_id?: string;
-  status: 'PENDING' | 'ACTIVE' | 'INACTIVE';
+  trainer_name?: string;
+  status: ClientStatus;
   latest_anamnesis_id?: string;
   measurement_system: 'METRIC' | 'IMPERIAL';
   created_at: string;
@@ -372,7 +376,7 @@ export default function ClientDetailPage() {
         {/* Main Content - will continue in next chunk */}
         <div className="lg:col-span-2">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="overview">
                 <Activity className="h-4 w-4 mr-2" />
                 Visão Geral
@@ -392,6 +396,10 @@ export default function ClientDetailPage() {
               <TabsTrigger value="chat">
                 <MessageSquare className="h-4 w-4 mr-2" />
                 Chat
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                <MoreHorizontal className="h-4 w-4 mr-2" />
+                Configurações
               </TabsTrigger>
             </TabsList>
 
@@ -665,6 +673,48 @@ export default function ClientDetailPage() {
                   <Button>Iniciar Conversa</Button>
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            {/* Settings Tab */}
+            <TabsContent value="settings" className="space-y-6">
+              <ClientStatusManager
+                client={client}
+                currentUserId="current-trainer-id"
+                availableTrainers={[
+                  { id: 'trainer-1', name: 'Ana Silva', email: 'ana@fituno.com' },
+                  { id: 'trainer-2', name: 'Carlos Santos', email: 'carlos@fituno.com' },
+                  { id: 'trainer-3', name: 'Maria Oliveira', email: 'maria@fituno.com' },
+                ]}
+                onStatusChange={(newStatus: ClientStatus) => {
+                  setClient(prev =>
+                    prev
+                      ? { ...prev, status: newStatus, updated_at: new Date().toISOString() }
+                      : null
+                  );
+                  // TODO: Show success toast
+                }}
+                onTransfer={(newTrainerId: string) => {
+                  setClient(prev =>
+                    prev
+                      ? {
+                          ...prev,
+                          current_trainer_id: newTrainerId,
+                          status: 'TRANSFERRED',
+                          updated_at: new Date().toISOString(),
+                        }
+                      : null
+                  );
+                  // TODO: Show success toast and redirect
+                }}
+                onDelete={() => {
+                  setClient(prev =>
+                    prev
+                      ? { ...prev, status: 'ARCHIVED', updated_at: new Date().toISOString() }
+                      : null
+                  );
+                  // TODO: Show success toast and redirect to clients list
+                }}
+              />
             </TabsContent>
           </Tabs>
         </div>
