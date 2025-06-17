@@ -5,7 +5,7 @@ import { SubscriptionStatusCard } from '../../../../components/subscription/Subs
 import { useSubscription } from '../../../../hooks/useSubscription';
 
 export default function SubscriptionPlansPage() {
-  const { status, loading } = useSubscription();
+  const { subscription, loading } = useSubscription();
 
   if (loading) {
     return (
@@ -34,7 +34,7 @@ export default function SubscriptionPlansPage() {
       </div>
 
       {/* Current Subscription Status (if exists) */}
-      {status?.isActive && (
+      {subscription?.isActive && (
         <div className="mb-12">
           <h2 className="text-xl font-semibold mb-4">Current Subscription</h2>
           <SubscriptionStatusCard />
@@ -42,7 +42,7 @@ export default function SubscriptionPlansPage() {
       )}
 
       {/* Pricing Plans */}
-      <PricingPlans currentPlanId={status?.plan || undefined} />
+      <PricingPlans currentPlanId={subscription?.plan || undefined} />
 
       {/* Additional Information */}
       <div className="mt-16 bg-gray-50 rounded-lg p-8">

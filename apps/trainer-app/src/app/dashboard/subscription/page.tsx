@@ -19,15 +19,19 @@ import { SubscriptionStatusCard } from '../../../components/subscription/Subscri
 import { useSubscription } from '../../../hooks/useSubscription';
 
 export default function SubscriptionPage() {
-  const { status, loading, openBillingPortal } = useSubscription();
+  const { subscription, loading } = useSubscription();
   const [portalLoading, setPortalLoading] = useState(false);
 
   const handleOpenBillingPortal = async () => {
     try {
       setPortalLoading(true);
-      const { url } = await openBillingPortal();
-      window.location.href = url;
-    } catch {
+      // TODO: Implement billing portal opening
+      // const response = await fetch('/api/v1/subscriptions/portal', { method: 'POST' });
+      // const { url } = await response.json();
+      // window.location.href = url;
+      console.log('Opening billing portal...');
+    } catch (error) {
+      console.error('Error opening billing portal:', error);
     } finally {
       setPortalLoading(false);
     }
@@ -56,7 +60,7 @@ export default function SubscriptionPage() {
           </p>
         </div>
 
-        {status?.isActive && (
+        {subscription?.isActive && (
           <Button onClick={handleOpenBillingPortal} disabled={portalLoading} variant="outline">
             <Settings className="h-4 w-4 mr-2" />
             {portalLoading ? 'Loading...' : 'Manage Billing'}
@@ -65,7 +69,7 @@ export default function SubscriptionPage() {
       </div>
 
       {/* No Subscription State */}
-      {!status?.isActive && (
+      {!subscription?.isActive && (
         <div className="text-center py-16">
           <div className="max-w-md mx-auto">
             <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -103,7 +107,7 @@ export default function SubscriptionPage() {
       )}
 
       {/* Active Subscription */}
-      {status?.isActive && (
+      {subscription?.isActive && (
         <Tabs defaultValue="overview" className="space-y-8">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -180,26 +184,26 @@ export default function SubscriptionPage() {
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Active Clients</span>
                       <span className="text-sm text-gray-600">
-                        {status.currentClientCount} /{' '}
-                        {status.clientLimit === -1 ? '∞' : status.clientLimit}
+                        {subscription?.currentClientCount || 0} /{' '}
+                        {subscription?.clientLimit === -1 ? '∞' : subscription?.clientLimit || 0}
                       </span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full ${
-                          status.isWithinLimits ? 'bg-green-500' : 'bg-red-500'
+                          subscription?.isWithinLimits ? 'bg-green-500' : 'bg-red-500'
                         }`}
                         style={{
                           width:
-                            status.clientLimit === -1
+                            subscription?.clientLimit === -1
                               ? '0%'
-                              : `${Math.min((status.currentClientCount / status.clientLimit) * 100, 100)}%`,
+                              : `${Math.min(((subscription?.currentClientCount || 0) / (subscription?.clientLimit || 1)) * 100, 100)}%`,
                         }}
                       ></div>
                     </div>
                   </div>
 
-                  {!status.isWithinLimits && (
+                  {!subscription?.isWithinLimits && (
                     <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -218,30 +222,6 @@ export default function SubscriptionPage() {
                       </Link>
                     </div>
                   )}
-
-                  <div className="border-t pt-4">
-                    <h4 className="font-medium mb-2">Plan Features</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
-                      <li>• Client management system</li>
-                      <li>• Workout planning tools</li>
-                      <li>• Progress tracking</li>
-                      <li>• Mobile app access</li>
-                      {status.plan === 'PRO' && (
-                        <>
-                          <li>• Custom branding</li>
-                          <li>• Priority support</li>
-                        </>
-                      )}
-                      {status.plan === 'ENTERPRISE' && (
-                        <>
-                          <li>• Team management</li>
-                          <li>• Advanced analytics</li>
-                          <li>• API access</li>
-                          <li>• Dedicated support</li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
                 </div>
               </CardContent>
             </Card>

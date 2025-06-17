@@ -435,11 +435,11 @@ Implement complete client management features for trainers.
 
 #### 8.1 Client Invitation System
 
-- [ ] Create invitation form
-- [ ] Generate tokens
-- [ ] Send emails
-- [ ] Track status
-- [ ] Handle expiration
+- [x] Create invitation form
+- [x] Generate tokens
+- [x] Send emails
+- [x] Track status
+- [x] Handle expiration
 
 #### 8.2 Client List Interface
 
