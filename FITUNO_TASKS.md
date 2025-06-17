@@ -451,11 +451,11 @@ Implement complete client management features for trainers.
 
 #### 8.3 Client Detail Views
 
-- [ ] Create profile page
-- [ ] Show anamnesis data
-- [ ] Display workout plan
-- [ ] Add chat interface
-- [ ] Show progress gallery
+- [x] Create profile page
+- [x] Show anamnesis data
+- [x] Display workout plan
+- [x] Add chat interface
+- [x] Show progress gallery
 
 #### 8.4 Client Status Management
 
