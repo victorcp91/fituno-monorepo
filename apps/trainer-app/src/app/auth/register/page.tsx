@@ -115,7 +115,16 @@ export default function RegisterPage() {
 
       if (error) {
         if (error.message.includes('User already registered')) {
-          setError(ERROR_MESSAGES.email_already_registered);
+          // Store email and redirect to verification page for existing unverified users
+          localStorage.setItem('pendingVerificationEmail', formData.email);
+          setError(
+            'This email is already registered but not verified. Please check your email or resend verification.'
+          );
+
+          // Redirect to verification page after 3 seconds
+          setTimeout(() => {
+            router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}`);
+          }, 3000);
         } else {
           setError(error.message || ERROR_MESSAGES.registration_failed);
         }
@@ -123,6 +132,9 @@ export default function RegisterPage() {
       }
 
       if (data?.user) {
+        // Store email for verification page
+        localStorage.setItem('pendingVerificationEmail', formData.email);
+
         setSuccess(
           'Registration successful! Please check your email to verify your account before signing in.'
         );

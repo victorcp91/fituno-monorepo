@@ -475,23 +475,31 @@ export class AuthService {
     }
   }
 
-  static async resendEmailVerification(): Promise<{ data: any; error: AuthError | null }> {
+  static async resendEmailVerification(
+    email?: string
+  ): Promise<{ data: any; error: AuthError | null }> {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      let userEmail = email;
 
-      if (!user?.email) {
+      // If no email provided, try to get it from current user
+      if (!userEmail) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        userEmail = user?.email;
+      }
+
+      if (!userEmail) {
         return {
           data: null,
           error: {
-            message: 'No authenticated user found',
-            status: 401,
+            message: 'Email address is required for resending verification',
+            status: 400,
           } as AuthError,
         };
       }
 
-      const rateLimitKey = `resend:${user.email}`;
+      const rateLimitKey = `resend:${userEmail}`;
 
       if (!this.checkRateLimit(rateLimitKey, AUTH_CONFIG.RATE_LIMITS.signupAttempts)) {
         return {
@@ -505,7 +513,7 @@ export class AuthService {
 
       const { data, error } = await supabase.auth.resend({
         type: 'signup',
-        email: user.email,
+        email: userEmail,
         options: {
           emailRedirectTo: `${this.getBaseUrl()}${AUTH_CONFIG.REDIRECT_URLS.emailVerification}`,
         },

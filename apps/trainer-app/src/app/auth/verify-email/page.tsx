@@ -105,7 +105,14 @@ function VerifyEmailContent() {
     setError('');
 
     try {
-      const { data: _data, error } = await AuthService.resendEmailVerification();
+      // Get email from localStorage or URL params
+      const storedEmail = localStorage.getItem('pendingVerificationEmail');
+      const emailParam = searchParams.get('email');
+      const emailToUse = emailParam || storedEmail;
+
+      const { data: _data, error } = await AuthService.resendEmailVerification(
+        emailToUse || undefined
+      );
 
       if (error) {
         setError(error.message || 'Failed to resend verification email.');

@@ -83,6 +83,24 @@ function LoginForm() {
       }
 
       if (data?.user) {
+        // Check if email is verified first
+        if (!AuthService.isEmailVerified(data.user)) {
+          // Store email for verification page and redirect
+          localStorage.setItem('pendingVerificationEmail', data.user.email || '');
+          setError(
+            'Please verify your email before signing in. Check your inbox for the verification link.'
+          );
+
+          // Redirect to verification page after 2 seconds
+          setTimeout(() => {
+            router.push(`/auth/verify-email?email=${encodeURIComponent(data.user?.email || '')}`);
+          }, 2000);
+          return;
+        }
+
+        // Clear any pending verification email on successful login
+        localStorage.removeItem('pendingVerificationEmail');
+
         // Check if user needs to complete profile
         const userType = data.user.user_metadata?.user_type;
         const redirectTo = searchParams.get('redirectTo');
