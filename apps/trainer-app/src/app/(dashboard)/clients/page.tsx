@@ -51,6 +51,7 @@ import {
   Users,
   UserX,
 } from 'lucide-react';
+import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { ClientInvitationDialog } from '../../../components/clients/ClientInvitationDialog';
 
@@ -556,9 +557,11 @@ export default function ClientsPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="sm" title="Ver perfil">
-                              <Eye className="h-4 w-4" />
-                            </Button>
+                            <Link href={`/clients/${client.id}`}>
+                              <Button variant="ghost" size="sm" title="Ver perfil">
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
                             <Button variant="ghost" size="sm" title="Enviar mensagem">
                               <MessageCircle className="h-4 w-4" />
                             </Button>
@@ -569,9 +572,11 @@ export default function ClientsPage() {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
-                                <DropdownMenuItem>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  Ver perfil
+                                <DropdownMenuItem asChild>
+                                  <Link href={`/clients/${client.id}`}>
+                                    <Eye className="h-4 w-4 mr-2" />
+                                    Ver perfil
+                                  </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
                                   <MessageCircle className="h-4 w-4 mr-2" />
@@ -662,10 +667,12 @@ export default function ClientsPage() {
                   </div>
 
                   <div className="flex justify-between pt-3 border-t">
-                    <Button variant="outline" size="sm">
-                      <Eye className="h-4 w-4 mr-2" />
-                      Ver
-                    </Button>
+                    <Link href={`/clients/${client.id}`}>
+                      <Button variant="outline" size="sm">
+                        <Eye className="h-4 w-4 mr-2" />
+                        Ver
+                      </Button>
+                    </Link>
                     <Button variant="outline" size="sm">
                       <MessageCircle className="h-4 w-4 mr-2" />
                       Chat
