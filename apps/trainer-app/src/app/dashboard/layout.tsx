@@ -128,10 +128,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   // Show loading state while checking authentication
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
-          <div className="fitness-gradient h-12 w-12 rounded-lg mx-auto mb-4 animate-pulse"></div>
-          <p className="text-muted-foreground">Loading...</p>
+          <div className="h-8 w-8 bg-blue-600 rounded-lg mx-auto mb-4 animate-pulse"></div>
+          <p className="text-gray-600">Carregando...</p>
         </div>
       </div>
     );
@@ -144,13 +144,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Debug: Simple header to test */}
+      <div className="bg-red-500 text-white p-4 text-center">
+        DEBUG: Layout is working! User: {user.email}
+      </div>
+
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 bg-white border-r border-gray-200 lg:block">
         <div className="flex h-full flex-col">
           {/* Logo */}
           <div className="flex h-16 items-center px-6 border-b border-gray-200">
             <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="fitness-gradient h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                 F
               </div>
               <span className="text-xl font-bold text-gray-900">Fituno</span>
@@ -223,7 +228,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 {/* Mobile Logo */}
                 <div className="flex h-16 items-center px-6 border-b">
                   <Link href="/dashboard" className="flex items-center space-x-2">
-                    <div className="fitness-gradient h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                    <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">
                       F
                     </div>
                     <span className="text-xl font-bold">Fituno</span>
@@ -272,7 +277,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       <p className="text-sm font-medium">
                         {user.user_metadata?.full_name || user.email}
                       </p>
-                      <p className="text-xs text-muted-foreground">Personal Trainer</p>
+                      <p className="text-xs text-gray-500">Personal Trainer</p>
                     </div>
                     <Button
                       variant="ghost"
@@ -289,7 +294,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </Sheet>
 
           <Link href="/dashboard" className="flex items-center space-x-2">
-            <div className="fitness-gradient h-6 w-6 rounded flex items-center justify-center text-white font-bold text-xs">
+            <div className="h-6 w-6 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-xs">
               F
             </div>
             <span className="text-lg font-bold">Fituno</span>
