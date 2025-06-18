@@ -1,54 +1,70 @@
 'use client';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@fituno/ui';
-import { Badge } from '@fituno/ui';
-import { Button } from '@fituno/ui';
-import { Sheet, SheetContent, SheetTrigger } from '@fituno/ui';
 import { AuthService } from '@fituno/services';
-import { BarChart3, Bell, Calendar, Dumbbell, LogOut, Menu, Settings, Users } from 'lucide-react';
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Badge,
+  Button,
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@fituno/ui';
+import {
+  BarChart3,
+  Bell,
+  Calendar,
+  FileText,
+  Home,
+  LogOut,
+  Menu,
+  Settings,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-// Navigation items for the trainer dashboard
+// Navigation items for the trainer dashboard - updated to match wireframe
 const navigationItems = [
   {
     title: 'Dashboard',
-    href: '/',
-    icon: BarChart3,
+    href: '/dashboard',
+    icon: Home,
     badge: null,
   },
   {
-    title: 'Clients',
-    href: '/clients',
+    title: 'Clientes',
+    href: '/dashboard/clients',
     icon: Users,
-    badge: '8',
-  },
-  {
-    title: 'Workouts',
-    href: '/workouts',
-    icon: Dumbbell,
     badge: null,
   },
   {
-    title: 'Programs',
-    href: '/programs',
+    title: 'Agenda',
+    href: '/dashboard/schedule',
     icon: Calendar,
-    badge: '3',
+    badge: null,
   },
   {
-    title: 'Analytics',
-    href: '/analytics',
+    title: 'Biblioteca',
+    href: '/dashboard/library',
+    icon: FileText,
+    badge: null,
+  },
+  {
+    title: 'Relatórios',
+    href: '/dashboard/reports',
     icon: BarChart3,
     badge: null,
   },
   {
-    title: 'Settings',
-    href: '/settings',
+    title: 'Configurações',
+    href: '/dashboard/settings',
     icon: Settings,
     badge: null,
   },
@@ -58,6 +74,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // Check authentication on component mount
@@ -70,7 +87,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         }
         setUser(data.user);
       } catch {
-
         router.push('/auth/login');
       } finally {
         setLoading(false);
@@ -85,7 +101,27 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       await AuthService.signOut();
       router.push('/auth/login');
     } catch {
+      // Handle error silently
+    }
+  };
 
+  // Get page title based on pathname
+  const getPageTitle = () => {
+    switch (pathname) {
+      case '/dashboard':
+        return 'Dashboard';
+      case '/dashboard/clients':
+        return 'Clientes';
+      case '/dashboard/schedule':
+        return 'Agenda';
+      case '/dashboard/library':
+        return 'Biblioteca';
+      case '/dashboard/reports':
+        return 'Relatórios';
+      case '/dashboard/settings':
+        return 'Configurações';
+      default:
+        return 'Dashboard';
     }
   };
 
@@ -107,30 +143,39 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       {/* Desktop Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 border-r border-border bg-card lg:block">
+      <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 bg-white border-r border-gray-200 lg:block">
         <div className="flex h-full flex-col">
           {/* Logo */}
-          <div className="flex h-16 items-center border-b border-border px-6">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="fitness-gradient h-8 w-8 rounded-lg"></div>
-              <span className="text-xl font-bold text-foreground">Fituno</span>
+          <div className="flex h-16 items-center px-6 border-b border-gray-200">
+            <Link href="/dashboard" className="flex items-center space-x-2">
+              <div className="fitness-gradient h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                F
+              </div>
+              <span className="text-xl font-bold text-gray-900">Fituno</span>
             </Link>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-1 p-4">
+          <nav className="flex-1 space-y-1 px-3 py-4">
             {navigationItems.map(item => {
               const Icon = item.icon;
+              const isActive =
+                pathname === item.href ||
+                (item.href !== '/dashboard' && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
                 >
                   <div className="flex items-center space-x-3">
-                    <Icon className="h-4 w-4" />
+                    <Icon className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`} />
                     <span>{item.title}</span>
                   </div>
                   {item.badge && <Badge variant="secondary">{item.badge}</Badge>}
@@ -139,18 +184,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </nav>
 
-          {/* User Profile */}
-          <div className="border-t border-border p-4">
+          {/* User Profile at bottom */}
+          <div className="border-t border-gray-200 p-4">
             <div className="flex items-center space-x-3">
-              <Avatar className="h-9 w-9">
+              <Avatar className="h-10 w-10">
                 <AvatarImage src={user.user_metadata?.avatar_url} alt="Trainer" />
-                <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'T'}</AvatarFallback>
+                <AvatarFallback className="bg-blue-600 text-white font-semibold">
+                  {user.user_metadata?.full_name?.charAt(0).toUpperCase() ||
+                    user.email?.charAt(0).toUpperCase() ||
+                    'T'}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground truncate">
+                <p className="text-sm font-medium text-gray-900 truncate">
                   {user.user_metadata?.full_name || user.email}
                 </p>
-                <p className="text-xs text-muted-foreground truncate">Personal Trainer</p>
+                <p className="text-xs text-gray-500 truncate">Personal Trainer</p>
               </div>
               <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={handleSignOut}>
                 <LogOut className="h-4 w-4" />
@@ -161,7 +210,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </aside>
 
       {/* Mobile Header */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-40 border-b border-gray-200 bg-white lg:hidden">
         <div className="flex h-16 items-center justify-between px-4">
           <Sheet>
             <SheetTrigger asChild>
@@ -173,24 +222,33 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="flex h-full flex-col">
                 {/* Mobile Logo */}
                 <div className="flex h-16 items-center px-6 border-b">
-                  <Link href="/" className="flex items-center space-x-2">
-                    <div className="fitness-gradient h-8 w-8 rounded-lg"></div>
+                  <Link href="/dashboard" className="flex items-center space-x-2">
+                    <div className="fitness-gradient h-8 w-8 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                      F
+                    </div>
                     <span className="text-xl font-bold">Fituno</span>
                   </Link>
                 </div>
 
                 {/* Mobile Navigation */}
-                <nav className="flex-1 space-y-1 p-4">
+                <nav className="flex-1 space-y-1 px-3 py-4">
                   {navigationItems.map(item => {
                     const Icon = item.icon;
+                    const isActive =
+                      pathname === item.href ||
+                      (item.href !== '/dashboard' && pathname.startsWith(item.href));
                     return (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors hover:bg-accent"
+                        className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                          isActive ? 'bg-blue-50 text-blue-700' : 'text-gray-700 hover:bg-gray-50'
+                        }`}
                       >
                         <div className="flex items-center space-x-3">
-                          <Icon className="h-4 w-4" />
+                          <Icon
+                            className={`h-5 w-5 ${isActive ? 'text-blue-700' : 'text-gray-500'}`}
+                          />
                           <span>{item.title}</span>
                         </div>
                         {item.badge && <Badge variant="secondary">{item.badge}</Badge>}
@@ -204,7 +262,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   <div className="flex items-center space-x-3">
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={user.user_metadata?.avatar_url} alt="Trainer" />
-                      <AvatarFallback>{user.email?.charAt(0).toUpperCase() || 'T'}</AvatarFallback>
+                      <AvatarFallback className="bg-blue-600 text-white font-semibold">
+                        {user.user_metadata?.full_name?.charAt(0).toUpperCase() ||
+                          user.email?.charAt(0).toUpperCase() ||
+                          'T'}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <p className="text-sm font-medium">
@@ -226,8 +288,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </SheetContent>
           </Sheet>
 
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="fitness-gradient h-6 w-6 rounded"></div>
+          <Link href="/dashboard" className="flex items-center space-x-2">
+            <div className="fitness-gradient h-6 w-6 rounded flex items-center justify-center text-white font-bold text-xs">
+              F
+            </div>
             <span className="text-lg font-bold">Fituno</span>
           </Link>
 
@@ -239,7 +303,38 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main Content */}
       <main className="lg:pl-64">
-        <div className="px-4 py-6 lg:px-8">{children}</div>
+        {/* Page Header - visible on all pages */}
+        <header className="bg-white border-b border-gray-200 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-semibold text-gray-900">{getPageTitle()}</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700">
+                <Bell className="h-5 w-5" />
+                <span className="sr-only">Notifications</span>
+              </Button>
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.user_metadata?.avatar_url} alt="Trainer" />
+                  <AvatarFallback className="bg-blue-600 text-white text-sm font-semibold">
+                    {user.user_metadata?.full_name?.charAt(0).toUpperCase() ||
+                      user.email?.charAt(0).toUpperCase() ||
+                      'T'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="hidden md:block">
+                  <p className="text-sm font-medium text-gray-900">
+                    {user.user_metadata?.full_name || 'João Silva'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <div className="px-6 py-6">{children}</div>
       </main>
     </div>
   );
