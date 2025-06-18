@@ -73,7 +73,7 @@ function VerifyEmailContent() {
               // Redirect to dashboard after 3 seconds
               setTimeout(() => {
                 if (mounted) {
-                  router.push('/');
+                  router.push('/dashboard');
                 }
               }, 3000);
             }
@@ -85,7 +85,7 @@ function VerifyEmailContent() {
 
               setTimeout(() => {
                 if (mounted) {
-                  router.push('/');
+                  router.push('/dashboard');
                 }
               }, 3000);
             }
@@ -103,7 +103,7 @@ function VerifyEmailContent() {
 
             setTimeout(() => {
               if (mounted) {
-                router.push('/');
+                router.push('/dashboard');
               }
             }, 3000);
           } else {
@@ -216,7 +216,7 @@ function VerifyEmailContent() {
               </AlertDescription>
             </Alert>
 
-            <Button className="w-full" onClick={() => router.push('/')}>
+            <Button className="w-full" onClick={() => router.push('/dashboard')}>
               Continue to Dashboard
             </Button>
           </CardContent>

@@ -1,8 +1,30 @@
-import { Button } from '@fituno/ui';
-import { Card, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
+'use client';
+
+import { AuthService } from '@fituno/services';
+import { Button, Card, CardDescription, CardHeader, CardTitle } from '@fituno/ui';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export default function LandingPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Check if user is already logged in and redirect to dashboard
+    const checkAuth = async () => {
+      try {
+        const { data: userData } = await AuthService.getCurrentUser();
+        if (userData.user && AuthService.isEmailVerified(userData.user)) {
+          router.push('/dashboard');
+        }
+      } catch {
+        // Ignore errors, user is not authenticated
+      }
+    };
+
+    checkAuth();
+  }, [router]);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}

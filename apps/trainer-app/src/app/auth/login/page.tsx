@@ -113,7 +113,7 @@ function LoginForm() {
           router.push(decodeURIComponent(redirectTo));
         } else {
           // Redirect to dashboard
-          router.push('/');
+          router.push('/dashboard');
         }
       }
     } catch {
