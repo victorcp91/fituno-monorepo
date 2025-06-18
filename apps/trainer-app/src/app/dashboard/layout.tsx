@@ -121,6 +121,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       case '/dashboard/settings':
         return 'Configurações';
       default:
+        if (pathname.startsWith('/dashboard/clients/')) {
+          return 'Cliente';
+        }
         return 'Dashboard';
     }
   };
@@ -144,11 +147,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Debug: Simple header to test */}
-      <div className="bg-red-500 text-white p-4 text-center">
-        DEBUG: Layout is working! User: {user.email}
-      </div>
-
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-50 hidden w-64 bg-white border-r border-gray-200 lg:block">
         <div className="flex h-full flex-col">
