@@ -14,11 +14,11 @@
   "dependencies": {
     "@fituno/types": "^0.1.0",
     "@fituno/constants": "^0.1.0",
-    "@supabase/supabase-js": "^2.50.2"
+    "@supabase/supabase-js": "^2.50.3"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "jest": "^30.0.3",
+    "jest": "^30.0.4",
     "@types/jest": "^30.0.0"
   }
 }
