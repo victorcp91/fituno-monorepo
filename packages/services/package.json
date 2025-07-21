@@ -14,7 +14,7 @@
   "dependencies": {
     "@fituno/types": "^0.1.0",
     "@fituno/constants": "^0.1.0",
-    "@supabase/supabase-js": "^2.50.5"
+    "@supabase/supabase-js": "^2.52.0"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
