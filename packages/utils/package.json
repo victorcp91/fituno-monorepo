@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "jest": "^30.0.4",
+    "jest": "^30.0.5",
     "@types/jest": "^30.0.0"
   }
 }
